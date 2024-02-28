@@ -1,14 +1,26 @@
-const express = require("express");
+import express from "express";
+import { getProducts, getProductById, createProduct, updateProduct, deleteProduct } from "./controllers/products";
 
 const app = express();
+const PORT = 3000;
 
-const port = 3000;
+app.use(express.json());
 
-app.get("/hello", (req, res) => {
+// Get all products
+app.get("/products", getProducts);
 
-  res.json({ message: `Hello, World` });
-});
+// Get a single product by ID
+app.get("/products/:id", getProductById);
 
-app.listen(port, () => {
-  console.log(`server is listening on ${port}`);
+// Create a new product
+app.post("/products", createProduct);
+
+// Update a product by ID
+app.put("/products/:id", updateProduct);
+
+// Delete a product by ID
+app.delete("/products/:id", deleteProduct);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
