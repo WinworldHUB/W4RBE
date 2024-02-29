@@ -1,56 +1,27 @@
-import { Request, Response } from "express";
-import fs from "fs";
-import path from "path";
-import products from "../models/product-data.json"
+import { RequestHandler } from "express";
+import {
+  deleteProduct,
+  getProduct,
+  getProducts,
+  insertProduct,
+  updateProduct,
+} from "../models/products-model";
 import { Product } from "../types/product";
 
-const productsFilePath = path.resolve(__dirname, "../models/product-data.json");
+export const getProductById: RequestHandler = (req, res, next) =>
+  res.json(getProduct(req.params.id));
 
-const getProducts = (req: Request, res: Response) => {
-  res.json(products);
+export const getAllProducts: RequestHandler = (req, res, next) =>
+  res.json(getProducts());
+
+export const addProduct: RequestHandler = (req, res, next) => {
+  res.json(insertProduct(req.body as Product));
 };
 
-const getProductById = (req: Request, res: Response) => {
-  const productId = req.params.id;
-  const product = products.find((p: Product) => p.id === productId);
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
-  }
-  res.json(product);
+export const modifyProduct: RequestHandler = (req, res, next) => {
+  res.json(updateProduct(req.body as Product));
 };
 
-const createProduct = (req: Request, res: Response) => {
-  const newProduct: Product = req.body;
-  products.push(newProduct);
-  saveProductsToFile(products);
-  res.status(201).json({ message: "Product created successfully", product: newProduct });
+export const deleteProductById: RequestHandler = (req, res, next) => {
+  res.json(deleteProduct(req.params.id));
 };
-
-const updateProduct = (req: Request, res: Response) => {
-  const productId = req.params.id;
-  const updatedProduct: Product = req.body;
-  const index = products.findIndex((p: Product) => p.id === productId);
-  if (index === -1) {
-    return res.status(404).json({ message: "Product not found" });
-  }
-  products[index] = updatedProduct;
-  saveProductsToFile(products);
-  res.json({ message: "Product updated successfully", product: updatedProduct });
-};
-
-const deleteProduct = (req: Request, res: Response) => {
-  const productId = req.params.id;
-  const index = products.findIndex((p: Product) => p.id === productId);
-  if (index === -1) {
-    return res.status(404).json({ message: "Product not found" });
-  }
-  products.splice(index, 1);
-  saveProductsToFile(products);
-  res.json({ message: "Product deleted successfully" });
-};
-
-function saveProductsToFile(products: Product[]) {
-  fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2));
-}
-
-export { getProducts, getProductById, createProduct, updateProduct, deleteProduct };
