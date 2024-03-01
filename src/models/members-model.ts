@@ -8,9 +8,15 @@ export const getMember = (id: number): Member | undefined => {
   return MEMBERS.find((m) => m.ID === id);
 };
 
-export const insertMember = (Member: Member): Member => {
-  MEMBERS.push(Member);
-  return Member;
+
+
+export const insertMember = (member: Member): Member => {
+  MEMBERS.push(member);
+  return member;
+};
+export const insertMembers = (members: Member[]): Member[] => {
+  MEMBERS.push(...members);
+  return members;
 };
 
 export const updateMember = (Member: Member): Member | undefined => {
