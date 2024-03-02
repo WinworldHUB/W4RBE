@@ -1,6 +1,6 @@
 import { Member } from "./member";
 import { Product } from "./product";
-
+import { Packaging } from "./packagings";
 
 export type Order = {
   id: string;
@@ -13,11 +13,3 @@ export type Order = {
   packaging?: Packaging;
 };
 
-export type Packaging = {
-  id: string;
-  title: string;
-  description: string;
-  minQuantity: number;
-  maxQuantity: number;
-  available: boolean;
-};
