@@ -5,6 +5,7 @@ import {
   getAllProducts,
   getProductById,
   modifyProduct,
+  updateProductImagesById
 } from "../controllers/products";
 
 const productRoutes = Router();
@@ -13,5 +14,5 @@ productRoutes.get("/:id", getProductById);
 productRoutes.post("/", addProduct);
 productRoutes.put("/:id", modifyProduct);
 productRoutes.delete("/:id", deleteProductById);
-
+productRoutes.put("/:id/updateImage", updateProductImagesById);
 export default productRoutes;

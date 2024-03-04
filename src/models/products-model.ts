@@ -34,3 +34,16 @@ export const deleteProduct = (id: string): Product | undefined => {
 
   return PRODUCTS.splice(index, 1)[0];
 };
+
+
+export const updateProductImages = (id: string, otherImages: string[]): Product | undefined => {
+  const product = getProduct(id);
+
+  if (!product) {
+    return undefined;
+  }
+
+  product.otherImages = otherImages;
+
+  return updateProduct(product);
+};
