@@ -7,21 +7,16 @@ export function formatProducts(productsData:Product[]) {
 
     productsData.forEach((product:Product) => {
         const id = product["Handle"];
-        if (processedProductIds.has(id)) {
-            return;
-        }
         processedProductIds.add(id);
 
         const title = product["Title"];
         const bodyHtml = product["Body (HTML)"];
 
-        console.log("Product:", id, title, bodyHtml);
-
         if (bodyHtml === undefined) {
             return; 
         }
 
-        let category;
+        let category:string;
         if (id.toLowerCase().includes("bulk")) {
             category = "Bulk";
         } else {
