@@ -1,11 +1,21 @@
 import { Member } from "../types/member";
 import {
+  AuthUser,
+  SignUpInput,
+  fetchAuthSession,
+  getCurrentUser,
+  signIn,
+  signOut,
+  signUp,
+} from "aws-amplify/auth";
+import {
   getMembers,
   getMember,
   insertMember,
   updateMember,
 } from "../models/members-model";
 import _ from "lodash";
+import { error } from "console";
 
 const validateMemberData = (
   jsonData: Member[]
@@ -42,7 +52,24 @@ const validateMemberData = (
           response.updatedUsers.push(newUser);
         }
       } else {
-        insertMember(newUser);
+        const insertedMember = insertMember(newUser);
+        if (insertedMember) {
+          const signUpDetails: SignUpInput = {
+            username: insertedMember["Customer email"],
+            password: "Password@1",
+            options: {
+              autoSignIn: true,
+              userAttributes: {
+                email: insertedMember["Customer email"],
+                name: insertedMember["Customer name"],
+                email_verified: "false",
+              },
+            },
+          };
+          signUp(signUpDetails)
+            .then((value) => console.log(value))
+            .catch((reason) => console.error(reason));
+        }
         response.newUsers.push(newUser);
       }
     } else {
