@@ -3,6 +3,7 @@ import productRoutes from "./routes/products-routes";
 import memberRoutes from "./routes/members-routes";
 import { json } from "body-parser";
 import cors from "cors"
+import orderRoutes from "./routes/orders-routes";
 
 const app = express();
 const PORT = 3000;
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 
 app.use("/products", productRoutes);
 app.use("/members", memberRoutes);
+app.use("/orders",orderRoutes)
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
