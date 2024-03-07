@@ -1,10 +1,5 @@
 import { Member } from "../types/member";
-import {
-  getMembers,
-  getMember,
-  insertMember,
-  updateMember,
-} from "../models/members-model";
+import { getMember, insertMember, updateMember } from "../models/members-model";
 import _ from "lodash";
 
 const validateMemberData = (
@@ -35,7 +30,7 @@ const validateMemberData = (
     );
 
     if (missingFields.length === 0) {
-      const foundMember = getMember(newUser.ID);
+      const foundMember = getMember(newUser["Customer email"]);
       if (foundMember) {
         if (!_.isEqual(foundMember, newUser)) {
           updateMember(newUser);
