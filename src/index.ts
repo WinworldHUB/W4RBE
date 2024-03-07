@@ -11,7 +11,7 @@ const PORT = 3000;
 app.use(express.json({ limit: "10mb" }));
 app.use((req, res, next) => {
   const allowedOrigins = [
-    "https://main.d182pdj4ll232k.amplifyapp.com/",
+    "https://main.d3a3bx78s8tswk.amplifyapp.com",
     "http://localhost:3001",
     "http://localhost:3000",
   ];
