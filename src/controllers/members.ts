@@ -20,30 +20,17 @@ export const getAllMembers: RequestHandler = (req, res, next) =>
   res.json(getMembers());
 
 export const addMember: RequestHandler = (req, res, next) => {
-  const jsonData: Member[] = req.body;
-  const validationResponse = validateMemberData(jsonData);
+  const jsonData: Member = req.body;
+  const validationResponse = validateMemberData([jsonData]);
 
   return res.status(200).json(validationResponse);
 };
 
 export const importMembers: RequestHandler = (req, res, next) => {
-  const membersData = req.body as Member[];
-  if (membersData) {
-    forEach(membersData, (member: Member) => {
-      if (member && member["Customer email"] !== "") {
-        const foundMember = getMember(member["Customer email"]);
+  const jsonData: Member[] = req.body;
+  const validationResponse = validateMemberData(jsonData);
 
-        if (!foundMember) {
-          insertMember(member);
-        } else {
-          updateMember(member);
-        }
-      }
-    });
-    res.json(membersData);
-  } else {
-    res.status(400).json({ error: "No product data provided" });
-  }
+  return res.status(200).json(validationResponse);
 };
 
 export const modifyMember: RequestHandler = (req, res, next) => {
