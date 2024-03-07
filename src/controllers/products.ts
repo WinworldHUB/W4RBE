@@ -23,13 +23,23 @@ export const addProduct: RequestHandler = (req, res, next) => {
 export const importProducts: RequestHandler = (req, res, next) => {
   const productsData = req.body as Product[];
   if (productsData) {
-      const formattedProducts = formatProducts(productsData);
-      forEach(formattedProducts, insertProduct)
-      res.json(formattedProducts);
+    const formattedProducts = formatProducts(productsData);
+    forEach(formattedProducts, (product: Product) => {
+      if (product && product.id !== "") {
+        const foundProduct = getProduct(product.id);
+
+        if (!foundProduct) {
+          insertProduct(product);
+        } else {
+          updateProduct(product);
+        }
+      }
+    });
+    res.json(formattedProducts);
   } else {
-      res.status(400).json({ error: 'No product data provided' });
+    res.status(400).json({ error: "No product data provided" });
   }
-}
+};
 
 export const modifyProduct: RequestHandler = (req, res, next) => {
   res.json(updateProduct(req.body as Product));
