@@ -5,7 +5,7 @@ import {
   getAllProducts,
   getProductById,
   modifyProduct,
-  importProducts
+  importProducts,
 } from "../controllers/products";
 
 const productRoutes = Router();

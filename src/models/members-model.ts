@@ -4,11 +4,9 @@ const MEMBERS: Member[] = [];
 
 export const getMembers = (): Member[] => MEMBERS;
 
-export const getMember = (id: number): Member | undefined => {
-  return MEMBERS.find((m) => m.ID === id);
+export const getMember = (email: string): Member | undefined => {
+  return MEMBERS.find((m) => m["Customer email"] === email);
 };
-
-
 
 export const insertMember = (member: Member): Member => {
   MEMBERS.push(member);
@@ -20,7 +18,9 @@ export const insertMembers = (members: Member[]): Member[] => {
 };
 
 export const updateMember = (Member: Member): Member | undefined => {
-  const index = MEMBERS.findIndex((p) => p.ID === Member.ID);
+  const index = MEMBERS.findIndex(
+    (p) => p["Customer email"] === Member["Customer email"]
+  );
 
   if (index < 0) {
     return undefined;
@@ -31,8 +31,8 @@ export const updateMember = (Member: Member): Member | undefined => {
   return Member;
 };
 
-export const deleteMember = (id: number): Member | undefined => {
-  const index = MEMBERS.findIndex((p) => p.ID === id);
+export const deleteMember = (email: string): Member | undefined => {
+  const index = MEMBERS.findIndex((p) => p["Customer email"] === email);
 
   if (index < 0) {
     return undefined;
