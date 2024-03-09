@@ -1,0 +1,19 @@
+projects:
+  W4RBE-dev:
+    schemaPath: src/graphql/schema.json
+    includes:
+      - src/graphql/**/*.ts
+    excludes:
+      - ./amplify/**
+      - src/awsApis.ts
+    extensions:
+      amplify:
+        codeGenTarget: typescript
+        generatedFileName: src/awsApis.ts
+        docsFilePath: src/graphql
+        region: eu-west-2
+        apiId: qmdzqgioxvfznepgw726p6vsnm
+        maxDepth: 2
+extensions:
+  amplify:
+    version: 3

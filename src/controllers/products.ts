@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import {
   deleteProduct,
-  getProduct,
-  getProducts,
+  getPagedProducts,
+  getProduct1,
   insertProduct,
   updateProduct,
 } from "../models/products-model";
@@ -11,10 +11,23 @@ import { forEach } from "lodash";
 import { formatProducts } from "../utils/format-product";
 
 export const getProductById: RequestHandler = (req, res, next) =>
-  res.json(getProduct(req.params.id));
+  res.json(getProduct1(req.params.id));
 
-export const getAllProducts: RequestHandler = (req, res, next) =>
-  res.json(getProducts());
+export const getAllProducts: RequestHandler = async (req, res, next) => {
+  try {
+    const products = await getPagedProducts();
+
+    console.log(products);
+
+    return res.json(products);
+  } catch (error) {
+    return res.status(400).send({
+      status: "failed",
+      message: "Error retrieving products",
+      internalError: error,
+    });
+  }
+};
 
 export const addProduct: RequestHandler = (req, res, next) => {
   res.json(insertProduct(req.body as Product));
@@ -26,7 +39,7 @@ export const importProducts: RequestHandler = (req, res, next) => {
     const formattedProducts = formatProducts(productsData);
     forEach(formattedProducts, (product: Product) => {
       if (product && product.id !== "") {
-        const foundProduct = getProduct(product.id);
+        const foundProduct = {}; //getProduct(product.id);
 
         if (!foundProduct) {
           insertProduct(product);

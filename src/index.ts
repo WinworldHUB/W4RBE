@@ -1,8 +1,6 @@
 import express from "express";
 import productRoutes from "./routes/products-routes";
 import memberRoutes from "./routes/members-routes";
-import { json } from "body-parser";
-import cors from "cors";
 import orderRoutes from "./routes/orders-routes";
 
 const app = express();
@@ -11,7 +9,7 @@ const PORT = 3000;
 app.use(express.json({ limit: "10mb" }));
 app.use((req, res, next) => {
   const allowedOrigins = [
-    "https://main.d3a3bx78s8tswk.amplifyapp.com",
+    "https://main.dt2z8g98byon5.amplifyapp.com/",
     "http://localhost:3001",
     "http://localhost:3000",
   ];
