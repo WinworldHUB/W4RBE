@@ -4,7 +4,7 @@ import {
   getPagedProducts,
   getProductByID,
   insertProduct,
-  updateProduct,
+  updateProductModel,
 } from "../models/products-model";
 import { Product } from "../types/product";
 import { forEach } from "lodash";
@@ -52,7 +52,7 @@ export const importProducts: RequestHandler = (req, res, next) => {
         if (!foundProduct) {
           insertProduct(product);
         } else {
-          updateProduct(product);
+          updateProductModel(product);
         }
       }
     });
@@ -63,7 +63,7 @@ export const importProducts: RequestHandler = (req, res, next) => {
 };
 
 export const modifyProduct: RequestHandler = (req, res, next) => {
-  res.json(updateProduct(req.body as Product));
+  res.json(updateProductModel(req.body as Product));
 };
 
 export const deleteProductById: RequestHandler = (req, res, next) => {
