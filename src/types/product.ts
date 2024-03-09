@@ -15,5 +15,5 @@ export type Product = {
     price: number;
     taxable: boolean;
     featuredImage: string;
-    otherImages: string;
+    otherImages: string[];
   };

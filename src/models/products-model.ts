@@ -1,8 +1,12 @@
 import { Product } from "../types/product";
 import { generateClient } from "aws-amplify/api";
-import { listProducts } from "../graphql/queries";
+import { listProducts, getProduct } from "../graphql/queries";
 import { forEach } from "lodash";
-
+import {
+  createProduct,
+  deleteProduct,
+  updateProduct,
+} from "../graphql/mutations";
 const awsClient = generateClient();
 
 const PRODUCTS: Product[] = [];
@@ -34,33 +38,63 @@ export const getPagedProducts = async (): Promise<Product[]> => {
   return products;
 };
 
-export const getProduct1 = (id: string): Product | undefined => {
-  return PRODUCTS.find((p) => p.id === id);
+export const getProductByID = async (id: string) => {
+  try {
+    const foundProduct = await awsClient.graphql({
+      query: getProduct,
+      variables: {
+        id: id,
+      },
+    });
+    return foundProduct;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
 };
 
-export const insertProduct = (product: Product): Product => {
-  PRODUCTS.push(product);
+export const insertProduct = async (product: Product): Promise<Product> => {
+  await awsClient.graphql({
+    query: createProduct,
+    variables: {
+      input: {
+        body: product.body,
+        category: product.category,
+        featuredImage: product.featuredImage,
+        price: product.price,
+        published: product.published,
+        quantity: product.quantity,
+        size: product.size,
+        taxable: product.taxable,
+        title: product.title,
+      },
+    },
+  });
   return product;
 };
 
-export const updateProduct = (product: Product): Product | undefined => {
-  const index = PRODUCTS.findIndex((p) => p.id === product.id);
-
-  if (index < 0) {
-    return undefined;
-  }
-
-  PRODUCTS[index] = product;
-
+export const updateProductModel = async (
+  product: Product
+): Promise<Product> => {
+  await awsClient.graphql({
+    query: updateProduct,
+    variables: {
+      input: {
+        id: product.id,
+        otherImages: product.otherImages
+      },
+    },
+  });
   return product;
 };
 
-export const deleteProduct = (id: string): Product | undefined => {
-  const index = PRODUCTS.findIndex((p) => p.id === id);
-
-  if (index < 0) {
-    return undefined;
-  }
-
-  return PRODUCTS.splice(index, 1)[0];
+export const deleteProductModel = async (id: string) => {
+  await awsClient.graphql({
+    query: deleteProduct,
+    variables: {
+      input: {
+        id: id,
+      },
+    },
+  });
 };

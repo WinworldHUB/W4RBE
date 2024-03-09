@@ -1,17 +1,25 @@
 import { RequestHandler } from "express";
 import {
-  deleteProduct,
+  deleteProductModel,
   getPagedProducts,
-  getProduct1,
+  getProductByID,
   insertProduct,
-  updateProduct,
+  updateProductModel,
 } from "../models/products-model";
 import { Product } from "../types/product";
 import { forEach } from "lodash";
 import { formatProducts } from "../utils/format-product";
 
-export const getProductById: RequestHandler = (req, res, next) =>
-  res.json(getProduct1(req.params.id));
+export const getProductById: RequestHandler = async (req, res, next) => {
+  try {
+    const product = await getProductByID(req.params.id);
+    res.json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ error: "Failed to fetch product" });
+  }
+};
+
 
 export const getAllProducts: RequestHandler = async (req, res, next) => {
   try {
@@ -44,7 +52,7 @@ export const importProducts: RequestHandler = (req, res, next) => {
         if (!foundProduct) {
           insertProduct(product);
         } else {
-          updateProduct(product);
+          updateProductModel(product);
         }
       }
     });
@@ -55,9 +63,11 @@ export const importProducts: RequestHandler = (req, res, next) => {
 };
 
 export const modifyProduct: RequestHandler = (req, res, next) => {
-  res.json(updateProduct(req.body as Product));
+  res.json(updateProductModel(req.body as Product));
 };
 
 export const deleteProductById: RequestHandler = (req, res, next) => {
-  res.json(deleteProduct(req.params.id));
+  
+deleteProductModel(req.params.id)
+  res.json({ message: "Product deleted Successfully" });
 };
