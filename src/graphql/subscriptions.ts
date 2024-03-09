@@ -8,6 +8,63 @@ type GeneratedSubscription<InputType, OutputType> = string & {
   __generatedSubscriptionOutput: OutputType;
 };
 
+export const onCreateProductVariant = /* GraphQL */ `subscription OnCreateProductVariant(
+  $filter: ModelSubscriptionProductVariantFilterInput
+) {
+  onCreateProductVariant(filter: $filter) {
+    id
+    size
+    price
+    available
+    quantity
+    productID
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateProductVariantSubscriptionVariables,
+  APITypes.OnCreateProductVariantSubscription
+>;
+export const onUpdateProductVariant = /* GraphQL */ `subscription OnUpdateProductVariant(
+  $filter: ModelSubscriptionProductVariantFilterInput
+) {
+  onUpdateProductVariant(filter: $filter) {
+    id
+    size
+    price
+    available
+    quantity
+    productID
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateProductVariantSubscriptionVariables,
+  APITypes.OnUpdateProductVariantSubscription
+>;
+export const onDeleteProductVariant = /* GraphQL */ `subscription OnDeleteProductVariant(
+  $filter: ModelSubscriptionProductVariantFilterInput
+) {
+  onDeleteProductVariant(filter: $filter) {
+    id
+    size
+    price
+    available
+    quantity
+    productID
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteProductVariantSubscriptionVariables,
+  APITypes.OnDeleteProductVariantSubscription
+>;
 export const onCreateProduct = /* GraphQL */ `subscription OnCreateProduct($filter: ModelSubscriptionProductFilterInput) {
   onCreateProduct(filter: $filter) {
     id
@@ -21,6 +78,10 @@ export const onCreateProduct = /* GraphQL */ `subscription OnCreateProduct($filt
     featuredImage
     otherImages
     published
+    ProductVariants {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -43,6 +104,10 @@ export const onUpdateProduct = /* GraphQL */ `subscription OnUpdateProduct($filt
     featuredImage
     otherImages
     published
+    ProductVariants {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -65,6 +130,10 @@ export const onDeleteProduct = /* GraphQL */ `subscription OnDeleteProduct($filt
     featuredImage
     otherImages
     published
+    ProductVariants {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename

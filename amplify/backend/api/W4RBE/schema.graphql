@@ -1,0 +1,24 @@
+type ProductVariant @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  size: String!
+  price: Float!
+  available: Boolean
+  quantity: Int
+  productID: ID! @index(name: "byProduct")
+}
+
+type Product @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  body: String
+  category: String
+  size: String
+  quantity: Int
+  price: Float
+  taxable: Boolean
+  featuredImage: String!
+  otherImages: [String]
+  published: Boolean!
+  ProductVariants: [ProductVariant] @hasMany(indexName: "byProduct", fields: ["id"])
+}
+ 

@@ -8,6 +8,81 @@ type GeneratedQuery<InputType, OutputType> = string & {
   __generatedQueryOutput: OutputType;
 };
 
+export const getProductVariant = /* GraphQL */ `query GetProductVariant($id: ID!) {
+  getProductVariant(id: $id) {
+    id
+    size
+    price
+    available
+    quantity
+    productID
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetProductVariantQueryVariables,
+  APITypes.GetProductVariantQuery
+>;
+export const listProductVariants = /* GraphQL */ `query ListProductVariants(
+  $filter: ModelProductVariantFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listProductVariants(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      size
+      price
+      available
+      quantity
+      productID
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListProductVariantsQueryVariables,
+  APITypes.ListProductVariantsQuery
+>;
+export const productVariantsByProductID = /* GraphQL */ `query ProductVariantsByProductID(
+  $productID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelProductVariantFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  productVariantsByProductID(
+    productID: $productID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      size
+      price
+      available
+      quantity
+      productID
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ProductVariantsByProductIDQueryVariables,
+  APITypes.ProductVariantsByProductIDQuery
+>;
 export const getProduct = /* GraphQL */ `query GetProduct($id: ID!) {
   getProduct(id: $id) {
     id
@@ -21,6 +96,10 @@ export const getProduct = /* GraphQL */ `query GetProduct($id: ID!) {
     featuredImage
     otherImages
     published
+    ProductVariants {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename

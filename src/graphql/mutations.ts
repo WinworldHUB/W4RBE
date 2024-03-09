@@ -8,6 +8,66 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const createProductVariant = /* GraphQL */ `mutation CreateProductVariant(
+  $input: CreateProductVariantInput!
+  $condition: ModelProductVariantConditionInput
+) {
+  createProductVariant(input: $input, condition: $condition) {
+    id
+    size
+    price
+    available
+    quantity
+    productID
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateProductVariantMutationVariables,
+  APITypes.CreateProductVariantMutation
+>;
+export const updateProductVariant = /* GraphQL */ `mutation UpdateProductVariant(
+  $input: UpdateProductVariantInput!
+  $condition: ModelProductVariantConditionInput
+) {
+  updateProductVariant(input: $input, condition: $condition) {
+    id
+    size
+    price
+    available
+    quantity
+    productID
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateProductVariantMutationVariables,
+  APITypes.UpdateProductVariantMutation
+>;
+export const deleteProductVariant = /* GraphQL */ `mutation DeleteProductVariant(
+  $input: DeleteProductVariantInput!
+  $condition: ModelProductVariantConditionInput
+) {
+  deleteProductVariant(input: $input, condition: $condition) {
+    id
+    size
+    price
+    available
+    quantity
+    productID
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteProductVariantMutationVariables,
+  APITypes.DeleteProductVariantMutation
+>;
 export const createProduct = /* GraphQL */ `mutation CreateProduct(
   $input: CreateProductInput!
   $condition: ModelProductConditionInput
@@ -24,6 +84,10 @@ export const createProduct = /* GraphQL */ `mutation CreateProduct(
     featuredImage
     otherImages
     published
+    ProductVariants {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -49,6 +113,10 @@ export const updateProduct = /* GraphQL */ `mutation UpdateProduct(
     featuredImage
     otherImages
     published
+    ProductVariants {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -74,6 +142,10 @@ export const deleteProduct = /* GraphQL */ `mutation DeleteProduct(
     featuredImage
     otherImages
     published
+    ProductVariants {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
