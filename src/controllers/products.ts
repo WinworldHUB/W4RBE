@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import {
   deleteProductModel,
   getPagedProducts,
-  getProduct1,
+  getProductByID,
   insertProduct,
   updateProduct,
 } from "../models/products-model";
@@ -10,8 +10,16 @@ import { Product } from "../types/product";
 import { forEach } from "lodash";
 import { formatProducts } from "../utils/format-product";
 
-export const getProductById: RequestHandler = (req, res, next) =>
-  res.json(getProduct1(req.params.id));
+export const getProductById: RequestHandler = async (req, res, next) => {
+  try {
+    const product = await getProductByID(req.params.id);
+    res.json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ error: "Failed to fetch product" });
+  }
+};
+
 
 export const getAllProducts: RequestHandler = async (req, res, next) => {
   try {

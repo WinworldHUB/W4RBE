@@ -1,6 +1,6 @@
 import { Product } from "../types/product";
 import { generateClient } from "aws-amplify/api";
-import { listProducts } from "../graphql/queries";
+import { listProducts, getProduct } from "../graphql/queries";
 import { forEach } from "lodash";
 import {deleteProduct} from "../graphql/mutations"
 const awsClient = generateClient();
@@ -34,9 +34,21 @@ export const getPagedProducts = async (): Promise<Product[]> => {
   return products;
 };
 
-export const getProduct1 = (id: string): Product | undefined => {
-  return PRODUCTS.find((p) => p.id === id);
+export const getProductByID = async (id: string) => {
+  try {
+    const foundProduct = await awsClient.graphql({
+      query: getProduct,
+      variables: {
+        id: id
+      }
+    });
+    return foundProduct;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
 };
+
 
 export const insertProduct = (product: Product): Product => {
   PRODUCTS.push(product);
