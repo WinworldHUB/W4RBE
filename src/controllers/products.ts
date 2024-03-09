@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import {
-  deleteProduct,
+  deleteProductModel,
   getPagedProducts,
   getProduct1,
   insertProduct,
@@ -59,5 +59,7 @@ export const modifyProduct: RequestHandler = (req, res, next) => {
 };
 
 export const deleteProductById: RequestHandler = (req, res, next) => {
-  res.json(deleteProduct(req.params.id));
+  
+deleteProductModel(req.params.id)
+  res.json({ message: "Product deleted Successfully" });
 };

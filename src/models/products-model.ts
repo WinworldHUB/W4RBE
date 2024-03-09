@@ -2,7 +2,7 @@ import { Product } from "../types/product";
 import { generateClient } from "aws-amplify/api";
 import { listProducts } from "../graphql/queries";
 import { forEach } from "lodash";
-
+import {deleteProduct} from "../graphql/mutations"
 const awsClient = generateClient();
 
 const PRODUCTS: Product[] = [];
@@ -55,12 +55,13 @@ export const updateProduct = (product: Product): Product | undefined => {
   return product;
 };
 
-export const deleteProduct = (id: string): Product | undefined => {
-  const index = PRODUCTS.findIndex((p) => p.id === id);
-
-  if (index < 0) {
-    return undefined;
-  }
-
-  return PRODUCTS.splice(index, 1)[0];
+export const deleteProductModel = async (id: string) => {
+  await awsClient.graphql({
+    query: deleteProduct,
+    variables: {
+      input: {
+        id: id
+      }
+    }
+  });
 };
