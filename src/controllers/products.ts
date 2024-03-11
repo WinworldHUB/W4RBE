@@ -8,7 +8,7 @@ import {
 } from "../models/products-model";
 import { Product } from "../types/product";
 import { forEach } from "lodash";
-import { formatProducts } from "../utils/format-product";
+import { formatImportedProducts } from "../utils/product-utils";
 
 export const getProductById: RequestHandler = async (req, res, next) => {
   try {
@@ -19,7 +19,6 @@ export const getProductById: RequestHandler = async (req, res, next) => {
     res.status(500).json({ error: "Failed to fetch product" });
   }
 };
-
 
 export const getAllProducts: RequestHandler = async (req, res, next) => {
   try {
@@ -44,7 +43,7 @@ export const addProduct: RequestHandler = (req, res, next) => {
 export const importProducts: RequestHandler = (req, res, next) => {
   const productsData = req.body as Product[];
   if (productsData) {
-    const formattedProducts = formatProducts(productsData);
+    const formattedProducts = formatImportedProducts(productsData);
     forEach(formattedProducts, (product: Product) => {
       if (product && product.id !== "") {
         const foundProduct = {}; //getProduct(product.id);
@@ -67,7 +66,6 @@ export const modifyProduct: RequestHandler = (req, res, next) => {
 };
 
 export const deleteProductById: RequestHandler = (req, res, next) => {
-  
-deleteProductModel(req.params.id)
+  deleteProductModel(req.params.id);
   res.json({ message: "Product deleted Successfully" });
 };
