@@ -8,6 +8,140 @@ type GeneratedQuery<InputType, OutputType> = string & {
   __generatedQueryOutput: OutputType;
 };
 
+export const getDeliveryDetail = /* GraphQL */ `query GetDeliveryDetail($id: ID!) {
+  getDeliveryDetail(id: $id) {
+    id
+    name
+    phone
+    email
+    province
+    city
+    zip
+    country
+    price
+    address1
+    address2
+    memberID
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetDeliveryDetailQueryVariables,
+  APITypes.GetDeliveryDetailQuery
+>;
+export const listDeliveryDetails = /* GraphQL */ `query ListDeliveryDetails(
+  $filter: ModelDeliveryDetailFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDeliveryDetails(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      phone
+      email
+      province
+      city
+      zip
+      country
+      price
+      address1
+      address2
+      memberID
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListDeliveryDetailsQueryVariables,
+  APITypes.ListDeliveryDetailsQuery
+>;
+export const deliveryDetailsByMemberID = /* GraphQL */ `query DeliveryDetailsByMemberID(
+  $memberID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelDeliveryDetailFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  deliveryDetailsByMemberID(
+    memberID: $memberID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      name
+      phone
+      email
+      province
+      city
+      zip
+      country
+      price
+      address1
+      address2
+      memberID
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.DeliveryDetailsByMemberIDQueryVariables,
+  APITypes.DeliveryDetailsByMemberIDQuery
+>;
+export const getMember = /* GraphQL */ `query GetMember($id: ID!) {
+  getMember(id: $id) {
+    id
+    name
+    email
+    phone
+    active
+    MemberDeliveryDetail {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.GetMemberQueryVariables, APITypes.GetMemberQuery>;
+export const listMembers = /* GraphQL */ `query ListMembers(
+  $filter: ModelMemberFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listMembers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      email
+      phone
+      active
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListMembersQueryVariables,
+  APITypes.ListMembersQuery
+>;
 export const getProductVariant = /* GraphQL */ `query GetProductVariant($id: ID!) {
   getProductVariant(id: $id) {
     id

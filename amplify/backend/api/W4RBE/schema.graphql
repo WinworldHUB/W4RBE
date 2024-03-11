@@ -1,3 +1,26 @@
+type DeliveryDetail @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  phone: String!
+  email: String!
+  province: String
+  city: String
+  zip: String!
+  country: String
+  price: String
+  address1: String
+  address2: String
+}
+
+type Member @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String
+  active: Boolean!
+  MemberDeliveryDetail: DeliveryDetail @hasOne
+}
+
 type ProductVariant @model @auth(rules: [{allow: public}]) {
   id: ID!
   size: String!

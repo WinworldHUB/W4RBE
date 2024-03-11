@@ -2,24 +2,36 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateProductVariantInput = {
+export type CreateDeliveryDetailInput = {
   id?: string | null,
-  size: string,
-  price: number,
-  available?: boolean | null,
-  quantity?: number | null,
-  productID: string,
+  name: string,
+  phone: string,
+  email: string,
+  province?: string | null,
+  city?: string | null,
+  zip: string,
+  country?: string | null,
+  price?: string | null,
+  address1?: string | null,
+  address2?: string | null,
+  memberID: string,
 };
 
-export type ModelProductVariantConditionInput = {
-  size?: ModelStringInput | null,
-  price?: ModelFloatInput | null,
-  available?: ModelBooleanInput | null,
-  quantity?: ModelIntInput | null,
-  productID?: ModelIDInput | null,
-  and?: Array< ModelProductVariantConditionInput | null > | null,
-  or?: Array< ModelProductVariantConditionInput | null > | null,
-  not?: ModelProductVariantConditionInput | null,
+export type ModelDeliveryDetailConditionInput = {
+  name?: ModelStringInput | null,
+  phone?: ModelStringInput | null,
+  email?: ModelStringInput | null,
+  province?: ModelStringInput | null,
+  city?: ModelStringInput | null,
+  zip?: ModelStringInput | null,
+  country?: ModelStringInput | null,
+  price?: ModelStringInput | null,
+  address1?: ModelStringInput | null,
+  address2?: ModelStringInput | null,
+  memberID?: ModelIDInput | null,
+  and?: Array< ModelDeliveryDetailConditionInput | null > | null,
+  or?: Array< ModelDeliveryDetailConditionInput | null > | null,
+  not?: ModelDeliveryDetailConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -62,37 +74,6 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type ModelFloatInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
-export type ModelIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type ModelIDInput = {
   ne?: string | null,
   eq?: string | null,
@@ -107,6 +88,142 @@ export type ModelIDInput = {
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
   size?: ModelSizeInput | null,
+};
+
+export type DeliveryDetail = {
+  __typename: "DeliveryDetail",
+  id: string,
+  name: string,
+  phone: string,
+  email: string,
+  province?: string | null,
+  city?: string | null,
+  zip: string,
+  country?: string | null,
+  price?: string | null,
+  address1?: string | null,
+  address2?: string | null,
+  memberID: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateDeliveryDetailInput = {
+  id: string,
+  name?: string | null,
+  phone?: string | null,
+  email?: string | null,
+  province?: string | null,
+  city?: string | null,
+  zip?: string | null,
+  country?: string | null,
+  price?: string | null,
+  address1?: string | null,
+  address2?: string | null,
+  memberID?: string | null,
+};
+
+export type DeleteDeliveryDetailInput = {
+  id: string,
+};
+
+export type CreateMemberInput = {
+  id?: string | null,
+  name: string,
+  email: string,
+  phone?: string | null,
+  active: boolean,
+};
+
+export type ModelMemberConditionInput = {
+  name?: ModelStringInput | null,
+  email?: ModelStringInput | null,
+  phone?: ModelStringInput | null,
+  active?: ModelBooleanInput | null,
+  and?: Array< ModelMemberConditionInput | null > | null,
+  or?: Array< ModelMemberConditionInput | null > | null,
+  not?: ModelMemberConditionInput | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type Member = {
+  __typename: "Member",
+  id: string,
+  name: string,
+  email: string,
+  phone?: string | null,
+  active: boolean,
+  MemberDeliveryDetail?: ModelDeliveryDetailConnection | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type ModelDeliveryDetailConnection = {
+  __typename: "ModelDeliveryDetailConnection",
+  items:  Array<DeliveryDetail | null >,
+  nextToken?: string | null,
+};
+
+export type UpdateMemberInput = {
+  id: string,
+  name?: string | null,
+  email?: string | null,
+  phone?: string | null,
+  active?: boolean | null,
+};
+
+export type DeleteMemberInput = {
+  id: string,
+};
+
+export type CreateProductVariantInput = {
+  id?: string | null,
+  size: string,
+  price: number,
+  available?: boolean | null,
+  quantity?: number | null,
+  productID: string,
+};
+
+export type ModelProductVariantConditionInput = {
+  size?: ModelStringInput | null,
+  price?: ModelFloatInput | null,
+  available?: ModelBooleanInput | null,
+  quantity?: ModelIntInput | null,
+  productID?: ModelIDInput | null,
+  and?: Array< ModelProductVariantConditionInput | null > | null,
+  or?: Array< ModelProductVariantConditionInput | null > | null,
+  not?: ModelProductVariantConditionInput | null,
+};
+
+export type ModelFloatInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
 };
 
 export type ProductVariant = {
@@ -206,6 +323,47 @@ export type DeleteProductInput = {
   id: string,
 };
 
+export type ModelDeliveryDetailFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  phone?: ModelStringInput | null,
+  email?: ModelStringInput | null,
+  province?: ModelStringInput | null,
+  city?: ModelStringInput | null,
+  zip?: ModelStringInput | null,
+  country?: ModelStringInput | null,
+  price?: ModelStringInput | null,
+  address1?: ModelStringInput | null,
+  address2?: ModelStringInput | null,
+  memberID?: ModelIDInput | null,
+  and?: Array< ModelDeliveryDetailFilterInput | null > | null,
+  or?: Array< ModelDeliveryDetailFilterInput | null > | null,
+  not?: ModelDeliveryDetailFilterInput | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
+export type ModelMemberFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  email?: ModelStringInput | null,
+  phone?: ModelStringInput | null,
+  active?: ModelBooleanInput | null,
+  and?: Array< ModelMemberFilterInput | null > | null,
+  or?: Array< ModelMemberFilterInput | null > | null,
+  not?: ModelMemberFilterInput | null,
+};
+
+export type ModelMemberConnection = {
+  __typename: "ModelMemberConnection",
+  items:  Array<Member | null >,
+  nextToken?: string | null,
+};
+
 export type ModelProductVariantFilterInput = {
   id?: ModelIDInput | null,
   size?: ModelStringInput | null,
@@ -217,12 +375,6 @@ export type ModelProductVariantFilterInput = {
   or?: Array< ModelProductVariantFilterInput | null > | null,
   not?: ModelProductVariantFilterInput | null,
 };
-
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
 
 export type ModelProductFilterInput = {
   id?: ModelIDInput | null,
@@ -247,15 +399,21 @@ export type ModelProductConnection = {
   nextToken?: string | null,
 };
 
-export type ModelSubscriptionProductVariantFilterInput = {
+export type ModelSubscriptionDeliveryDetailFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  size?: ModelSubscriptionStringInput | null,
-  price?: ModelSubscriptionFloatInput | null,
-  available?: ModelSubscriptionBooleanInput | null,
-  quantity?: ModelSubscriptionIntInput | null,
-  productID?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionProductVariantFilterInput | null > | null,
-  or?: Array< ModelSubscriptionProductVariantFilterInput | null > | null,
+  name?: ModelSubscriptionStringInput | null,
+  phone?: ModelSubscriptionStringInput | null,
+  email?: ModelSubscriptionStringInput | null,
+  province?: ModelSubscriptionStringInput | null,
+  city?: ModelSubscriptionStringInput | null,
+  zip?: ModelSubscriptionStringInput | null,
+  country?: ModelSubscriptionStringInput | null,
+  price?: ModelSubscriptionStringInput | null,
+  address1?: ModelSubscriptionStringInput | null,
+  address2?: ModelSubscriptionStringInput | null,
+  memberID?: ModelSubscriptionIDInput | null,
+  and?: Array< ModelSubscriptionDeliveryDetailFilterInput | null > | null,
+  or?: Array< ModelSubscriptionDeliveryDetailFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -288,6 +446,32 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionMemberFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  email?: ModelSubscriptionStringInput | null,
+  phone?: ModelSubscriptionStringInput | null,
+  active?: ModelSubscriptionBooleanInput | null,
+  and?: Array< ModelSubscriptionMemberFilterInput | null > | null,
+  or?: Array< ModelSubscriptionMemberFilterInput | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+};
+
+export type ModelSubscriptionProductVariantFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  size?: ModelSubscriptionStringInput | null,
+  price?: ModelSubscriptionFloatInput | null,
+  available?: ModelSubscriptionBooleanInput | null,
+  quantity?: ModelSubscriptionIntInput | null,
+  productID?: ModelSubscriptionIDInput | null,
+  and?: Array< ModelSubscriptionProductVariantFilterInput | null > | null,
+  or?: Array< ModelSubscriptionProductVariantFilterInput | null > | null,
+};
+
 export type ModelSubscriptionFloatInput = {
   ne?: number | null,
   eq?: number | null,
@@ -298,11 +482,6 @@ export type ModelSubscriptionFloatInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
-};
-
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
 };
 
 export type ModelSubscriptionIntInput = {
@@ -331,6 +510,147 @@ export type ModelSubscriptionProductFilterInput = {
   published?: ModelSubscriptionBooleanInput | null,
   and?: Array< ModelSubscriptionProductFilterInput | null > | null,
   or?: Array< ModelSubscriptionProductFilterInput | null > | null,
+};
+
+export type CreateDeliveryDetailMutationVariables = {
+  input: CreateDeliveryDetailInput,
+  condition?: ModelDeliveryDetailConditionInput | null,
+};
+
+export type CreateDeliveryDetailMutation = {
+  createDeliveryDetail?:  {
+    __typename: "DeliveryDetail",
+    id: string,
+    name: string,
+    phone: string,
+    email: string,
+    province?: string | null,
+    city?: string | null,
+    zip: string,
+    country?: string | null,
+    price?: string | null,
+    address1?: string | null,
+    address2?: string | null,
+    memberID: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateDeliveryDetailMutationVariables = {
+  input: UpdateDeliveryDetailInput,
+  condition?: ModelDeliveryDetailConditionInput | null,
+};
+
+export type UpdateDeliveryDetailMutation = {
+  updateDeliveryDetail?:  {
+    __typename: "DeliveryDetail",
+    id: string,
+    name: string,
+    phone: string,
+    email: string,
+    province?: string | null,
+    city?: string | null,
+    zip: string,
+    country?: string | null,
+    price?: string | null,
+    address1?: string | null,
+    address2?: string | null,
+    memberID: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteDeliveryDetailMutationVariables = {
+  input: DeleteDeliveryDetailInput,
+  condition?: ModelDeliveryDetailConditionInput | null,
+};
+
+export type DeleteDeliveryDetailMutation = {
+  deleteDeliveryDetail?:  {
+    __typename: "DeliveryDetail",
+    id: string,
+    name: string,
+    phone: string,
+    email: string,
+    province?: string | null,
+    city?: string | null,
+    zip: string,
+    country?: string | null,
+    price?: string | null,
+    address1?: string | null,
+    address2?: string | null,
+    memberID: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateMemberMutationVariables = {
+  input: CreateMemberInput,
+  condition?: ModelMemberConditionInput | null,
+};
+
+export type CreateMemberMutation = {
+  createMember?:  {
+    __typename: "Member",
+    id: string,
+    name: string,
+    email: string,
+    phone?: string | null,
+    active: boolean,
+    MemberDeliveryDetail?:  {
+      __typename: "ModelDeliveryDetailConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateMemberMutationVariables = {
+  input: UpdateMemberInput,
+  condition?: ModelMemberConditionInput | null,
+};
+
+export type UpdateMemberMutation = {
+  updateMember?:  {
+    __typename: "Member",
+    id: string,
+    name: string,
+    email: string,
+    phone?: string | null,
+    active: boolean,
+    MemberDeliveryDetail?:  {
+      __typename: "ModelDeliveryDetailConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteMemberMutationVariables = {
+  input: DeleteMemberInput,
+  condition?: ModelMemberConditionInput | null,
+};
+
+export type DeleteMemberMutation = {
+  deleteMember?:  {
+    __typename: "Member",
+    id: string,
+    name: string,
+    email: string,
+    phone?: string | null,
+    active: boolean,
+    MemberDeliveryDetail?:  {
+      __typename: "ModelDeliveryDetailConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateProductVariantMutationVariables = {
@@ -474,6 +794,136 @@ export type DeleteProductMutation = {
   } | null,
 };
 
+export type GetDeliveryDetailQueryVariables = {
+  id: string,
+};
+
+export type GetDeliveryDetailQuery = {
+  getDeliveryDetail?:  {
+    __typename: "DeliveryDetail",
+    id: string,
+    name: string,
+    phone: string,
+    email: string,
+    province?: string | null,
+    city?: string | null,
+    zip: string,
+    country?: string | null,
+    price?: string | null,
+    address1?: string | null,
+    address2?: string | null,
+    memberID: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListDeliveryDetailsQueryVariables = {
+  filter?: ModelDeliveryDetailFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListDeliveryDetailsQuery = {
+  listDeliveryDetails?:  {
+    __typename: "ModelDeliveryDetailConnection",
+    items:  Array< {
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      memberID: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type DeliveryDetailsByMemberIDQueryVariables = {
+  memberID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelDeliveryDetailFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type DeliveryDetailsByMemberIDQuery = {
+  deliveryDetailsByMemberID?:  {
+    __typename: "ModelDeliveryDetailConnection",
+    items:  Array< {
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      memberID: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetMemberQueryVariables = {
+  id: string,
+};
+
+export type GetMemberQuery = {
+  getMember?:  {
+    __typename: "Member",
+    id: string,
+    name: string,
+    email: string,
+    phone?: string | null,
+    active: boolean,
+    MemberDeliveryDetail?:  {
+      __typename: "ModelDeliveryDetailConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListMembersQueryVariables = {
+  filter?: ModelMemberFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListMembersQuery = {
+  listMembers?:  {
+    __typename: "ModelMemberConnection",
+    items:  Array< {
+      __typename: "Member",
+      id: string,
+      name: string,
+      email: string,
+      phone?: string | null,
+      active: boolean,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetProductVariantQueryVariables = {
   id: string,
 };
@@ -595,6 +1045,141 @@ export type ListProductsQuery = {
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
+  } | null,
+};
+
+export type OnCreateDeliveryDetailSubscriptionVariables = {
+  filter?: ModelSubscriptionDeliveryDetailFilterInput | null,
+};
+
+export type OnCreateDeliveryDetailSubscription = {
+  onCreateDeliveryDetail?:  {
+    __typename: "DeliveryDetail",
+    id: string,
+    name: string,
+    phone: string,
+    email: string,
+    province?: string | null,
+    city?: string | null,
+    zip: string,
+    country?: string | null,
+    price?: string | null,
+    address1?: string | null,
+    address2?: string | null,
+    memberID: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateDeliveryDetailSubscriptionVariables = {
+  filter?: ModelSubscriptionDeliveryDetailFilterInput | null,
+};
+
+export type OnUpdateDeliveryDetailSubscription = {
+  onUpdateDeliveryDetail?:  {
+    __typename: "DeliveryDetail",
+    id: string,
+    name: string,
+    phone: string,
+    email: string,
+    province?: string | null,
+    city?: string | null,
+    zip: string,
+    country?: string | null,
+    price?: string | null,
+    address1?: string | null,
+    address2?: string | null,
+    memberID: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteDeliveryDetailSubscriptionVariables = {
+  filter?: ModelSubscriptionDeliveryDetailFilterInput | null,
+};
+
+export type OnDeleteDeliveryDetailSubscription = {
+  onDeleteDeliveryDetail?:  {
+    __typename: "DeliveryDetail",
+    id: string,
+    name: string,
+    phone: string,
+    email: string,
+    province?: string | null,
+    city?: string | null,
+    zip: string,
+    country?: string | null,
+    price?: string | null,
+    address1?: string | null,
+    address2?: string | null,
+    memberID: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateMemberSubscriptionVariables = {
+  filter?: ModelSubscriptionMemberFilterInput | null,
+};
+
+export type OnCreateMemberSubscription = {
+  onCreateMember?:  {
+    __typename: "Member",
+    id: string,
+    name: string,
+    email: string,
+    phone?: string | null,
+    active: boolean,
+    MemberDeliveryDetail?:  {
+      __typename: "ModelDeliveryDetailConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateMemberSubscriptionVariables = {
+  filter?: ModelSubscriptionMemberFilterInput | null,
+};
+
+export type OnUpdateMemberSubscription = {
+  onUpdateMember?:  {
+    __typename: "Member",
+    id: string,
+    name: string,
+    email: string,
+    phone?: string | null,
+    active: boolean,
+    MemberDeliveryDetail?:  {
+      __typename: "ModelDeliveryDetailConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteMemberSubscriptionVariables = {
+  filter?: ModelSubscriptionMemberFilterInput | null,
+};
+
+export type OnDeleteMemberSubscription = {
+  onDeleteMember?:  {
+    __typename: "Member",
+    id: string,
+    name: string,
+    email: string,
+    phone?: string | null,
+    active: boolean,
+    MemberDeliveryDetail?:  {
+      __typename: "ModelDeliveryDetailConnection",
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
