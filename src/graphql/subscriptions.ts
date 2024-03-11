@@ -13,13 +13,7 @@ export const onCreateProduct = /* GraphQL */ `subscription OnCreateProduct($filt
     id
     title
     body
-    variants {
-      size
-      available
-      quantity
-      price
-      __typename
-    }
+    variants
     quantity
     category
     price
@@ -27,6 +21,8 @@ export const onCreateProduct = /* GraphQL */ `subscription OnCreateProduct($filt
     published
     featuredImage
     otherImages
+    size
+    available
     createdAt
     updatedAt
     __typename
@@ -41,13 +37,7 @@ export const onUpdateProduct = /* GraphQL */ `subscription OnUpdateProduct($filt
     id
     title
     body
-    variants {
-      size
-      available
-      quantity
-      price
-      __typename
-    }
+    variants
     quantity
     category
     price
@@ -55,6 +45,8 @@ export const onUpdateProduct = /* GraphQL */ `subscription OnUpdateProduct($filt
     published
     featuredImage
     otherImages
+    size
+    available
     createdAt
     updatedAt
     __typename
@@ -69,13 +61,7 @@ export const onDeleteProduct = /* GraphQL */ `subscription OnDeleteProduct($filt
     id
     title
     body
-    variants {
-      size
-      available
-      quantity
-      price
-      __typename
-    }
+    variants
     quantity
     category
     price
@@ -83,6 +69,8 @@ export const onDeleteProduct = /* GraphQL */ `subscription OnDeleteProduct($filt
     published
     featuredImage
     otherImages
+    size
+    available
     createdAt
     updatedAt
     __typename
@@ -92,78 +80,6 @@ export const onDeleteProduct = /* GraphQL */ `subscription OnDeleteProduct($filt
   APITypes.OnDeleteProductSubscriptionVariables,
   APITypes.OnDeleteProductSubscription
 >;
-export const onCreateDeliveryDetail = /* GraphQL */ `subscription OnCreateDeliveryDetail(
-  $filter: ModelSubscriptionDeliveryDetailFilterInput
-) {
-  onCreateDeliveryDetail(filter: $filter) {
-    id
-    name
-    phone
-    email
-    province
-    city
-    zip
-    country
-    price
-    address1
-    address2
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateDeliveryDetailSubscriptionVariables,
-  APITypes.OnCreateDeliveryDetailSubscription
->;
-export const onUpdateDeliveryDetail = /* GraphQL */ `subscription OnUpdateDeliveryDetail(
-  $filter: ModelSubscriptionDeliveryDetailFilterInput
-) {
-  onUpdateDeliveryDetail(filter: $filter) {
-    id
-    name
-    phone
-    email
-    province
-    city
-    zip
-    country
-    price
-    address1
-    address2
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateDeliveryDetailSubscriptionVariables,
-  APITypes.OnUpdateDeliveryDetailSubscription
->;
-export const onDeleteDeliveryDetail = /* GraphQL */ `subscription OnDeleteDeliveryDetail(
-  $filter: ModelSubscriptionDeliveryDetailFilterInput
-) {
-  onDeleteDeliveryDetail(filter: $filter) {
-    id
-    name
-    phone
-    email
-    province
-    city
-    zip
-    country
-    price
-    address1
-    address2
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteDeliveryDetailSubscriptionVariables,
-  APITypes.OnDeleteDeliveryDetailSubscription
->;
 export const onCreateMember = /* GraphQL */ `subscription OnCreateMember($filter: ModelSubscriptionMemberFilterInput) {
   onCreateMember(filter: $filter) {
     id
@@ -171,25 +87,15 @@ export const onCreateMember = /* GraphQL */ `subscription OnCreateMember($filter
     email
     phone
     active
-    MemberDeliveryDetail {
-      id
-      name
-      phone
-      email
-      province
-      city
-      zip
-      country
-      price
-      address1
-      address2
-      createdAt
-      updatedAt
-      __typename
-    }
+    province
+    city
+    zip
+    country
+    price
+    address1
+    address2
     createdAt
     updatedAt
-    memberMemberDeliveryDetailId
     __typename
   }
 }
@@ -204,25 +110,15 @@ export const onUpdateMember = /* GraphQL */ `subscription OnUpdateMember($filter
     email
     phone
     active
-    MemberDeliveryDetail {
-      id
-      name
-      phone
-      email
-      province
-      city
-      zip
-      country
-      price
-      address1
-      address2
-      createdAt
-      updatedAt
-      __typename
-    }
+    province
+    city
+    zip
+    country
+    price
+    address1
+    address2
     createdAt
     updatedAt
-    memberMemberDeliveryDetailId
     __typename
   }
 }
@@ -237,25 +133,15 @@ export const onDeleteMember = /* GraphQL */ `subscription OnDeleteMember($filter
     email
     phone
     active
-    MemberDeliveryDetail {
-      id
-      name
-      phone
-      email
-      province
-      city
-      zip
-      country
-      price
-      address1
-      address2
-      createdAt
-      updatedAt
-      __typename
-    }
+    province
+    city
+    zip
+    country
+    price
+    address1
+    address2
     createdAt
     updatedAt
-    memberMemberDeliveryDetailId
     __typename
   }
 }

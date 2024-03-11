@@ -1,36 +1,17 @@
-type Variant {
-  size: String
-  available: Boolean
-  quantity: Int
-  price: Float
-}
-
 type Product @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String
   body: String
-  variants: [Variant]
+  variants: String
   quantity: Int
   category: String
   price: Float
   taxable: Boolean
   published: Boolean
   featuredImage: String
-  otherImages: AWSJSON
-}
-
-type DeliveryDetail @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  name: String!
-  phone: String!
-  email: String!
-  province: String
-  city: String
-  zip: String!
-  country: String
-  price: String
-  address1: String
-  address2: String
+  otherImages: [String]
+  size: String
+  available: Boolean
 }
 
 type Member @model @auth(rules: [{allow: public}]) {
@@ -39,6 +20,12 @@ type Member @model @auth(rules: [{allow: public}]) {
   email: String!
   phone: String
   active: Boolean!
-  MemberDeliveryDetail: DeliveryDetail @hasOne
+  province: String
+  city: String
+  zip: String
+  country: String
+  price: String
+  address1: String
+  address2: String
 }
  

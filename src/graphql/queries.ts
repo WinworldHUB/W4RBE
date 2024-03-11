@@ -13,13 +13,7 @@ export const getProduct = /* GraphQL */ `query GetProduct($id: ID!) {
     id
     title
     body
-    variants {
-      size
-      available
-      quantity
-      price
-      __typename
-    }
+    variants
     quantity
     category
     price
@@ -27,6 +21,8 @@ export const getProduct = /* GraphQL */ `query GetProduct($id: ID!) {
     published
     featuredImage
     otherImages
+    size
+    available
     createdAt
     updatedAt
     __typename
@@ -46,6 +42,7 @@ export const listProducts = /* GraphQL */ `query ListProducts(
       id
       title
       body
+      variants
       quantity
       category
       price
@@ -53,6 +50,8 @@ export const listProducts = /* GraphQL */ `query ListProducts(
       published
       featuredImage
       otherImages
+      size
+      available
       createdAt
       updatedAt
       __typename
@@ -65,13 +64,13 @@ export const listProducts = /* GraphQL */ `query ListProducts(
   APITypes.ListProductsQueryVariables,
   APITypes.ListProductsQuery
 >;
-export const getDeliveryDetail =
-  /* GraphQL */ `query GetDeliveryDetail($id: ID!) {
-  getDeliveryDetail(id: $id) {
+export const getMember = /* GraphQL */ `query GetMember($id: ID!) {
+  getMember(id: $id) {
     id
     name
-    phone
     email
+    phone
+    active
     province
     city
     zip
@@ -81,69 +80,6 @@ export const getDeliveryDetail =
     address2
     createdAt
     updatedAt
-    __typename
-  }
-}
-` as GeneratedQuery<
-    APITypes.GetDeliveryDetailQueryVariables,
-    APITypes.GetDeliveryDetailQuery
-  >;
-export const listDeliveryDetails = /* GraphQL */ `query ListDeliveryDetails(
-  $filter: ModelDeliveryDetailFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listDeliveryDetails(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-      phone
-      email
-      province
-      city
-      zip
-      country
-      price
-      address1
-      address2
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.ListDeliveryDetailsQueryVariables,
-  APITypes.ListDeliveryDetailsQuery
->;
-export const getMember = /* GraphQL */ `query GetMember($id: ID!) {
-  getMember(id: $id) {
-    id
-    name
-    email
-    phone
-    active
-    MemberDeliveryDetail {
-      id
-      name
-      phone
-      email
-      province
-      city
-      zip
-      country
-      price
-      address1
-      address2
-      createdAt
-      updatedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    memberMemberDeliveryDetailId
     __typename
   }
 }
@@ -160,9 +96,15 @@ export const listMembers = /* GraphQL */ `query ListMembers(
       email
       phone
       active
+      province
+      city
+      zip
+      country
+      price
+      address1
+      address2
       createdAt
       updatedAt
-      memberMemberDeliveryDetailId
       __typename
     }
     nextToken

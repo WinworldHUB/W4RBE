@@ -16,13 +16,7 @@ export const createProduct = /* GraphQL */ `mutation CreateProduct(
     id
     title
     body
-    variants {
-      size
-      available
-      quantity
-      price
-      __typename
-    }
+    variants
     quantity
     category
     price
@@ -30,6 +24,8 @@ export const createProduct = /* GraphQL */ `mutation CreateProduct(
     published
     featuredImage
     otherImages
+    size
+    available
     createdAt
     updatedAt
     __typename
@@ -47,13 +43,7 @@ export const updateProduct = /* GraphQL */ `mutation UpdateProduct(
     id
     title
     body
-    variants {
-      size
-      available
-      quantity
-      price
-      __typename
-    }
+    variants
     quantity
     category
     price
@@ -61,6 +51,8 @@ export const updateProduct = /* GraphQL */ `mutation UpdateProduct(
     published
     featuredImage
     otherImages
+    size
+    available
     createdAt
     updatedAt
     __typename
@@ -78,13 +70,7 @@ export const deleteProduct = /* GraphQL */ `mutation DeleteProduct(
     id
     title
     body
-    variants {
-      size
-      available
-      quantity
-      price
-      __typename
-    }
+    variants
     quantity
     category
     price
@@ -92,6 +78,8 @@ export const deleteProduct = /* GraphQL */ `mutation DeleteProduct(
     published
     featuredImage
     otherImages
+    size
+    available
     createdAt
     updatedAt
     __typename
@@ -100,81 +88,6 @@ export const deleteProduct = /* GraphQL */ `mutation DeleteProduct(
 ` as GeneratedMutation<
   APITypes.DeleteProductMutationVariables,
   APITypes.DeleteProductMutation
->;
-export const createDeliveryDetail = /* GraphQL */ `mutation CreateDeliveryDetail(
-  $input: CreateDeliveryDetailInput!
-  $condition: ModelDeliveryDetailConditionInput
-) {
-  createDeliveryDetail(input: $input, condition: $condition) {
-    id
-    name
-    phone
-    email
-    province
-    city
-    zip
-    country
-    price
-    address1
-    address2
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.CreateDeliveryDetailMutationVariables,
-  APITypes.CreateDeliveryDetailMutation
->;
-export const updateDeliveryDetail = /* GraphQL */ `mutation UpdateDeliveryDetail(
-  $input: UpdateDeliveryDetailInput!
-  $condition: ModelDeliveryDetailConditionInput
-) {
-  updateDeliveryDetail(input: $input, condition: $condition) {
-    id
-    name
-    phone
-    email
-    province
-    city
-    zip
-    country
-    price
-    address1
-    address2
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.UpdateDeliveryDetailMutationVariables,
-  APITypes.UpdateDeliveryDetailMutation
->;
-export const deleteDeliveryDetail = /* GraphQL */ `mutation DeleteDeliveryDetail(
-  $input: DeleteDeliveryDetailInput!
-  $condition: ModelDeliveryDetailConditionInput
-) {
-  deleteDeliveryDetail(input: $input, condition: $condition) {
-    id
-    name
-    phone
-    email
-    province
-    city
-    zip
-    country
-    price
-    address1
-    address2
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.DeleteDeliveryDetailMutationVariables,
-  APITypes.DeleteDeliveryDetailMutation
 >;
 export const createMember = /* GraphQL */ `mutation CreateMember(
   $input: CreateMemberInput!
@@ -186,25 +99,15 @@ export const createMember = /* GraphQL */ `mutation CreateMember(
     email
     phone
     active
-    MemberDeliveryDetail {
-      id
-      name
-      phone
-      email
-      province
-      city
-      zip
-      country
-      price
-      address1
-      address2
-      createdAt
-      updatedAt
-      __typename
-    }
+    province
+    city
+    zip
+    country
+    price
+    address1
+    address2
     createdAt
     updatedAt
-    memberMemberDeliveryDetailId
     __typename
   }
 }
@@ -222,25 +125,15 @@ export const updateMember = /* GraphQL */ `mutation UpdateMember(
     email
     phone
     active
-    MemberDeliveryDetail {
-      id
-      name
-      phone
-      email
-      province
-      city
-      zip
-      country
-      price
-      address1
-      address2
-      createdAt
-      updatedAt
-      __typename
-    }
+    province
+    city
+    zip
+    country
+    price
+    address1
+    address2
     createdAt
     updatedAt
-    memberMemberDeliveryDetailId
     __typename
   }
 }
@@ -258,25 +151,15 @@ export const deleteMember = /* GraphQL */ `mutation DeleteMember(
     email
     phone
     active
-    MemberDeliveryDetail {
-      id
-      name
-      phone
-      email
-      province
-      city
-      zip
-      country
-      price
-      address1
-      address2
-      createdAt
-      updatedAt
-      __typename
-    }
+    province
+    city
+    zip
+    country
+    price
+    address1
+    address2
     createdAt
     updatedAt
-    memberMemberDeliveryDetailId
     __typename
   }
 }

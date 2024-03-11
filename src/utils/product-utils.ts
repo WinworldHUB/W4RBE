@@ -1,8 +1,69 @@
 import { forEach } from "lodash";
-import { Product } from "../types/product";
 import { GraphQLResult } from "aws-amplify/api";
+import { CreateProductInput, Product, UpdateProductInput } from "../awsApis";
 
-export function formatImportedProducts(productsData: Product[]) {
+export const dbToProduct = (dbProduct: unknown): Product => {
+  return {
+    id: dbProduct["id"],
+    body: dbProduct["body"],
+    category: dbProduct["category"],
+    published: dbProduct["published"],
+    title: dbProduct["title"],
+    variants:
+      dbProduct["variants"] !== null ? JSON.parse(dbProduct["variants"]) : [],
+    price: dbProduct["price"],
+    taxable: dbProduct["taxable"],
+    featuredImage: dbProduct["featuredImage"],
+    otherImages: dbProduct["otherImages"],
+    size: dbProduct["size"],
+    quantity: dbProduct["quantity"],
+  } as Product;
+};
+
+export const dbToProducts = (allProducts: unknown[]): Product[] => {
+  const products: Product[] = [];
+
+  forEach(allProducts, (product) => {
+    products.push(dbToProduct(product));
+  });
+
+  return products;
+};
+
+export const productToDB = (product: Product): CreateProductInput => {
+  return {
+    body: product.body,
+    category: product.category,
+    published: product.published,
+    title: product.title,
+    variants: JSON.stringify(product.variants),
+    price: product.price,
+    taxable: product.taxable,
+    featuredImage: product.featuredImage,
+    otherImages: product.otherImages,
+    size: product.size,
+    quantity: product.quantity,
+  };
+};
+
+export const productToDBForUpdate = (product: Product): UpdateProductInput => {
+  return {
+    id: product.id,
+    body: product.body,
+    category: product.category,
+    published: product.published,
+    title: product.title,
+    variants: JSON.stringify(product.variants),
+    price: product.price,
+    taxable: product.taxable,
+    featuredImage: product.featuredImage,
+    otherImages: product.otherImages,
+    size: product.size,
+    quantity: product.quantity,
+  };
+};
+
+export const formatImportedProducts = (productsData: Product[]) => {
   const formattedProducts = {};
 
   const processedProductIds = new Set();
@@ -66,7 +127,7 @@ export function formatImportedProducts(productsData: Product[]) {
   });
 
   return Object.values(formattedProducts);
-}
+};
 
 function stripHtml(html: string) {
   if (!html) return "";
