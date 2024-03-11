@@ -8,6 +8,99 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const createProduct = /* GraphQL */ `mutation CreateProduct(
+  $input: CreateProductInput!
+  $condition: ModelProductConditionInput
+) {
+  createProduct(input: $input, condition: $condition) {
+    id
+    title
+    body
+    variants {
+      size
+      available
+      quantity
+      price
+      __typename
+    }
+    quantity
+    category
+    price
+    taxable
+    published
+    featuredImage
+    otherImages
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateProductMutationVariables,
+  APITypes.CreateProductMutation
+>;
+export const updateProduct = /* GraphQL */ `mutation UpdateProduct(
+  $input: UpdateProductInput!
+  $condition: ModelProductConditionInput
+) {
+  updateProduct(input: $input, condition: $condition) {
+    id
+    title
+    body
+    variants {
+      size
+      available
+      quantity
+      price
+      __typename
+    }
+    quantity
+    category
+    price
+    taxable
+    published
+    featuredImage
+    otherImages
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateProductMutationVariables,
+  APITypes.UpdateProductMutation
+>;
+export const deleteProduct = /* GraphQL */ `mutation DeleteProduct(
+  $input: DeleteProductInput!
+  $condition: ModelProductConditionInput
+) {
+  deleteProduct(input: $input, condition: $condition) {
+    id
+    title
+    body
+    variants {
+      size
+      available
+      quantity
+      price
+      __typename
+    }
+    quantity
+    category
+    price
+    taxable
+    published
+    featuredImage
+    otherImages
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteProductMutationVariables,
+  APITypes.DeleteProductMutation
+>;
 export const createDeliveryDetail = /* GraphQL */ `mutation CreateDeliveryDetail(
   $input: CreateDeliveryDetailInput!
   $condition: ModelDeliveryDetailConditionInput
@@ -24,7 +117,6 @@ export const createDeliveryDetail = /* GraphQL */ `mutation CreateDeliveryDetail
     price
     address1
     address2
-    memberID
     createdAt
     updatedAt
     __typename
@@ -50,7 +142,6 @@ export const updateDeliveryDetail = /* GraphQL */ `mutation UpdateDeliveryDetail
     price
     address1
     address2
-    memberID
     createdAt
     updatedAt
     __typename
@@ -76,7 +167,6 @@ export const deleteDeliveryDetail = /* GraphQL */ `mutation DeleteDeliveryDetail
     price
     address1
     address2
-    memberID
     createdAt
     updatedAt
     __typename
@@ -97,11 +187,24 @@ export const createMember = /* GraphQL */ `mutation CreateMember(
     phone
     active
     MemberDeliveryDetail {
-      nextToken
+      id
+      name
+      phone
+      email
+      province
+      city
+      zip
+      country
+      price
+      address1
+      address2
+      createdAt
+      updatedAt
       __typename
     }
     createdAt
     updatedAt
+    memberMemberDeliveryDetailId
     __typename
   }
 }
@@ -120,11 +223,24 @@ export const updateMember = /* GraphQL */ `mutation UpdateMember(
     phone
     active
     MemberDeliveryDetail {
-      nextToken
+      id
+      name
+      phone
+      email
+      province
+      city
+      zip
+      country
+      price
+      address1
+      address2
+      createdAt
+      updatedAt
       __typename
     }
     createdAt
     updatedAt
+    memberMemberDeliveryDetailId
     __typename
   }
 }
@@ -143,162 +259,28 @@ export const deleteMember = /* GraphQL */ `mutation DeleteMember(
     phone
     active
     MemberDeliveryDetail {
-      nextToken
+      id
+      name
+      phone
+      email
+      province
+      city
+      zip
+      country
+      price
+      address1
+      address2
+      createdAt
+      updatedAt
       __typename
     }
     createdAt
     updatedAt
+    memberMemberDeliveryDetailId
     __typename
   }
 }
 ` as GeneratedMutation<
   APITypes.DeleteMemberMutationVariables,
   APITypes.DeleteMemberMutation
->;
-export const createProductVariant = /* GraphQL */ `mutation CreateProductVariant(
-  $input: CreateProductVariantInput!
-  $condition: ModelProductVariantConditionInput
-) {
-  createProductVariant(input: $input, condition: $condition) {
-    id
-    size
-    price
-    available
-    quantity
-    productID
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.CreateProductVariantMutationVariables,
-  APITypes.CreateProductVariantMutation
->;
-export const updateProductVariant = /* GraphQL */ `mutation UpdateProductVariant(
-  $input: UpdateProductVariantInput!
-  $condition: ModelProductVariantConditionInput
-) {
-  updateProductVariant(input: $input, condition: $condition) {
-    id
-    size
-    price
-    available
-    quantity
-    productID
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.UpdateProductVariantMutationVariables,
-  APITypes.UpdateProductVariantMutation
->;
-export const deleteProductVariant = /* GraphQL */ `mutation DeleteProductVariant(
-  $input: DeleteProductVariantInput!
-  $condition: ModelProductVariantConditionInput
-) {
-  deleteProductVariant(input: $input, condition: $condition) {
-    id
-    size
-    price
-    available
-    quantity
-    productID
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.DeleteProductVariantMutationVariables,
-  APITypes.DeleteProductVariantMutation
->;
-export const createProduct = /* GraphQL */ `mutation CreateProduct(
-  $input: CreateProductInput!
-  $condition: ModelProductConditionInput
-) {
-  createProduct(input: $input, condition: $condition) {
-    id
-    title
-    body
-    category
-    size
-    quantity
-    price
-    taxable
-    featuredImage
-    otherImages
-    published
-    ProductVariants {
-      nextToken
-      __typename
-    }
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.CreateProductMutationVariables,
-  APITypes.CreateProductMutation
->;
-export const updateProduct = /* GraphQL */ `mutation UpdateProduct(
-  $input: UpdateProductInput!
-  $condition: ModelProductConditionInput
-) {
-  updateProduct(input: $input, condition: $condition) {
-    id
-    title
-    body
-    category
-    size
-    quantity
-    price
-    taxable
-    featuredImage
-    otherImages
-    published
-    ProductVariants {
-      nextToken
-      __typename
-    }
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.UpdateProductMutationVariables,
-  APITypes.UpdateProductMutation
->;
-export const deleteProduct = /* GraphQL */ `mutation DeleteProduct(
-  $input: DeleteProductInput!
-  $condition: ModelProductConditionInput
-) {
-  deleteProduct(input: $input, condition: $condition) {
-    id
-    title
-    body
-    category
-    size
-    quantity
-    price
-    taxable
-    featuredImage
-    otherImages
-    published
-    ProductVariants {
-      nextToken
-      __typename
-    }
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.DeleteProductMutationVariables,
-  APITypes.DeleteProductMutation
 >;

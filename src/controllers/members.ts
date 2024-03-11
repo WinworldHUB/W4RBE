@@ -1,11 +1,4 @@
 import { RequestHandler } from "express";
-import {
-  deleteMember,
-  getMember,
-  getMembers,
-  insertMember,
-  updateMember,
-} from "../models/members-model";
 
 import { Member } from "../types/member";
 import validateMemberData from "../utils/validate-user";
@@ -13,11 +6,10 @@ import { forEach } from "lodash";
 
 export const getMemberById: RequestHandler = (req, res, next) => {
   const memberEmail = req.params.email;
-  res.json(getMember(memberEmail));
+  //res.json(getMember(memberEmail));
 };
 
-export const getAllMembers: RequestHandler = (req, res, next) =>
-  res.json(getMembers());
+export const getAllMembers: RequestHandler = (req, res, next) => res.json();
 
 export const addMember: RequestHandler = (req, res, next) => {
   const jsonData: Member = req.body;
@@ -34,10 +26,10 @@ export const importMembers: RequestHandler = (req, res, next) => {
 };
 
 export const modifyMember: RequestHandler = (req, res, next) => {
-  res.json(updateMember(req.body as Member));
+  res.json();
 };
 
 export const deleteMemberById: RequestHandler = (req, res, next) => {
   const memberEmail = req.params.email;
-  res.json(deleteMember(memberEmail));
+  res.json();
 };

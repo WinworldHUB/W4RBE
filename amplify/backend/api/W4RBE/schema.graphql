@@ -1,3 +1,24 @@
+type Variant {
+  size: String
+  available: Boolean
+  quantity: Int
+  price: Float
+}
+
+type Product @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  body: String
+  variants: [Variant]
+  quantity: Int
+  category: String
+  price: Float
+  taxable: Boolean
+  published: Boolean
+  featuredImage: String
+  otherImages: AWSJSON
+}
+
 type DeliveryDetail @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
@@ -19,29 +40,5 @@ type Member @model @auth(rules: [{allow: public}]) {
   phone: String
   active: Boolean!
   MemberDeliveryDetail: DeliveryDetail @hasOne
-}
-
-type ProductVariant @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  size: String!
-  price: Float!
-  available: Boolean
-  quantity: Int
-  productID: ID! @index(name: "byProduct")
-}
-
-type Product @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  title: String!
-  body: String
-  category: String
-  size: String
-  quantity: Int
-  price: Float
-  taxable: Boolean
-  featuredImage: String!
-  otherImages: [String]
-  published: Boolean!
-  ProductVariants: [ProductVariant] @hasMany(indexName: "byProduct", fields: ["id"])
 }
  

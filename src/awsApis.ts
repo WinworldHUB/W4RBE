@@ -2,36 +2,40 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateDeliveryDetailInput = {
+export type CreateProductInput = {
   id?: string | null,
-  name: string,
-  phone: string,
-  email: string,
-  province?: string | null,
-  city?: string | null,
-  zip: string,
-  country?: string | null,
-  price?: string | null,
-  address1?: string | null,
-  address2?: string | null,
-  memberID: string,
+  title?: string | null,
+  body?: string | null,
+  variants?: Array< VariantInput | null > | null,
+  quantity?: number | null,
+  category?: string | null,
+  price?: number | null,
+  taxable?: boolean | null,
+  published?: boolean | null,
+  featuredImage?: string | null,
+  otherImages?: string | null,
 };
 
-export type ModelDeliveryDetailConditionInput = {
-  name?: ModelStringInput | null,
-  phone?: ModelStringInput | null,
-  email?: ModelStringInput | null,
-  province?: ModelStringInput | null,
-  city?: ModelStringInput | null,
-  zip?: ModelStringInput | null,
-  country?: ModelStringInput | null,
-  price?: ModelStringInput | null,
-  address1?: ModelStringInput | null,
-  address2?: ModelStringInput | null,
-  memberID?: ModelIDInput | null,
-  and?: Array< ModelDeliveryDetailConditionInput | null > | null,
-  or?: Array< ModelDeliveryDetailConditionInput | null > | null,
-  not?: ModelDeliveryDetailConditionInput | null,
+export type VariantInput = {
+  size?: string | null,
+  available?: boolean | null,
+  quantity?: number | null,
+  price?: number | null,
+};
+
+export type ModelProductConditionInput = {
+  title?: ModelStringInput | null,
+  body?: ModelStringInput | null,
+  quantity?: ModelIntInput | null,
+  category?: ModelStringInput | null,
+  price?: ModelFloatInput | null,
+  taxable?: ModelBooleanInput | null,
+  published?: ModelBooleanInput | null,
+  featuredImage?: ModelStringInput | null,
+  otherImages?: ModelStringInput | null,
+  and?: Array< ModelProductConditionInput | null > | null,
+  or?: Array< ModelProductConditionInput | null > | null,
+  not?: ModelProductConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -74,20 +78,108 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
+};
+
+export type ModelFloatInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type Product = {
+  __typename: "Product",
+  id: string,
+  title?: string | null,
+  body?: string | null,
+  variants?:  Array<Variant | null > | null,
+  quantity?: number | null,
+  category?: string | null,
+  price?: number | null,
+  taxable?: boolean | null,
+  published?: boolean | null,
+  featuredImage?: string | null,
+  otherImages?: string | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type Variant = {
+  __typename: "Variant",
+  size?: string | null,
+  available?: boolean | null,
+  quantity?: number | null,
+  price?: number | null,
+};
+
+export type UpdateProductInput = {
+  id: string,
+  title?: string | null,
+  body?: string | null,
+  variants?: Array< VariantInput | null > | null,
+  quantity?: number | null,
+  category?: string | null,
+  price?: number | null,
+  taxable?: boolean | null,
+  published?: boolean | null,
+  featuredImage?: string | null,
+  otherImages?: string | null,
+};
+
+export type DeleteProductInput = {
+  id: string,
+};
+
+export type CreateDeliveryDetailInput = {
+  id?: string | null,
+  name: string,
+  phone: string,
+  email: string,
+  province?: string | null,
+  city?: string | null,
+  zip: string,
+  country?: string | null,
+  price?: string | null,
+  address1?: string | null,
+  address2?: string | null,
+};
+
+export type ModelDeliveryDetailConditionInput = {
+  name?: ModelStringInput | null,
+  phone?: ModelStringInput | null,
+  email?: ModelStringInput | null,
+  province?: ModelStringInput | null,
+  city?: ModelStringInput | null,
+  zip?: ModelStringInput | null,
+  country?: ModelStringInput | null,
+  price?: ModelStringInput | null,
+  address1?: ModelStringInput | null,
+  address2?: ModelStringInput | null,
+  and?: Array< ModelDeliveryDetailConditionInput | null > | null,
+  or?: Array< ModelDeliveryDetailConditionInput | null > | null,
+  not?: ModelDeliveryDetailConditionInput | null,
 };
 
 export type DeliveryDetail = {
@@ -103,7 +195,6 @@ export type DeliveryDetail = {
   price?: string | null,
   address1?: string | null,
   address2?: string | null,
-  memberID: string,
   createdAt: string,
   updatedAt: string,
 };
@@ -120,7 +211,6 @@ export type UpdateDeliveryDetailInput = {
   price?: string | null,
   address1?: string | null,
   address2?: string | null,
-  memberID?: string | null,
 };
 
 export type DeleteDeliveryDetailInput = {
@@ -133,6 +223,7 @@ export type CreateMemberInput = {
   email: string,
   phone?: string | null,
   active: boolean,
+  memberMemberDeliveryDetailId?: string | null,
 };
 
 export type ModelMemberConditionInput = {
@@ -143,13 +234,23 @@ export type ModelMemberConditionInput = {
   and?: Array< ModelMemberConditionInput | null > | null,
   or?: Array< ModelMemberConditionInput | null > | null,
   not?: ModelMemberConditionInput | null,
+  memberMemberDeliveryDetailId?: ModelIDInput | null,
 };
 
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
 };
 
 export type Member = {
@@ -159,15 +260,10 @@ export type Member = {
   email: string,
   phone?: string | null,
   active: boolean,
-  MemberDeliveryDetail?: ModelDeliveryDetailConnection | null,
+  MemberDeliveryDetail?: DeliveryDetail | null,
   createdAt: string,
   updatedAt: string,
-};
-
-export type ModelDeliveryDetailConnection = {
-  __typename: "ModelDeliveryDetailConnection",
-  items:  Array<DeliveryDetail | null >,
-  nextToken?: string | null,
+  memberMemberDeliveryDetailId?: string | null,
 };
 
 export type UpdateMemberInput = {
@@ -176,151 +272,33 @@ export type UpdateMemberInput = {
   email?: string | null,
   phone?: string | null,
   active?: boolean | null,
+  memberMemberDeliveryDetailId?: string | null,
 };
 
 export type DeleteMemberInput = {
   id: string,
 };
 
-export type CreateProductVariantInput = {
-  id?: string | null,
-  size: string,
-  price: number,
-  available?: boolean | null,
-  quantity?: number | null,
-  productID: string,
-};
-
-export type ModelProductVariantConditionInput = {
-  size?: ModelStringInput | null,
-  price?: ModelFloatInput | null,
-  available?: ModelBooleanInput | null,
-  quantity?: ModelIntInput | null,
-  productID?: ModelIDInput | null,
-  and?: Array< ModelProductVariantConditionInput | null > | null,
-  or?: Array< ModelProductVariantConditionInput | null > | null,
-  not?: ModelProductVariantConditionInput | null,
-};
-
-export type ModelFloatInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
-export type ModelIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
-export type ProductVariant = {
-  __typename: "ProductVariant",
-  id: string,
-  size: string,
-  price: number,
-  available?: boolean | null,
-  quantity?: number | null,
-  productID: string,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export type UpdateProductVariantInput = {
-  id: string,
-  size?: string | null,
-  price?: number | null,
-  available?: boolean | null,
-  quantity?: number | null,
-  productID?: string | null,
-};
-
-export type DeleteProductVariantInput = {
-  id: string,
-};
-
-export type CreateProductInput = {
-  id?: string | null,
-  title: string,
-  body?: string | null,
-  category?: string | null,
-  size?: string | null,
-  quantity?: number | null,
-  price?: number | null,
-  taxable?: boolean | null,
-  featuredImage: string,
-  otherImages?: Array< string | null > | null,
-  published: boolean,
-};
-
-export type ModelProductConditionInput = {
+export type ModelProductFilterInput = {
+  id?: ModelIDInput | null,
   title?: ModelStringInput | null,
   body?: ModelStringInput | null,
-  category?: ModelStringInput | null,
-  size?: ModelStringInput | null,
   quantity?: ModelIntInput | null,
+  category?: ModelStringInput | null,
   price?: ModelFloatInput | null,
   taxable?: ModelBooleanInput | null,
+  published?: ModelBooleanInput | null,
   featuredImage?: ModelStringInput | null,
   otherImages?: ModelStringInput | null,
-  published?: ModelBooleanInput | null,
-  and?: Array< ModelProductConditionInput | null > | null,
-  or?: Array< ModelProductConditionInput | null > | null,
-  not?: ModelProductConditionInput | null,
+  and?: Array< ModelProductFilterInput | null > | null,
+  or?: Array< ModelProductFilterInput | null > | null,
+  not?: ModelProductFilterInput | null,
 };
 
-export type Product = {
-  __typename: "Product",
-  id: string,
-  title: string,
-  body?: string | null,
-  category?: string | null,
-  size?: string | null,
-  quantity?: number | null,
-  price?: number | null,
-  taxable?: boolean | null,
-  featuredImage: string,
-  otherImages?: Array< string | null > | null,
-  published: boolean,
-  ProductVariants?: ModelProductVariantConnection | null,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export type ModelProductVariantConnection = {
-  __typename: "ModelProductVariantConnection",
-  items:  Array<ProductVariant | null >,
+export type ModelProductConnection = {
+  __typename: "ModelProductConnection",
+  items:  Array<Product | null >,
   nextToken?: string | null,
-};
-
-export type UpdateProductInput = {
-  id: string,
-  title?: string | null,
-  body?: string | null,
-  category?: string | null,
-  size?: string | null,
-  quantity?: number | null,
-  price?: number | null,
-  taxable?: boolean | null,
-  featuredImage?: string | null,
-  otherImages?: Array< string | null > | null,
-  published?: boolean | null,
-};
-
-export type DeleteProductInput = {
-  id: string,
 };
 
 export type ModelDeliveryDetailFilterInput = {
@@ -335,17 +313,16 @@ export type ModelDeliveryDetailFilterInput = {
   price?: ModelStringInput | null,
   address1?: ModelStringInput | null,
   address2?: ModelStringInput | null,
-  memberID?: ModelIDInput | null,
   and?: Array< ModelDeliveryDetailFilterInput | null > | null,
   or?: Array< ModelDeliveryDetailFilterInput | null > | null,
   not?: ModelDeliveryDetailFilterInput | null,
 };
 
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
+export type ModelDeliveryDetailConnection = {
+  __typename: "ModelDeliveryDetailConnection",
+  items:  Array<DeliveryDetail | null >,
+  nextToken?: string | null,
+};
 
 export type ModelMemberFilterInput = {
   id?: ModelIDInput | null,
@@ -356,6 +333,7 @@ export type ModelMemberFilterInput = {
   and?: Array< ModelMemberFilterInput | null > | null,
   or?: Array< ModelMemberFilterInput | null > | null,
   not?: ModelMemberFilterInput | null,
+  memberMemberDeliveryDetailId?: ModelIDInput | null,
 };
 
 export type ModelMemberConnection = {
@@ -364,56 +342,19 @@ export type ModelMemberConnection = {
   nextToken?: string | null,
 };
 
-export type ModelProductVariantFilterInput = {
-  id?: ModelIDInput | null,
-  size?: ModelStringInput | null,
-  price?: ModelFloatInput | null,
-  available?: ModelBooleanInput | null,
-  quantity?: ModelIntInput | null,
-  productID?: ModelIDInput | null,
-  and?: Array< ModelProductVariantFilterInput | null > | null,
-  or?: Array< ModelProductVariantFilterInput | null > | null,
-  not?: ModelProductVariantFilterInput | null,
-};
-
-export type ModelProductFilterInput = {
-  id?: ModelIDInput | null,
-  title?: ModelStringInput | null,
-  body?: ModelStringInput | null,
-  category?: ModelStringInput | null,
-  size?: ModelStringInput | null,
-  quantity?: ModelIntInput | null,
-  price?: ModelFloatInput | null,
-  taxable?: ModelBooleanInput | null,
-  featuredImage?: ModelStringInput | null,
-  otherImages?: ModelStringInput | null,
-  published?: ModelBooleanInput | null,
-  and?: Array< ModelProductFilterInput | null > | null,
-  or?: Array< ModelProductFilterInput | null > | null,
-  not?: ModelProductFilterInput | null,
-};
-
-export type ModelProductConnection = {
-  __typename: "ModelProductConnection",
-  items:  Array<Product | null >,
-  nextToken?: string | null,
-};
-
-export type ModelSubscriptionDeliveryDetailFilterInput = {
+export type ModelSubscriptionProductFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  phone?: ModelSubscriptionStringInput | null,
-  email?: ModelSubscriptionStringInput | null,
-  province?: ModelSubscriptionStringInput | null,
-  city?: ModelSubscriptionStringInput | null,
-  zip?: ModelSubscriptionStringInput | null,
-  country?: ModelSubscriptionStringInput | null,
-  price?: ModelSubscriptionStringInput | null,
-  address1?: ModelSubscriptionStringInput | null,
-  address2?: ModelSubscriptionStringInput | null,
-  memberID?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionDeliveryDetailFilterInput | null > | null,
-  or?: Array< ModelSubscriptionDeliveryDetailFilterInput | null > | null,
+  title?: ModelSubscriptionStringInput | null,
+  body?: ModelSubscriptionStringInput | null,
+  quantity?: ModelSubscriptionIntInput | null,
+  category?: ModelSubscriptionStringInput | null,
+  price?: ModelSubscriptionFloatInput | null,
+  taxable?: ModelSubscriptionBooleanInput | null,
+  published?: ModelSubscriptionBooleanInput | null,
+  featuredImage?: ModelSubscriptionStringInput | null,
+  otherImages?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionProductFilterInput | null > | null,
+  or?: Array< ModelSubscriptionProductFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -446,30 +387,16 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionMemberFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  email?: ModelSubscriptionStringInput | null,
-  phone?: ModelSubscriptionStringInput | null,
-  active?: ModelSubscriptionBooleanInput | null,
-  and?: Array< ModelSubscriptionMemberFilterInput | null > | null,
-  or?: Array< ModelSubscriptionMemberFilterInput | null > | null,
-};
-
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-};
-
-export type ModelSubscriptionProductVariantFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  size?: ModelSubscriptionStringInput | null,
-  price?: ModelSubscriptionFloatInput | null,
-  available?: ModelSubscriptionBooleanInput | null,
-  quantity?: ModelSubscriptionIntInput | null,
-  productID?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionProductVariantFilterInput | null > | null,
-  or?: Array< ModelSubscriptionProductVariantFilterInput | null > | null,
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
 };
 
 export type ModelSubscriptionFloatInput = {
@@ -484,32 +411,125 @@ export type ModelSubscriptionFloatInput = {
   notIn?: Array< number | null > | null,
 };
 
-export type ModelSubscriptionIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  in?: Array< number | null > | null,
-  notIn?: Array< number | null > | null,
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
 };
 
-export type ModelSubscriptionProductFilterInput = {
+export type ModelSubscriptionDeliveryDetailFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  title?: ModelSubscriptionStringInput | null,
-  body?: ModelSubscriptionStringInput | null,
-  category?: ModelSubscriptionStringInput | null,
-  size?: ModelSubscriptionStringInput | null,
-  quantity?: ModelSubscriptionIntInput | null,
-  price?: ModelSubscriptionFloatInput | null,
-  taxable?: ModelSubscriptionBooleanInput | null,
-  featuredImage?: ModelSubscriptionStringInput | null,
-  otherImages?: ModelSubscriptionStringInput | null,
-  published?: ModelSubscriptionBooleanInput | null,
-  and?: Array< ModelSubscriptionProductFilterInput | null > | null,
-  or?: Array< ModelSubscriptionProductFilterInput | null > | null,
+  name?: ModelSubscriptionStringInput | null,
+  phone?: ModelSubscriptionStringInput | null,
+  email?: ModelSubscriptionStringInput | null,
+  province?: ModelSubscriptionStringInput | null,
+  city?: ModelSubscriptionStringInput | null,
+  zip?: ModelSubscriptionStringInput | null,
+  country?: ModelSubscriptionStringInput | null,
+  price?: ModelSubscriptionStringInput | null,
+  address1?: ModelSubscriptionStringInput | null,
+  address2?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionDeliveryDetailFilterInput | null > | null,
+  or?: Array< ModelSubscriptionDeliveryDetailFilterInput | null > | null,
+};
+
+export type ModelSubscriptionMemberFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  email?: ModelSubscriptionStringInput | null,
+  phone?: ModelSubscriptionStringInput | null,
+  active?: ModelSubscriptionBooleanInput | null,
+  and?: Array< ModelSubscriptionMemberFilterInput | null > | null,
+  or?: Array< ModelSubscriptionMemberFilterInput | null > | null,
+};
+
+export type CreateProductMutationVariables = {
+  input: CreateProductInput,
+  condition?: ModelProductConditionInput | null,
+};
+
+export type CreateProductMutation = {
+  createProduct?:  {
+    __typename: "Product",
+    id: string,
+    title?: string | null,
+    body?: string | null,
+    variants?:  Array< {
+      __typename: "Variant",
+      size?: string | null,
+      available?: boolean | null,
+      quantity?: number | null,
+      price?: number | null,
+    } | null > | null,
+    quantity?: number | null,
+    category?: string | null,
+    price?: number | null,
+    taxable?: boolean | null,
+    published?: boolean | null,
+    featuredImage?: string | null,
+    otherImages?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateProductMutationVariables = {
+  input: UpdateProductInput,
+  condition?: ModelProductConditionInput | null,
+};
+
+export type UpdateProductMutation = {
+  updateProduct?:  {
+    __typename: "Product",
+    id: string,
+    title?: string | null,
+    body?: string | null,
+    variants?:  Array< {
+      __typename: "Variant",
+      size?: string | null,
+      available?: boolean | null,
+      quantity?: number | null,
+      price?: number | null,
+    } | null > | null,
+    quantity?: number | null,
+    category?: string | null,
+    price?: number | null,
+    taxable?: boolean | null,
+    published?: boolean | null,
+    featuredImage?: string | null,
+    otherImages?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteProductMutationVariables = {
+  input: DeleteProductInput,
+  condition?: ModelProductConditionInput | null,
+};
+
+export type DeleteProductMutation = {
+  deleteProduct?:  {
+    __typename: "Product",
+    id: string,
+    title?: string | null,
+    body?: string | null,
+    variants?:  Array< {
+      __typename: "Variant",
+      size?: string | null,
+      available?: boolean | null,
+      quantity?: number | null,
+      price?: number | null,
+    } | null > | null,
+    quantity?: number | null,
+    category?: string | null,
+    price?: number | null,
+    taxable?: boolean | null,
+    published?: boolean | null,
+    featuredImage?: string | null,
+    otherImages?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateDeliveryDetailMutationVariables = {
@@ -531,7 +551,6 @@ export type CreateDeliveryDetailMutation = {
     price?: string | null,
     address1?: string | null,
     address2?: string | null,
-    memberID: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -556,7 +575,6 @@ export type UpdateDeliveryDetailMutation = {
     price?: string | null,
     address1?: string | null,
     address2?: string | null,
-    memberID: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -581,7 +599,6 @@ export type DeleteDeliveryDetailMutation = {
     price?: string | null,
     address1?: string | null,
     address2?: string | null,
-    memberID: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -601,11 +618,24 @@ export type CreateMemberMutation = {
     phone?: string | null,
     active: boolean,
     MemberDeliveryDetail?:  {
-      __typename: "ModelDeliveryDetailConnection",
-      nextToken?: string | null,
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      createdAt: string,
+      updatedAt: string,
     } | null,
     createdAt: string,
     updatedAt: string,
+    memberMemberDeliveryDetailId?: string | null,
   } | null,
 };
 
@@ -623,11 +653,24 @@ export type UpdateMemberMutation = {
     phone?: string | null,
     active: boolean,
     MemberDeliveryDetail?:  {
-      __typename: "ModelDeliveryDetailConnection",
-      nextToken?: string | null,
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      createdAt: string,
+      updatedAt: string,
     } | null,
     createdAt: string,
     updatedAt: string,
+    memberMemberDeliveryDetailId?: string | null,
   } | null,
 };
 
@@ -645,152 +688,81 @@ export type DeleteMemberMutation = {
     phone?: string | null,
     active: boolean,
     MemberDeliveryDetail?:  {
-      __typename: "ModelDeliveryDetailConnection",
-      nextToken?: string | null,
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      createdAt: string,
+      updatedAt: string,
     } | null,
     createdAt: string,
     updatedAt: string,
+    memberMemberDeliveryDetailId?: string | null,
   } | null,
 };
 
-export type CreateProductVariantMutationVariables = {
-  input: CreateProductVariantInput,
-  condition?: ModelProductVariantConditionInput | null,
+export type GetProductQueryVariables = {
+  id: string,
 };
 
-export type CreateProductVariantMutation = {
-  createProductVariant?:  {
-    __typename: "ProductVariant",
-    id: string,
-    size: string,
-    price: number,
-    available?: boolean | null,
-    quantity?: number | null,
-    productID: string,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type UpdateProductVariantMutationVariables = {
-  input: UpdateProductVariantInput,
-  condition?: ModelProductVariantConditionInput | null,
-};
-
-export type UpdateProductVariantMutation = {
-  updateProductVariant?:  {
-    __typename: "ProductVariant",
-    id: string,
-    size: string,
-    price: number,
-    available?: boolean | null,
-    quantity?: number | null,
-    productID: string,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type DeleteProductVariantMutationVariables = {
-  input: DeleteProductVariantInput,
-  condition?: ModelProductVariantConditionInput | null,
-};
-
-export type DeleteProductVariantMutation = {
-  deleteProductVariant?:  {
-    __typename: "ProductVariant",
-    id: string,
-    size: string,
-    price: number,
-    available?: boolean | null,
-    quantity?: number | null,
-    productID: string,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type CreateProductMutationVariables = {
-  input: CreateProductInput,
-  condition?: ModelProductConditionInput | null,
-};
-
-export type CreateProductMutation = {
-  createProduct?:  {
+export type GetProductQuery = {
+  getProduct?:  {
     __typename: "Product",
     id: string,
-    title: string,
+    title?: string | null,
     body?: string | null,
-    category?: string | null,
-    size?: string | null,
+    variants?:  Array< {
+      __typename: "Variant",
+      size?: string | null,
+      available?: boolean | null,
+      quantity?: number | null,
+      price?: number | null,
+    } | null > | null,
     quantity?: number | null,
+    category?: string | null,
     price?: number | null,
     taxable?: boolean | null,
-    featuredImage: string,
-    otherImages?: Array< string | null > | null,
-    published: boolean,
-    ProductVariants?:  {
-      __typename: "ModelProductVariantConnection",
-      nextToken?: string | null,
-    } | null,
+    published?: boolean | null,
+    featuredImage?: string | null,
+    otherImages?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
 };
 
-export type UpdateProductMutationVariables = {
-  input: UpdateProductInput,
-  condition?: ModelProductConditionInput | null,
+export type ListProductsQueryVariables = {
+  filter?: ModelProductFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
 };
 
-export type UpdateProductMutation = {
-  updateProduct?:  {
-    __typename: "Product",
-    id: string,
-    title: string,
-    body?: string | null,
-    category?: string | null,
-    size?: string | null,
-    quantity?: number | null,
-    price?: number | null,
-    taxable?: boolean | null,
-    featuredImage: string,
-    otherImages?: Array< string | null > | null,
-    published: boolean,
-    ProductVariants?:  {
-      __typename: "ModelProductVariantConnection",
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type DeleteProductMutationVariables = {
-  input: DeleteProductInput,
-  condition?: ModelProductConditionInput | null,
-};
-
-export type DeleteProductMutation = {
-  deleteProduct?:  {
-    __typename: "Product",
-    id: string,
-    title: string,
-    body?: string | null,
-    category?: string | null,
-    size?: string | null,
-    quantity?: number | null,
-    price?: number | null,
-    taxable?: boolean | null,
-    featuredImage: string,
-    otherImages?: Array< string | null > | null,
-    published: boolean,
-    ProductVariants?:  {
-      __typename: "ModelProductVariantConnection",
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
+export type ListProductsQuery = {
+  listProducts?:  {
+    __typename: "ModelProductConnection",
+    items:  Array< {
+      __typename: "Product",
+      id: string,
+      title?: string | null,
+      body?: string | null,
+      quantity?: number | null,
+      category?: string | null,
+      price?: number | null,
+      taxable?: boolean | null,
+      published?: boolean | null,
+      featuredImage?: string | null,
+      otherImages?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
   } | null,
 };
 
@@ -812,7 +784,6 @@ export type GetDeliveryDetailQuery = {
     price?: string | null,
     address1?: string | null,
     address2?: string | null,
-    memberID: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -840,39 +811,6 @@ export type ListDeliveryDetailsQuery = {
       price?: string | null,
       address1?: string | null,
       address2?: string | null,
-      memberID: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null >,
-    nextToken?: string | null,
-  } | null,
-};
-
-export type DeliveryDetailsByMemberIDQueryVariables = {
-  memberID: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelDeliveryDetailFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type DeliveryDetailsByMemberIDQuery = {
-  deliveryDetailsByMemberID?:  {
-    __typename: "ModelDeliveryDetailConnection",
-    items:  Array< {
-      __typename: "DeliveryDetail",
-      id: string,
-      name: string,
-      phone: string,
-      email: string,
-      province?: string | null,
-      city?: string | null,
-      zip: string,
-      country?: string | null,
-      price?: string | null,
-      address1?: string | null,
-      address2?: string | null,
-      memberID: string,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -893,11 +831,24 @@ export type GetMemberQuery = {
     phone?: string | null,
     active: boolean,
     MemberDeliveryDetail?:  {
-      __typename: "ModelDeliveryDetailConnection",
-      nextToken?: string | null,
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      createdAt: string,
+      updatedAt: string,
     } | null,
     createdAt: string,
     updatedAt: string,
+    memberMemberDeliveryDetailId?: string | null,
   } | null,
 };
 
@@ -919,132 +870,96 @@ export type ListMembersQuery = {
       active: boolean,
       createdAt: string,
       updatedAt: string,
+      memberMemberDeliveryDetailId?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
 };
 
-export type GetProductVariantQueryVariables = {
-  id: string,
+export type OnCreateProductSubscriptionVariables = {
+  filter?: ModelSubscriptionProductFilterInput | null,
 };
 
-export type GetProductVariantQuery = {
-  getProductVariant?:  {
-    __typename: "ProductVariant",
-    id: string,
-    size: string,
-    price: number,
-    available?: boolean | null,
-    quantity?: number | null,
-    productID: string,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type ListProductVariantsQueryVariables = {
-  filter?: ModelProductVariantFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ListProductVariantsQuery = {
-  listProductVariants?:  {
-    __typename: "ModelProductVariantConnection",
-    items:  Array< {
-      __typename: "ProductVariant",
-      id: string,
-      size: string,
-      price: number,
-      available?: boolean | null,
-      quantity?: number | null,
-      productID: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null >,
-    nextToken?: string | null,
-  } | null,
-};
-
-export type ProductVariantsByProductIDQueryVariables = {
-  productID: string,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelProductVariantFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ProductVariantsByProductIDQuery = {
-  productVariantsByProductID?:  {
-    __typename: "ModelProductVariantConnection",
-    items:  Array< {
-      __typename: "ProductVariant",
-      id: string,
-      size: string,
-      price: number,
-      available?: boolean | null,
-      quantity?: number | null,
-      productID: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null >,
-    nextToken?: string | null,
-  } | null,
-};
-
-export type GetProductQueryVariables = {
-  id: string,
-};
-
-export type GetProductQuery = {
-  getProduct?:  {
+export type OnCreateProductSubscription = {
+  onCreateProduct?:  {
     __typename: "Product",
     id: string,
-    title: string,
+    title?: string | null,
     body?: string | null,
-    category?: string | null,
-    size?: string | null,
+    variants?:  Array< {
+      __typename: "Variant",
+      size?: string | null,
+      available?: boolean | null,
+      quantity?: number | null,
+      price?: number | null,
+    } | null > | null,
     quantity?: number | null,
+    category?: string | null,
     price?: number | null,
     taxable?: boolean | null,
-    featuredImage: string,
-    otherImages?: Array< string | null > | null,
-    published: boolean,
-    ProductVariants?:  {
-      __typename: "ModelProductVariantConnection",
-      nextToken?: string | null,
-    } | null,
+    published?: boolean | null,
+    featuredImage?: string | null,
+    otherImages?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
 };
 
-export type ListProductsQueryVariables = {
-  filter?: ModelProductFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
+export type OnUpdateProductSubscriptionVariables = {
+  filter?: ModelSubscriptionProductFilterInput | null,
 };
 
-export type ListProductsQuery = {
-  listProducts?:  {
-    __typename: "ModelProductConnection",
-    items:  Array< {
-      __typename: "Product",
-      id: string,
-      title: string,
-      body?: string | null,
-      category?: string | null,
+export type OnUpdateProductSubscription = {
+  onUpdateProduct?:  {
+    __typename: "Product",
+    id: string,
+    title?: string | null,
+    body?: string | null,
+    variants?:  Array< {
+      __typename: "Variant",
       size?: string | null,
+      available?: boolean | null,
       quantity?: number | null,
       price?: number | null,
-      taxable?: boolean | null,
-      featuredImage: string,
-      otherImages?: Array< string | null > | null,
-      published: boolean,
-      createdAt: string,
-      updatedAt: string,
-    } | null >,
-    nextToken?: string | null,
+    } | null > | null,
+    quantity?: number | null,
+    category?: string | null,
+    price?: number | null,
+    taxable?: boolean | null,
+    published?: boolean | null,
+    featuredImage?: string | null,
+    otherImages?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteProductSubscriptionVariables = {
+  filter?: ModelSubscriptionProductFilterInput | null,
+};
+
+export type OnDeleteProductSubscription = {
+  onDeleteProduct?:  {
+    __typename: "Product",
+    id: string,
+    title?: string | null,
+    body?: string | null,
+    variants?:  Array< {
+      __typename: "Variant",
+      size?: string | null,
+      available?: boolean | null,
+      quantity?: number | null,
+      price?: number | null,
+    } | null > | null,
+    quantity?: number | null,
+    category?: string | null,
+    price?: number | null,
+    taxable?: boolean | null,
+    published?: boolean | null,
+    featuredImage?: string | null,
+    otherImages?: string | null,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
@@ -1066,7 +981,6 @@ export type OnCreateDeliveryDetailSubscription = {
     price?: string | null,
     address1?: string | null,
     address2?: string | null,
-    memberID: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1090,7 +1004,6 @@ export type OnUpdateDeliveryDetailSubscription = {
     price?: string | null,
     address1?: string | null,
     address2?: string | null,
-    memberID: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1114,7 +1027,6 @@ export type OnDeleteDeliveryDetailSubscription = {
     price?: string | null,
     address1?: string | null,
     address2?: string | null,
-    memberID: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1133,11 +1045,24 @@ export type OnCreateMemberSubscription = {
     phone?: string | null,
     active: boolean,
     MemberDeliveryDetail?:  {
-      __typename: "ModelDeliveryDetailConnection",
-      nextToken?: string | null,
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      createdAt: string,
+      updatedAt: string,
     } | null,
     createdAt: string,
     updatedAt: string,
+    memberMemberDeliveryDetailId?: string | null,
   } | null,
 };
 
@@ -1154,11 +1079,24 @@ export type OnUpdateMemberSubscription = {
     phone?: string | null,
     active: boolean,
     MemberDeliveryDetail?:  {
-      __typename: "ModelDeliveryDetailConnection",
-      nextToken?: string | null,
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      createdAt: string,
+      updatedAt: string,
     } | null,
     createdAt: string,
     updatedAt: string,
+    memberMemberDeliveryDetailId?: string | null,
   } | null,
 };
 
@@ -1175,145 +1113,23 @@ export type OnDeleteMemberSubscription = {
     phone?: string | null,
     active: boolean,
     MemberDeliveryDetail?:  {
-      __typename: "ModelDeliveryDetailConnection",
-      nextToken?: string | null,
+      __typename: "DeliveryDetail",
+      id: string,
+      name: string,
+      phone: string,
+      email: string,
+      province?: string | null,
+      city?: string | null,
+      zip: string,
+      country?: string | null,
+      price?: string | null,
+      address1?: string | null,
+      address2?: string | null,
+      createdAt: string,
+      updatedAt: string,
     } | null,
     createdAt: string,
     updatedAt: string,
-  } | null,
-};
-
-export type OnCreateProductVariantSubscriptionVariables = {
-  filter?: ModelSubscriptionProductVariantFilterInput | null,
-};
-
-export type OnCreateProductVariantSubscription = {
-  onCreateProductVariant?:  {
-    __typename: "ProductVariant",
-    id: string,
-    size: string,
-    price: number,
-    available?: boolean | null,
-    quantity?: number | null,
-    productID: string,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnUpdateProductVariantSubscriptionVariables = {
-  filter?: ModelSubscriptionProductVariantFilterInput | null,
-};
-
-export type OnUpdateProductVariantSubscription = {
-  onUpdateProductVariant?:  {
-    __typename: "ProductVariant",
-    id: string,
-    size: string,
-    price: number,
-    available?: boolean | null,
-    quantity?: number | null,
-    productID: string,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnDeleteProductVariantSubscriptionVariables = {
-  filter?: ModelSubscriptionProductVariantFilterInput | null,
-};
-
-export type OnDeleteProductVariantSubscription = {
-  onDeleteProductVariant?:  {
-    __typename: "ProductVariant",
-    id: string,
-    size: string,
-    price: number,
-    available?: boolean | null,
-    quantity?: number | null,
-    productID: string,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnCreateProductSubscriptionVariables = {
-  filter?: ModelSubscriptionProductFilterInput | null,
-};
-
-export type OnCreateProductSubscription = {
-  onCreateProduct?:  {
-    __typename: "Product",
-    id: string,
-    title: string,
-    body?: string | null,
-    category?: string | null,
-    size?: string | null,
-    quantity?: number | null,
-    price?: number | null,
-    taxable?: boolean | null,
-    featuredImage: string,
-    otherImages?: Array< string | null > | null,
-    published: boolean,
-    ProductVariants?:  {
-      __typename: "ModelProductVariantConnection",
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnUpdateProductSubscriptionVariables = {
-  filter?: ModelSubscriptionProductFilterInput | null,
-};
-
-export type OnUpdateProductSubscription = {
-  onUpdateProduct?:  {
-    __typename: "Product",
-    id: string,
-    title: string,
-    body?: string | null,
-    category?: string | null,
-    size?: string | null,
-    quantity?: number | null,
-    price?: number | null,
-    taxable?: boolean | null,
-    featuredImage: string,
-    otherImages?: Array< string | null > | null,
-    published: boolean,
-    ProductVariants?:  {
-      __typename: "ModelProductVariantConnection",
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnDeleteProductSubscriptionVariables = {
-  filter?: ModelSubscriptionProductFilterInput | null,
-};
-
-export type OnDeleteProductSubscription = {
-  onDeleteProduct?:  {
-    __typename: "Product",
-    id: string,
-    title: string,
-    body?: string | null,
-    category?: string | null,
-    size?: string | null,
-    quantity?: number | null,
-    price?: number | null,
-    taxable?: boolean | null,
-    featuredImage: string,
-    otherImages?: Array< string | null > | null,
-    published: boolean,
-    ProductVariants?:  {
-      __typename: "ModelProductVariantConnection",
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
+    memberMemberDeliveryDetailId?: string | null,
   } | null,
 };

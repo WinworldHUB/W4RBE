@@ -1,4 +1,6 @@
+import { forEach } from "lodash";
 import { Product } from "../types/product";
+import { GraphQLResult } from "aws-amplify/api";
 
 export function formatImportedProducts(productsData: Product[]) {
   const formattedProducts = {};

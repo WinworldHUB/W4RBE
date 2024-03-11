@@ -1,19 +1,17 @@
 import { RequestHandler } from "express";
-import {
-  deleteProductModel,
-  getPagedProducts,
-  getProductByID,
-  insertProduct,
-  updateProductModel,
-} from "../models/products-model";
 import { Product } from "../types/product";
 import { forEach } from "lodash";
 import { formatImportedProducts } from "../utils/product-utils";
 
+import { generateClient } from "aws-amplify/api";
+import { listProducts, getProduct } from "../graphql/queries";
+
+const client = generateClient();
+
 export const getProductById: RequestHandler = async (req, res, next) => {
   try {
-    const product = await getProductByID(req.params.id);
-    res.json(product);
+    //const product = await getProduct();
+    //res.json(product);
   } catch (error) {
     console.error("Error fetching product:", error);
     res.status(500).json({ error: "Failed to fetch product" });
@@ -22,11 +20,14 @@ export const getProductById: RequestHandler = async (req, res, next) => {
 
 export const getAllProducts: RequestHandler = async (req, res, next) => {
   try {
-    const products = await getPagedProducts();
+    // List all items
+    const allProducts = await client.graphql({
+      query: listProducts,
+    });
 
-    console.log(products);
+    console.log(allProducts.data.listProducts.items);
 
-    return res.json(products);
+    return res.json(allProducts.data.listProducts.items);
   } catch (error) {
     return res.status(400).send({
       status: "failed",
@@ -37,7 +38,7 @@ export const getAllProducts: RequestHandler = async (req, res, next) => {
 };
 
 export const addProduct: RequestHandler = (req, res, next) => {
-  res.json(insertProduct(req.body as Product));
+  //res.json(insertProduct(req.body as Product));
 };
 
 export const importProducts: RequestHandler = (req, res, next) => {
@@ -49,9 +50,9 @@ export const importProducts: RequestHandler = (req, res, next) => {
         const foundProduct = {}; //getProduct(product.id);
 
         if (!foundProduct) {
-          insertProduct(product);
+          //insertProduct(product);
         } else {
-          updateProductModel(product);
+          //updateProductModel(product);
         }
       }
     });
@@ -62,10 +63,10 @@ export const importProducts: RequestHandler = (req, res, next) => {
 };
 
 export const modifyProduct: RequestHandler = (req, res, next) => {
-  res.json(updateProductModel(req.body as Product));
+  //res.json(updateProductModel(req.body as Product));
 };
 
 export const deleteProductById: RequestHandler = (req, res, next) => {
-  deleteProductModel(req.params.id);
+  //deleteProductModel(req.params.id);
   res.json({ message: "Product deleted Successfully" });
 };
