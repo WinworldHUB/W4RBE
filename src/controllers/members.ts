@@ -27,6 +27,13 @@ export const getAllMembers: RequestHandler = async (req, res, next) => {
   try {
     const members = await client.graphql({
       query: listMembers,
+      variables: {
+        filter: {
+          active: {
+            eq: true,
+          },
+        },
+      }
     });
 
     console.log(members);
@@ -39,14 +46,21 @@ export const getAllMembers: RequestHandler = async (req, res, next) => {
 
 export const getMemberById: RequestHandler = async (req, res, next) => {
   try {
-    const member = await client.graphql({
-      query: getMember,
-      variables: { id: req.params.id },
+    const members = await client.graphql({
+      query: listMembers,
+      variables: {
+        filter: {
+          email: { eq: req.params.email }
+        }
+        
+      }
     });
-    res.json(member.data.getMember);
+
+    console.log(members);
+    res.json(members.data.listMembers.items);
   } catch (error) {
-    console.error("Error fetching member:", error);
-    res.status(500).json({ error: "Failed to fetch member" });
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve members" });
   }
 };
 
@@ -78,7 +92,6 @@ export const importMembers: RequestHandler = async (req, res, next) => {
     const membersData: Member[] = req.body;
     const importedMembers = [];
 
-    // Loop over the incoming members and format each one
     for (const memberData of membersData) {
       const formattedMember = formatMemberData(memberData);
       const newMember = await client.graphql({
@@ -90,8 +103,6 @@ export const importMembers: RequestHandler = async (req, res, next) => {
 
       importedMembers.push(newMember);
     }
-
-    // Send the accumulated results as a single response
     res.json(importedMembers);
   } catch (error) {
     console.error("Error importing members:", error);
@@ -101,15 +112,19 @@ export const importMembers: RequestHandler = async (req, res, next) => {
 
 export const modifyMember: RequestHandler = async (req, res, next) => {
   try {
-    const memberId = req.params.id;
-    if (memberId) {
+    const email = req.params.email;
+    if (email) {
       const foundMember = await client.graphql({
-        query: getMember,
-        variables: { id: req.params.id },
+        query: listMembers,
+        variables: {
+          filter: {
+            email: { eq: email }
+          },
+        },
       });
 
-      if (foundMember) {
-        const memberToUpdate = foundMember.data.getMember;
+      if (foundMember && foundMember.data.listMembers.items.length > 0) {
+        const memberToUpdate = foundMember.data.listMembers.items[0];
         const input = {
           id: memberToUpdate.id,
           active: true,
@@ -122,7 +137,11 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
         });
 
         res.json(updatedMember.data.updateMember);
+      } else {
+        res.status(404).json({ error: "Member not found" });
       }
+    } else {
+      res.status(400).json({ error: "Email parameter missing" });
     }
   } catch (error) {
     return res.status(500).send({
@@ -133,34 +152,42 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const deleteMemberById: RequestHandler = async (req, res, next) => {
+export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
   try {
-    const memberId = req.params.id;
-    if (memberId) {
+    const email = req.params.email;
+    if (email) {
       const foundMember = await client.graphql({
-        query: getMember,
-        variables: { id: req.params.id },
+        query: listMembers,
+        variables: {
+          filter: {
+            email: { eq: email }
+          },
+        },
       });
 
-      if (foundMember) {
-        const memberToDelete = foundMember.data.getMember;
+      if (foundMember && foundMember.data.listMembers.items.length > 0) {
+        const memberToDelete = foundMember.data.listMembers.items[0];
         if (memberToDelete.active === false) {
-          res.json({ message: "member already inactive" });
+          res.json({ message: "Member already inactive" });
           return;
         }
         const input = {
           id: memberToDelete.id,
           active: false,
         };
-        const deletedmember = await client.graphql({
+        const deletedMember = await client.graphql({
           query: updateMember,
           variables: {
             input: input,
           },
         });
 
-        res.json(deletedmember.data.updateMember);
+        res.json(deletedMember.data.updateMember);
+      } else {
+        res.status(404).json({ error: "Member not found" });
       }
+    } else {
+      res.status(400).json({ error: "Email parameter missing" });
     }
   } catch (error) {
     return res.status(500).send({

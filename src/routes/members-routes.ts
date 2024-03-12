@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   addMember,
-  deleteMemberById,
+  deleteMemberByEmail,
   getAllMembers,
   getMemberById,
   importMembers,
@@ -10,10 +10,10 @@ import {
 
 const memberRoutes = Router();
 memberRoutes.get("/", getAllMembers);
-memberRoutes.get("/:id", getMemberById);
+memberRoutes.get("/:email", getMemberById);
 memberRoutes.post("/", addMember);
 memberRoutes.post("/imports", importMembers);
-memberRoutes.put("/:id", modifyMember);
-memberRoutes.delete("/:id", deleteMemberById);
+memberRoutes.put("/:email", modifyMember);
+memberRoutes.delete("/:email", deleteMemberByEmail);
 
 export default memberRoutes;
