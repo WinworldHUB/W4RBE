@@ -160,8 +160,6 @@ export const modifyProduct: RequestHandler = async (req, res, next) => {
 };
 
 export const deleteProductById: RequestHandler = async (req, res, next) => {
-  //deleteProductModel(req.params.id);
-  //res.json({ message: "Product deleted Successfully" });
   try {
     const productId = req.params.id;
     if (productId) {
@@ -172,11 +170,25 @@ export const deleteProductById: RequestHandler = async (req, res, next) => {
 
       if (foundProduct) {
         const productToDelete = foundProduct.data.getProduct;
-        productToDelete.published = false;
+        const input = {
+          id: productToDelete.id,
+          title: productToDelete.title,
+          body: productToDelete.body,
+          variants: productToDelete.variants,
+          quantity: productToDelete.quantity,
+          category: productToDelete.category,
+          price: productToDelete.price,
+          taxable: productToDelete.taxable,
+          published: false,
+          featuredImage: productToDelete.featuredImage,
+          otherImages: productToDelete.otherImages,
+          size: productToDelete.size,
+        };
+
         const deletedProduct = await client.graphql({
           query: updateProduct,
           variables: {
-            input: productToDelete,
+            input: input,
           },
         });
 
