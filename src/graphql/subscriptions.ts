@@ -91,7 +91,6 @@ export const onCreateMember = /* GraphQL */ `subscription OnCreateMember($filter
     city
     zip
     country
-    price
     address1
     address2
     createdAt
@@ -114,7 +113,6 @@ export const onUpdateMember = /* GraphQL */ `subscription OnUpdateMember($filter
     city
     zip
     country
-    price
     address1
     address2
     createdAt
@@ -137,7 +135,6 @@ export const onDeleteMember = /* GraphQL */ `subscription OnDeleteMember($filter
     city
     zip
     country
-    price
     address1
     address2
     createdAt

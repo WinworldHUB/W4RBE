@@ -1,35 +1,34 @@
-import { RequestHandler } from "express";
+import { generateClient } from "aws-amplify/api";
+import { listMembers, getMember } from "../graphql/queries";
+import { Amplify, ResourcesConfig } from "aws-amplify";
+//import config from "../aws-exports.js";
 
-import { Member } from "../types/member";
-import validateMemberData from "../utils/validate-user";
-import { forEach } from "lodash";
-
-export const getMemberById: RequestHandler = (req, res, next) => {
-  const memberEmail = req.params.email;
-  //res.json(getMember(memberEmail));
+const config: ResourcesConfig = {
+  API: {
+    GraphQL: {
+      endpoint:
+        "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
+      region: "eu-west-2",
+      defaultAuthMode: "apiKey",
+      apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
+    },
+  },
 };
 
-export const getAllMembers: RequestHandler = (req, res, next) => res.json();
+Amplify.configure(config);
 
-export const addMember: RequestHandler = (req, res, next) => {
-  const jsonData: Member = req.body;
-  const validationResponse = validateMemberData([jsonData]);
+const client = generateClient();
 
-  return res.status(200).json(validationResponse);
-};
+export const getAllMembers = async (req, res, next) => {
+  try {
+    const members = await client.graphql({
+      query: listMembers,
+    });
 
-export const importMembers: RequestHandler = (req, res, next) => {
-  const jsonData: Member[] = req.body;
-  const validationResponse = validateMemberData(jsonData);
-
-  return res.status(200).json(validationResponse);
-};
-
-export const modifyMember: RequestHandler = (req, res, next) => {
-  res.json();
-};
-
-export const deleteMemberById: RequestHandler = (req, res, next) => {
-  const memberEmail = req.params.email;
-  res.json();
+    console.log(members);
+    res.json(members.data.listMembers.items);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve members" });
+  }
 };

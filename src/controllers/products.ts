@@ -1,5 +1,4 @@
 import { RequestHandler } from "express";
-import { forEach } from "lodash";
 import {
   dbToProduct,
   dbToProducts,
@@ -12,7 +11,21 @@ import { generateClient } from "aws-amplify/api";
 import { listProducts, getProduct } from "../graphql/queries";
 import { createProduct, updateProduct } from "../graphql/mutations";
 import { Product } from "../awsApis";
-import {ImportProductsResponse} from "../types"
+import { Amplify, ResourcesConfig } from "aws-amplify";
+const config: ResourcesConfig = {
+  API: {
+    GraphQL: {
+      endpoint:
+        "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
+      region: "eu-west-2",
+      defaultAuthMode: "apiKey",
+      apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
+    },
+  },
+};
+
+Amplify.configure(config);
+
 const client = generateClient();
 
 export const getProductById: RequestHandler = async (req, res, next) => {
@@ -87,39 +100,44 @@ export const importProducts: RequestHandler = async (req, res, next) => {
       const formattedProducts = formatImportedProducts(productsData);
 
       // Use map instead of forEach to handle asynchronous operations
-      await Promise.all(formattedProducts.map(async (product: Product) => {
-        
-        try {
-          if (product && product.id !== "") {
-            const foundProduct = await client.graphql({
-              query: getProduct,
-              variables: { id: product.id },
-            });
-            
-            if (foundProduct && foundProduct.data && foundProduct.data.getProduct) {
-              const updatedProduct = await client.graphql({
-                query: updateProduct,
-                variables: {
-                  input: productToDBForUpdate(product),
-                },
+      await Promise.all(
+        formattedProducts.map(async (product: Product) => {
+          try {
+            if (product && product.id !== "") {
+              const foundProduct = await client.graphql({
+                query: getProduct,
+                variables: { id: product.id },
               });
-              output.successImport.push(updatedProduct.data.updateProduct);
-            } else {
-              const createdProduct = await client.graphql({
-                query: createProduct,
-                variables: {
-                  input: productToDBForUpdate(product),
-                },
-              });
-              output.successImport.push(createdProduct.data.createProduct);
+
+              if (
+                foundProduct &&
+                foundProduct.data &&
+                foundProduct.data.getProduct
+              ) {
+                const updatedProduct = await client.graphql({
+                  query: updateProduct,
+                  variables: {
+                    input: productToDBForUpdate(product),
+                  },
+                });
+                output.successImport.push(updatedProduct.data.updateProduct);
+              } else {
+                const createdProduct = await client.graphql({
+                  query: createProduct,
+                  variables: {
+                    input: productToDBForUpdate(product),
+                  },
+                });
+                output.successImport.push(createdProduct.data.createProduct);
+              }
             }
+          } catch (error) {
+            console.log(error);
+
+            output.failedImport.push(product);
           }
-        } catch (error) {
-          console.log(error);
-          
-          output.failedImport.push(product);
-        }
-      }));
+        })
+      );
 
       // Send the response after all asynchronous operations are completed
       res.json(output);
@@ -134,7 +152,6 @@ export const importProducts: RequestHandler = async (req, res, next) => {
     });
   }
 };
-
 
 export const modifyProduct: RequestHandler = async (req, res, next) => {
   try {
@@ -171,8 +188,8 @@ export const deleteProductById: RequestHandler = async (req, res, next) => {
       if (foundProduct) {
         const productToDelete = foundProduct.data.getProduct;
         if (productToDelete.published === false) {
-            res.json({message:"Product already unpublished"})
-            return; 
+          res.json({ message: "Product already unpublished" });
+          return;
         }
         const input = {
           id: productToDelete.id,

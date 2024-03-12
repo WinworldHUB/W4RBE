@@ -103,7 +103,6 @@ export const createMember = /* GraphQL */ `mutation CreateMember(
     city
     zip
     country
-    price
     address1
     address2
     createdAt
@@ -129,7 +128,6 @@ export const updateMember = /* GraphQL */ `mutation UpdateMember(
     city
     zip
     country
-    price
     address1
     address2
     createdAt
@@ -155,7 +153,6 @@ export const deleteMember = /* GraphQL */ `mutation DeleteMember(
     city
     zip
     country
-    price
     address1
     address2
     createdAt

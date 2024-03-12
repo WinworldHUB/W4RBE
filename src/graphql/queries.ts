@@ -75,7 +75,6 @@ export const getMember = /* GraphQL */ `query GetMember($id: ID!) {
     city
     zip
     country
-    price
     address1
     address2
     createdAt
@@ -100,7 +99,6 @@ export const listMembers = /* GraphQL */ `query ListMembers(
       city
       zip
       country
-      price
       address1
       address2
       createdAt
