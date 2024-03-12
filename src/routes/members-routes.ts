@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { addMember, getAllMembers } from "../controllers/members";
+import { addMember, getAllMembers, getMemberById } from "../controllers/members";
 
 const memberRoutes = Router();
 memberRoutes.get("/", getAllMembers);
-// memberRoutes.get("/:email", getMemberById);
+memberRoutes.get("/:id", getMemberById);
 memberRoutes.post("/", addMember);
 // memberRoutes.post("/imports", importMembers);
 // memberRoutes.put("/:id", modifyMember);

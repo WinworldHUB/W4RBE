@@ -36,6 +36,20 @@ export const getAllMembers:RequestHandler = async (req, res, next) => {
   }
 };
 
+export const getMemberById: RequestHandler = async (req, res, next) => {
+  try {
+    const member = await client.graphql({
+      query: getMember,
+      variables: { id: req.params.id },
+    });
+    res.json(member.data.getMember);
+  } catch (error) {
+    console.error("Error fetching member:", error);
+    res.status(500).json({ error: "Failed to fetch member" });
+  }
+};
+
+
 
 export const addMember: RequestHandler = async (req, res, next) => {
   try {
