@@ -1,4 +1,4 @@
-type Product @model @auth(rules: [{allow: public}]) {
+type Product @model @auth(rules: [{ allow: public }]) {
   id: ID!
   title: String
   body: String
@@ -14,7 +14,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   available: Boolean
 }
 
-type Member @model @auth(rules: [{allow: public}]) {
+type Member @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String!
   email: String!
@@ -28,4 +28,3 @@ type Member @model @auth(rules: [{allow: public}]) {
   address1: String
   address2: String
 }
- 

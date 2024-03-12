@@ -1,5 +1,11 @@
 {
   "AppSyncApiName": "W4RBE",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authw4rbe124298cd",
+      "Outputs.UserPoolId"
+    ]
+  }
 }
