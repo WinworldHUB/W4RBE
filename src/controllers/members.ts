@@ -4,7 +4,7 @@ import { Amplify, ResourcesConfig } from "aws-amplify";
 import { RequestHandler } from "express";
 import { Member } from "../awsApis";
 import { createMember, updateMember } from "../graphql/mutations";
-import formatMemberData from "../utils/validate-user";
+import formatMemberData from "../utils/format-user";
 //import config from "../aws-exports.js";
 
 const config: ResourcesConfig = {
