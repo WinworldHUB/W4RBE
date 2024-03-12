@@ -1,19 +1,26 @@
 import { Member } from "../awsApis";
 
-function formatMemberData(data) {
-  return {
-    id: data.ID.toString(),
-    name: data["Customer name"],
-    email: data["Customer email"],
-    phone: data["Customer phone"] !== "" ? data["Customer phone"] : null,
-    active: data.Status === "Active",
-    province: data["Delivery province code"] !== "" ? data["Delivery province code"] : null,
-    city: data["Delivery city"] !== "" ? data["Delivery city"] : null,
-    zip: data["Delivery zip"] !== "" ? data["Delivery zip"] : null,
-    country: data["Delivery country code"] !== "" ? data["Delivery country code"] : null,
-    address1: data["Delivery address 1"] !== "" ? data["Delivery address 1"] : null,
-    address2: data["Delivery address 2"] !== "" ? data["Delivery address 2"] : null,
-  };
+function formatMemberData(data): Member[] {
+  const formattedMembers = [];
+
+  data.forEach((item) => {
+    const formattedMember = {
+      id: item.ID.toString(),
+      name: item["Customer name"],
+      email: item["Customer email"],
+      phone: item["Customer phone"] !== "" ? item["Customer phone"] : null,
+      active: item.Status === "Active",
+      province: item["Delivery province code"] !== "" ? item["Delivery province code"] : null,
+      city: item["Delivery city"] !== "" ? item["Delivery city"] : null,
+      zip: item["Delivery zip"] !== "" ? item["Delivery zip"] : null,
+      country: item["Delivery country code"] !== "" ? item["Delivery country code"] : null,
+      address1: item["Delivery address 1"] !== "" ? item["Delivery address 1"] : null,
+      address2: item["Delivery address 2"] !== "" ? item["Delivery address 2"] : null,
+    };
+    
+    formattedMembers.push(formattedMember);
+  });
+  return formattedMembers;
 }
 
-export default formatMemberData
+export default formatMemberData;

@@ -86,27 +86,75 @@ export const addMember: RequestHandler = async (req, res, next) => {
     });
   }
 };
-
 export const importMembers: RequestHandler = async (req, res, next) => {
   try {
-    const membersData: Member[] = req.body;
-    const importedMembers = [];
+    const output = {
+      failedImport: [],
+      successImport: [],
+    };
 
-    for (const memberData of membersData) {
+    const memberData = req.body;
+    if (memberData && Array.isArray(memberData) && memberData.length > 0) {
       const formattedMember = formatMemberData(memberData);
-      const newMember = await client.graphql({
-        query: createMember,
-        variables: {
-          input: formattedMember,
-        },
-      });
 
-      importedMembers.push(newMember);
+      await Promise.all(
+        formattedMember.map(async (member: Member) => {
+          try {
+            if (member && member.email !== "") {
+              const foundMember = await client.graphql({
+                query: listMembers,
+                variables: {
+                  filter: {
+                    email: { eq: member.email }
+                  }
+                }
+              });
+
+              if (
+                foundMember &&
+                foundMember.data &&
+                foundMember.data.listMembers.items.length > 0
+              ) {
+                const memberId = foundMember.data.listMembers.items[0].id;
+                const updatedMember = await client.graphql({
+                  query: updateMember,
+                  variables: {
+                    input: {
+                      id: memberId,
+                      // You need to provide other fields to update here
+                    },
+                  },
+                });
+                output.successImport.push(updatedMember.data.updateMember);
+              } else {
+                const createdMember = await client.graphql({
+                  query: createMember,
+                  variables: {
+                    input: member,
+                  },
+                });
+                output.successImport.push(createdMember.data.createMember);
+              }
+            }
+          } catch (error) {
+            console.log(error);
+            output.failedImport.push(member);
+          }
+        })
+      );
+
+      res.json(output);
+    } else {
+      res.status(400).json({ error: "Invalid or empty Members data provided" });
     }
-    res.json(importedMembers);
   } catch (error) {
-    console.error("Error importing members:", error);
-    res.status(500).json({ error: "Failed to import members" });
+    console.log(error);
+    
+    return res.status(500).send({
+      status: "failed",
+      message: "Error importing members. Please try again later...",
+      internalError: error,
+    });
   }
 };
 
