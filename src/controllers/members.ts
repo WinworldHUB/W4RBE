@@ -3,7 +3,7 @@ import { listMembers, getMember } from "../graphql/queries";
 import { Amplify, ResourcesConfig } from "aws-amplify";
 import { RequestHandler } from "express";
 import { Member } from "../awsApis";
-import { createMember } from "../graphql/mutations";
+import { createMember, updateMember } from "../graphql/mutations";
 //import config from "../aws-exports.js";
 
 const config: ResourcesConfig = {
@@ -75,3 +75,41 @@ export const addMember: RequestHandler = async (req, res, next) => {
 };
 
 
+
+export const deleteMemberById: RequestHandler = async (req, res, next) => {
+  try {
+    const memberId = req.params.id;
+    if (memberId) {
+      const foundMember = await client.graphql({
+        query: getMember,
+        variables: { id: req.params.id },
+      });
+
+      if (foundMember) {
+        const memberToDelete = foundMember.data.getMember;
+        if (memberToDelete.active === false) {
+          res.json({ message: "member already inactive" });
+          return;
+        }
+        const input = {
+          id: memberToDelete.id,
+          active: false,
+        };
+        const deletedmember = await client.graphql({
+          query: updateMember,
+          variables: {
+            input: input,
+          },
+        });
+
+        res.json(deletedmember.data.updateMember);
+      }
+    }
+  } catch (error) {
+    return res.status(500).send({
+      status: "failed",
+      message: "Error deleting member",
+      internalError: error,
+    });
+  }
+};
