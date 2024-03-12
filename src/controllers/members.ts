@@ -74,7 +74,39 @@ export const addMember: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const modifyMember: RequestHandler = async (req, res, next) => {
+  try {
+    const memberId = req.params.id;
+    if (memberId) {
+      const foundMember = await client.graphql({
+        query: getMember,
+        variables: { id: req.params.id },
+      });
 
+      if (foundMember) {
+        const memberToUpdate = foundMember.data.getMember;
+        const input = {
+          id: memberToUpdate.id,
+          active: true,
+        };
+        const updatedMember = await client.graphql({
+          query: updateMember,
+          variables: {
+            input: input,
+          },
+        });
+
+        res.json(updatedMember.data.updateMember);
+      }
+    }
+  } catch (error) {
+    return res.status(500).send({
+      status: "failed",
+      message: "Error updating member",
+      internalError: error,
+    });
+  }
+};
 
 export const deleteMemberById: RequestHandler = async (req, res, next) => {
   try {
