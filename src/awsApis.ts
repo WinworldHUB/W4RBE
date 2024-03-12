@@ -15,6 +15,7 @@ export type CreateProductInput = {
   featuredImage?: string | null,
   otherImages?: Array< string | null > | null,
   size?: string | null,
+  available?: boolean | null,
 };
 
 export type ModelProductConditionInput = {
@@ -29,6 +30,7 @@ export type ModelProductConditionInput = {
   featuredImage?: ModelStringInput | null,
   otherImages?: ModelStringInput | null,
   size?: ModelStringInput | null,
+  available?: ModelBooleanInput | null,
   and?: Array< ModelProductConditionInput | null > | null,
   or?: Array< ModelProductConditionInput | null > | null,
   not?: ModelProductConditionInput | null,
@@ -119,6 +121,7 @@ export type Product = {
   featuredImage?: string | null,
   otherImages?: Array< string | null > | null,
   size?: string | null,
+  available?: boolean | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -136,6 +139,7 @@ export type UpdateProductInput = {
   featuredImage?: string | null,
   otherImages?: Array< string | null > | null,
   size?: string | null,
+  available?: boolean | null,
 };
 
 export type DeleteProductInput = {
@@ -224,6 +228,7 @@ export type ModelProductFilterInput = {
   featuredImage?: ModelStringInput | null,
   otherImages?: ModelStringInput | null,
   size?: ModelStringInput | null,
+  available?: ModelBooleanInput | null,
   and?: Array< ModelProductFilterInput | null > | null,
   or?: Array< ModelProductFilterInput | null > | null,
   not?: ModelProductFilterInput | null,
@@ -288,6 +293,7 @@ export type ModelSubscriptionProductFilterInput = {
   featuredImage?: ModelSubscriptionStringInput | null,
   otherImages?: ModelSubscriptionStringInput | null,
   size?: ModelSubscriptionStringInput | null,
+  available?: ModelSubscriptionBooleanInput | null,
   and?: Array< ModelSubscriptionProductFilterInput | null > | null,
   or?: Array< ModelSubscriptionProductFilterInput | null > | null,
 };
@@ -388,6 +394,7 @@ export type CreateProductMutation = {
     featuredImage?: string | null,
     otherImages?: Array< string | null > | null,
     size?: string | null,
+    available?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -413,6 +420,7 @@ export type UpdateProductMutation = {
     featuredImage?: string | null,
     otherImages?: Array< string | null > | null,
     size?: string | null,
+    available?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -438,6 +446,7 @@ export type DeleteProductMutation = {
     featuredImage?: string | null,
     otherImages?: Array< string | null > | null,
     size?: string | null,
+    available?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -537,6 +546,7 @@ export type GetProductQuery = {
     featuredImage?: string | null,
     otherImages?: Array< string | null > | null,
     size?: string | null,
+    available?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -565,6 +575,7 @@ export type ListProductsQuery = {
       featuredImage?: string | null,
       otherImages?: Array< string | null > | null,
       size?: string | null,
+      available?: boolean | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -645,6 +656,7 @@ export type OnCreateProductSubscription = {
     featuredImage?: string | null,
     otherImages?: Array< string | null > | null,
     size?: string | null,
+    available?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -669,6 +681,7 @@ export type OnUpdateProductSubscription = {
     featuredImage?: string | null,
     otherImages?: Array< string | null > | null,
     size?: string | null,
+    available?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -693,6 +706,7 @@ export type OnDeleteProductSubscription = {
     featuredImage?: string | null,
     otherImages?: Array< string | null > | null,
     size?: string | null,
+    available?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,

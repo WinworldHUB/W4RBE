@@ -25,6 +25,7 @@ export const createProduct = /* GraphQL */ `mutation CreateProduct(
     featuredImage
     otherImages
     size
+    available
     createdAt
     updatedAt
     __typename
@@ -51,6 +52,7 @@ export const updateProduct = /* GraphQL */ `mutation UpdateProduct(
     featuredImage
     otherImages
     size
+    available
     createdAt
     updatedAt
     __typename
@@ -77,6 +79,7 @@ export const deleteProduct = /* GraphQL */ `mutation DeleteProduct(
     featuredImage
     otherImages
     size
+    available
     createdAt
     updatedAt
     __typename
