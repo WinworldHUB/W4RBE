@@ -88,7 +88,6 @@ export const importProducts: RequestHandler = async (req, res, next) => {
 
       // Use map instead of forEach to handle asynchronous operations
       await Promise.all(formattedProducts.map(async (product: Product) => {
-        console.log(product);
         
         try {
           if (product && product.id !== "") {
@@ -96,7 +95,6 @@ export const importProducts: RequestHandler = async (req, res, next) => {
               query: getProduct,
               variables: { id: product.id },
             });
-            console.log(foundProduct);
             
             if (foundProduct && foundProduct.data && foundProduct.data.getProduct) {
               const updatedProduct = await client.graphql({
