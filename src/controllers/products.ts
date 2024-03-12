@@ -12,7 +12,7 @@ import { generateClient } from "aws-amplify/api";
 import { listProducts, getProduct } from "../graphql/queries";
 import { createProduct, updateProduct } from "../graphql/mutations";
 import { Product } from "../awsApis";
-
+import {ImportProductsResponse} from "../types"
 const client = generateClient();
 
 export const getProductById: RequestHandler = async (req, res, next) => {
@@ -85,42 +85,43 @@ export const importProducts: RequestHandler = async (req, res, next) => {
     const productsData = req.body as Product[];
     if (productsData && productsData.length > 0) {
       const formattedProducts = formatImportedProducts(productsData);
-      forEach(formattedProducts, async (product: Product) => {
-        if (product && product.id !== "") {
-          client
-            .graphql({
+
+      // Use map instead of forEach to handle asynchronous operations
+      await Promise.all(formattedProducts.map(async (product: Product) => {
+        
+        try {
+          if (product && product.id !== "") {
+            const foundProduct = await client.graphql({
               query: getProduct,
               variables: { id: product.id },
-            })
-            .then((foundProduct) => {
-              if (foundProduct) {
-                client
-                  .graphql({
-                    query: updateProduct,
-                    variables: {
-                      input: productToDBForUpdate(product),
-                    },
-                  })
-                  .then((updatedProduct) =>
-                    output.successImport.push(updatedProduct.data.updateProduct)
-                  )
-                  .catch((reason) => output.failedImport.push(product));
-              } else {
-                client
-                  .graphql({
-                    query: createProduct,
-                    variables: {
-                      input: productToDBForUpdate(product),
-                    },
-                  })
-                  .then((createdProduct) =>
-                    output.successImport.push(createdProduct.data.createProduct)
-                  )
-                  .catch((reason) => output.failedImport.push(product));
-              }
             });
+            
+            if (foundProduct && foundProduct.data && foundProduct.data.getProduct) {
+              const updatedProduct = await client.graphql({
+                query: updateProduct,
+                variables: {
+                  input: productToDBForUpdate(product),
+                },
+              });
+              output.successImport.push(updatedProduct.data.updateProduct);
+            } else {
+              const createdProduct = await client.graphql({
+                query: createProduct,
+                variables: {
+                  input: productToDBForUpdate(product),
+                },
+              });
+              output.successImport.push(createdProduct.data.createProduct);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+          
+          output.failedImport.push(product);
         }
-      });
+      }));
+
+      // Send the response after all asynchronous operations are completed
       res.json(output);
     } else {
       res.status(500).json({ error: "No products data provided" });
@@ -133,6 +134,7 @@ export const importProducts: RequestHandler = async (req, res, next) => {
     });
   }
 };
+
 
 export const modifyProduct: RequestHandler = async (req, res, next) => {
   try {
@@ -158,8 +160,6 @@ export const modifyProduct: RequestHandler = async (req, res, next) => {
 };
 
 export const deleteProductById: RequestHandler = async (req, res, next) => {
-  //deleteProductModel(req.params.id);
-  //res.json({ message: "Product deleted Successfully" });
   try {
     const productId = req.params.id;
     if (productId) {
@@ -170,11 +170,18 @@ export const deleteProductById: RequestHandler = async (req, res, next) => {
 
       if (foundProduct) {
         const productToDelete = foundProduct.data.getProduct;
-        productToDelete.published = false;
+        if (productToDelete.published === false) {
+            res.json({message:"Product already unpublished"})
+            return; 
+        }
+        const input = {
+          id: productToDelete.id,
+          published: false,
+        };
         const deletedProduct = await client.graphql({
           query: updateProduct,
           variables: {
-            input: productToDelete,
+            input: input,
           },
         });
 
