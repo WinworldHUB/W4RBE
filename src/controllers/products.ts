@@ -1,5 +1,4 @@
 import { RequestHandler } from "express";
-//import { Product } from "../types/product";
 import { forEach } from "lodash";
 import {
   dbToProduct,
@@ -34,6 +33,13 @@ export const getAllProducts: RequestHandler = async (req, res, next) => {
     // List all items
     const allProducts = await client.graphql({
       query: listProducts,
+      variables: {
+        filter: {
+          published: {
+            eq: true,
+          },
+        },
+      },
     });
 
     return res.json(dbToProducts(allProducts.data.listProducts.items));
@@ -71,7 +77,7 @@ export const addProduct: RequestHandler = async (req, res, next) => {
 
 export const importProducts: RequestHandler = async (req, res, next) => {
   try {
-    const output: ImportProductsResponse = {
+    const output = {
       failedImport: [],
       successImport: [],
     };
