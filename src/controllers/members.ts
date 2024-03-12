@@ -4,6 +4,7 @@ import { Amplify, ResourcesConfig } from "aws-amplify";
 import { RequestHandler } from "express";
 import { Member } from "../awsApis";
 import { createMember, updateMember } from "../graphql/mutations";
+import formatMemberData from "../utils/validate-user";
 //import config from "../aws-exports.js";
 
 const config: ResourcesConfig = {
@@ -22,7 +23,7 @@ Amplify.configure(config);
 
 const client = generateClient();
 
-export const getAllMembers:RequestHandler = async (req, res, next) => {
+export const getAllMembers: RequestHandler = async (req, res, next) => {
   try {
     const members = await client.graphql({
       query: listMembers,
@@ -49,8 +50,6 @@ export const getMemberById: RequestHandler = async (req, res, next) => {
   }
 };
 
-
-
 export const addMember: RequestHandler = async (req, res, next) => {
   try {
     const member = req.body as Member;
@@ -71,6 +70,32 @@ export const addMember: RequestHandler = async (req, res, next) => {
       message: "Error saving member",
       internalError: error,
     });
+  }
+};
+
+export const importMembers: RequestHandler = async (req, res, next) => {
+  try {
+    const membersData: Member[] = req.body;
+    const importedMembers = [];
+
+    // Loop over the incoming members and format each one
+    for (const memberData of membersData) {
+      const formattedMember = formatMemberData(memberData);
+      const newMember = await client.graphql({
+        query: createMember,
+        variables: {
+          input: formattedMember,
+        },
+      });
+
+      importedMembers.push(newMember);
+    }
+
+    // Send the accumulated results as a single response
+    res.json(importedMembers);
+  } catch (error) {
+    console.error("Error importing members:", error);
+    res.status(500).json({ error: "Failed to import members" });
   }
 };
 

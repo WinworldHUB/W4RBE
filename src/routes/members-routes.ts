@@ -4,6 +4,7 @@ import {
   deleteMemberById,
   getAllMembers,
   getMemberById,
+  importMembers,
   modifyMember,
 } from "../controllers/members";
 
@@ -11,7 +12,7 @@ const memberRoutes = Router();
 memberRoutes.get("/", getAllMembers);
 memberRoutes.get("/:id", getMemberById);
 memberRoutes.post("/", addMember);
-// memberRoutes.post("/imports", importMembers);
+memberRoutes.post("/imports", importMembers);
 memberRoutes.put("/:id", modifyMember);
 memberRoutes.delete("/:id", deleteMemberById);
 

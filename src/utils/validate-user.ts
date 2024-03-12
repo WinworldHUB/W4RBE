@@ -1,82 +1,19 @@
-import { Member } from "../types/member";
-import _ from "lodash";
-import {
-  AuthUser,
-  SignUpInput,
-  fetchAuthSession,
-  getCurrentUser,
-  signIn,
-  signOut,
-  signUp,
-} from "aws-amplify/auth";
-import config from "../amplifyconfiguration.json";
-import { Amplify } from "aws-amplify";
+import { Member } from "../awsApis";
 
-Amplify.configure(config);
-const validateMemberData = (
-  jsonData: Member[]
-): {
-  newUsers: Member[];
-  updatedUsers: { id: number; updatedFields: string[] }[];
-  errors: string[];
-} => {
-  const response = {
-    newUsers: [],
-    updatedUsers: [],
-    errors: [],
+function formatMemberData(data) {
+  return {
+    id: data.ID.toString(),
+    name: data["Customer name"],
+    email: data["Customer email"],
+    phone: data["Customer phone"] !== "" ? data["Customer phone"] : null,
+    active: data.Status === "Active",
+    province: data["Delivery province code"] !== "" ? data["Delivery province code"] : null,
+    city: data["Delivery city"] !== "" ? data["Delivery city"] : null,
+    zip: data["Delivery zip"] !== "" ? data["Delivery zip"] : null,
+    country: data["Delivery country code"] !== "" ? data["Delivery country code"] : null,
+    address1: data["Delivery address 1"] !== "" ? data["Delivery address 1"] : null,
+    address2: data["Delivery address 2"] !== "" ? data["Delivery address 2"] : null,
   };
+}
 
-  // jsonData.forEach((newUser) => {
-  //   const requiredFields = [
-  //     "ID",
-  //     "Customer ID",
-  //     "Customer email",
-  //     "Customer name",
-  //   ];
-  //   const missingFields = requiredFields.filter(
-  //     (field) =>
-  //       !newUser.hasOwnProperty(field) ||
-  //       !newUser[field] ||
-  //       (typeof newUser[field] === "string" && newUser[field].trim() === "")
-  //   );
-
-  //   if (missingFields.length === 0) {
-  //     const foundMember = getMember(newUser["Customer email"]);
-  //     if (foundMember) {
-  //       if (!_.isEqual(foundMember, newUser)) {
-  //         updateMember(newUser);
-  //         response.updatedUsers.push(newUser);
-  //       }
-  //     } else {
-  //       const insertedMember = insertMember(newUser);
-  //       if (insertedMember) {
-  //         const signUpDetails: SignUpInput = {
-  //           username: insertedMember["Customer email"],
-  //           password: "Password@1",
-  //           options: {
-  //             autoSignIn: true,
-  //             userAttributes: {
-  //               email: insertedMember["Customer email"],
-  //               name: insertedMember["Customer name"],
-  //             },
-  //           },
-  //         };
-  //         signUp(signUpDetails)
-  //           .then((value) => console.log(value))
-  //           .catch((reason) => console.error(reason));
-  //       }
-  //       response.newUsers.push(newUser);
-  //     }
-  //   } else {
-  //     missingFields.forEach((field) => {
-  //       response.errors.push(
-  //         `Member is missing required field '${field}'. It will not be saved.`
-  //       );
-  //     });
-  //   }
-  // });
-
-  return response;
-};
-
-export default validateMemberData;
+export default formatMemberData
