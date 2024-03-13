@@ -26,5 +26,9 @@ type Member @model @auth(rules: [{allow: public}]) {
   country: String
   address1: String
   address2: String
+  deliveryPerson: String
+  deliveryEmail: String
+  deliveryAddress1: String
+  deliveryAddress2: String
 }
  
