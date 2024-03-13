@@ -55,7 +55,7 @@ export const getAllProducts: RequestHandler = async (req, res, next) => {
       },
     });
 
-    return res.json(dbToProducts(allProducts.data.listProducts.items));
+    return res.json(allProducts.data.listProducts.items);
   } catch (error) {
     return res.status(500).send({
       status: "failed",
