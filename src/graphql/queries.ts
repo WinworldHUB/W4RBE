@@ -8,6 +8,45 @@ type GeneratedQuery<InputType, OutputType> = string & {
   __generatedQueryOutput: OutputType;
 };
 
+export const getOrder = /* GraphQL */ `query GetOrder($id: ID!) {
+  getOrder(id: $id) {
+    id
+    number
+    value
+    currency
+    products
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.GetOrderQueryVariables, APITypes.GetOrderQuery>;
+export const listOrders = /* GraphQL */ `query ListOrders(
+  $filter: ModelOrderFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      number
+      value
+      currency
+      products
+      status
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListOrdersQueryVariables,
+  APITypes.ListOrdersQuery
+>;
 export const getProduct = /* GraphQL */ `query GetProduct($id: ID!) {
   getProduct(id: $id) {
     id
@@ -67,8 +106,8 @@ export const listProducts = /* GraphQL */ `query ListProducts(
 export const getMember = /* GraphQL */ `query GetMember($id: ID!) {
   getMember(id: $id) {
     id
-    email
     name
+    email
     phone
     active
     province
@@ -95,8 +134,8 @@ export const listMembers = /* GraphQL */ `query ListMembers(
   listMembers(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      email
       name
+      email
       phone
       active
       province

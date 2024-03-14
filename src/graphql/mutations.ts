@@ -8,6 +8,66 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const createOrder = /* GraphQL */ `mutation CreateOrder(
+  $input: CreateOrderInput!
+  $condition: ModelOrderConditionInput
+) {
+  createOrder(input: $input, condition: $condition) {
+    id
+    number
+    value
+    currency
+    products
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateOrderMutationVariables,
+  APITypes.CreateOrderMutation
+>;
+export const updateOrder = /* GraphQL */ `mutation UpdateOrder(
+  $input: UpdateOrderInput!
+  $condition: ModelOrderConditionInput
+) {
+  updateOrder(input: $input, condition: $condition) {
+    id
+    number
+    value
+    currency
+    products
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateOrderMutationVariables,
+  APITypes.UpdateOrderMutation
+>;
+export const deleteOrder = /* GraphQL */ `mutation DeleteOrder(
+  $input: DeleteOrderInput!
+  $condition: ModelOrderConditionInput
+) {
+  deleteOrder(input: $input, condition: $condition) {
+    id
+    number
+    value
+    currency
+    products
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteOrderMutationVariables,
+  APITypes.DeleteOrderMutation
+>;
 export const createProduct = /* GraphQL */ `mutation CreateProduct(
   $input: CreateProductInput!
   $condition: ModelProductConditionInput
@@ -95,8 +155,8 @@ export const createMember = /* GraphQL */ `mutation CreateMember(
 ) {
   createMember(input: $input, condition: $condition) {
     id
-    email
     name
+    email
     phone
     active
     province
@@ -124,8 +184,8 @@ export const updateMember = /* GraphQL */ `mutation UpdateMember(
 ) {
   updateMember(input: $input, condition: $condition) {
     id
-    email
     name
+    email
     phone
     active
     province
@@ -153,8 +213,8 @@ export const deleteMember = /* GraphQL */ `mutation DeleteMember(
 ) {
   deleteMember(input: $input, condition: $condition) {
     id
-    email
     name
+    email
     phone
     active
     province
