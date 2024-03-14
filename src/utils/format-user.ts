@@ -9,7 +9,7 @@ function formatMemberData(data): Member[] {
       name: item["Customer name"],
       email: item["Customer email"],
       phone: item["Customer phone"] !== "" ? item["Customer phone"] : null,
-      active: item.Status === "Active",
+      active: item.Status.toString().toLowerCase() === "active",
       province: item["Delivery province code"] !== "" ? item["Delivery province code"] : null,
       city: item["Delivery city"] !== "" ? item["Delivery city"] : null,
       zip: item["Delivery zip"] !== "" ? item["Delivery zip"] : null,
