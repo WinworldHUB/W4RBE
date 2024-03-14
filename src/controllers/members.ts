@@ -167,6 +167,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
 export const modifyMember: RequestHandler = async (req, res, next) => {
   try {
     const email = req.params.email;
+    const requestBody = req.body;
     if (email) {
       const foundMember = await client.graphql({
         query: listMembers,
@@ -179,14 +180,16 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
 
       if (foundMember && foundMember.data.listMembers.items.length > 0) {
         const memberToUpdate = foundMember.data.listMembers.items[0];
+
         const input = {
-          id: memberToUpdate.id,
-          active: true,
+          ...requestBody
         };
+        
         const updatedMember = await client.graphql({
           query: updateMember,
           variables: {
             input: input,
+            condition: { email:  { eq: memberToUpdate.email } }
           },
         });
 
@@ -198,6 +201,7 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
       res.status(400).json({ error: "Email parameter missing" });
     }
   } catch (error) {
+    
     return res.status(500).send({
       status: "failed",
       message: "Error updating member",
