@@ -34,7 +34,7 @@ export const getProductById: RequestHandler = async (req, res, next) => {
       query: getProduct,
       variables: { id: req.params.id },
     });
-    res.json(dbToProduct(product.data.getProduct));
+    res.json(product.data.getProduct);
   } catch (error) {
     console.error("Error fetching product:", error);
     res.status(500).json({ error: "Failed to fetch product" });
