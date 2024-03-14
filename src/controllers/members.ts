@@ -33,7 +33,7 @@ export const getAllMembers: RequestHandler = async (req, res, next) => {
             eq: true,
           },
         },
-      }
+      },
     });
 
     console.log(members);
@@ -50,10 +50,9 @@ export const getMemberById: RequestHandler = async (req, res, next) => {
       query: listMembers,
       variables: {
         filter: {
-          email: { eq: req.params.email }
-        }
-        
-      }
+          email: { eq: req.params.email },
+        },
+      },
     });
 
     console.log(members);
@@ -105,16 +104,12 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                 query: listMembers,
                 variables: {
                   filter: {
-                    email: { eq: member.email }
-                  }
-                }
+                    email: { eq: member.email },
+                  },
+                },
               });
 
-              if (
-                foundMember &&
-                foundMember.data &&
-                foundMember.data.listMembers.items.length > 0
-              ) {
+              if (foundMember?.data?.listMembers?.items?.length > 0) {
                 const memberId = foundMember.data.listMembers.items[0].id;
                 const updatedMember = await client.graphql({
                   query: updateMember,
@@ -125,7 +120,11 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                     },
                   },
                 });
-                output.successImport.push(updatedMember.data.updateMember);
+                if (updatedMember) {
+                  output.successImport.push(updatedMember.data.updateMember);
+                } else {
+                  output.failedImport.push(updatedMember.data.updateMember);
+                }
               } else {
                 const createdMember = await client.graphql({
                   query: createMember,
@@ -133,7 +132,14 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                     input: member,
                   },
                 });
-                output.successImport.push(createdMember.data.createMember);
+
+                if (createdMember) {
+                  // Register user
+
+                  output.successImport.push(createdMember.data.createMember);
+                } else {
+                  output.failedImport.push(createdMember.data.createMember);
+                }
               }
             }
           } catch (error) {
@@ -145,11 +151,11 @@ export const importMembers: RequestHandler = async (req, res, next) => {
 
       res.json(output);
     } else {
-      res.status(400).json({ error: "Invalid or empty Members data provided" });
+      res.status(500).json({ error: "Invalid or empty Members data provided" });
     }
   } catch (error) {
     console.log(error);
-    
+
     return res.status(500).send({
       status: "failed",
       message: "Error importing members. Please try again later...",
@@ -166,7 +172,7 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
         query: listMembers,
         variables: {
           filter: {
-            email: { eq: email }
+            email: { eq: email },
           },
         },
       });
@@ -208,7 +214,7 @@ export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
         query: listMembers,
         variables: {
           filter: {
-            email: { eq: email }
+            email: { eq: email },
           },
         },
       });
