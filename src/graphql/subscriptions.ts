@@ -11,11 +11,7 @@ type GeneratedSubscription<InputType, OutputType> = string & {
 export const onCreateOrder = /* GraphQL */ `subscription OnCreateOrder($filter: ModelSubscriptionOrderFilterInput) {
   onCreateOrder(filter: $filter) {
     id
-    number
-    value
-    currency
-    products
-    status
+    orderNumber
     createdAt
     updatedAt
     __typename
@@ -28,11 +24,7 @@ export const onCreateOrder = /* GraphQL */ `subscription OnCreateOrder($filter: 
 export const onUpdateOrder = /* GraphQL */ `subscription OnUpdateOrder($filter: ModelSubscriptionOrderFilterInput) {
   onUpdateOrder(filter: $filter) {
     id
-    number
-    value
-    currency
-    products
-    status
+    orderNumber
     createdAt
     updatedAt
     __typename
@@ -45,11 +37,7 @@ export const onUpdateOrder = /* GraphQL */ `subscription OnUpdateOrder($filter: 
 export const onDeleteOrder = /* GraphQL */ `subscription OnDeleteOrder($filter: ModelSubscriptionOrderFilterInput) {
   onDeleteOrder(filter: $filter) {
     id
-    number
-    value
-    currency
-    products
-    status
+    orderNumber
     createdAt
     updatedAt
     __typename

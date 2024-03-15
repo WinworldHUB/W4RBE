@@ -4,19 +4,11 @@
 
 export type CreateOrderInput = {
   id?: string | null,
-  number: string,
-  value: number,
-  currency: string,
-  products: string,
-  status: string,
+  orderNumber?: string | null,
 };
 
 export type ModelOrderConditionInput = {
-  number?: ModelStringInput | null,
-  value?: ModelFloatInput | null,
-  currency?: ModelStringInput | null,
-  products?: ModelStringInput | null,
-  status?: ModelStringInput | null,
+  orderNumber?: ModelStringInput | null,
   and?: Array< ModelOrderConditionInput | null > | null,
   or?: Array< ModelOrderConditionInput | null > | null,
   not?: ModelOrderConditionInput | null,
@@ -62,37 +54,17 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type ModelFloatInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type Order = {
   __typename: "Order",
   id: string,
-  number: string,
-  value: number,
-  currency: string,
-  products: string,
-  status: string,
+  orderNumber?: string | null,
   createdAt: string,
   updatedAt: string,
 };
 
 export type UpdateOrderInput = {
   id: string,
-  number?: string | null,
-  value?: number | null,
-  currency?: string | null,
-  products?: string | null,
-  status?: string | null,
+  orderNumber?: string | null,
 };
 
 export type DeleteOrderInput = {
@@ -134,6 +106,18 @@ export type ModelProductConditionInput = {
 };
 
 export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type ModelFloatInput = {
   ne?: number | null,
   eq?: number | null,
   le?: number | null,
@@ -274,11 +258,7 @@ export type DeleteMemberInput = {
 
 export type ModelOrderFilterInput = {
   id?: ModelIDInput | null,
-  number?: ModelStringInput | null,
-  value?: ModelFloatInput | null,
-  currency?: ModelStringInput | null,
-  products?: ModelStringInput | null,
-  status?: ModelStringInput | null,
+  orderNumber?: ModelStringInput | null,
   and?: Array< ModelOrderFilterInput | null > | null,
   or?: Array< ModelOrderFilterInput | null > | null,
   not?: ModelOrderFilterInput | null,
@@ -360,11 +340,7 @@ export type ModelMemberConnection = {
 
 export type ModelSubscriptionOrderFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  number?: ModelSubscriptionStringInput | null,
-  value?: ModelSubscriptionFloatInput | null,
-  currency?: ModelSubscriptionStringInput | null,
-  products?: ModelSubscriptionStringInput | null,
-  status?: ModelSubscriptionStringInput | null,
+  orderNumber?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionOrderFilterInput | null > | null,
   or?: Array< ModelSubscriptionOrderFilterInput | null > | null,
 };
@@ -399,18 +375,6 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionFloatInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  in?: Array< number | null > | null,
-  notIn?: Array< number | null > | null,
-};
-
 export type ModelSubscriptionProductFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   title?: ModelSubscriptionStringInput | null,
@@ -430,6 +394,18 @@ export type ModelSubscriptionProductFilterInput = {
 };
 
 export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
+};
+
+export type ModelSubscriptionFloatInput = {
   ne?: number | null,
   eq?: number | null,
   le?: number | null,
@@ -475,11 +451,7 @@ export type CreateOrderMutation = {
   createOrder?:  {
     __typename: "Order",
     id: string,
-    number: string,
-    value: number,
-    currency: string,
-    products: string,
-    status: string,
+    orderNumber?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -494,11 +466,7 @@ export type UpdateOrderMutation = {
   updateOrder?:  {
     __typename: "Order",
     id: string,
-    number: string,
-    value: number,
-    currency: string,
-    products: string,
-    status: string,
+    orderNumber?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -513,11 +481,7 @@ export type DeleteOrderMutation = {
   deleteOrder?:  {
     __typename: "Order",
     id: string,
-    number: string,
-    value: number,
-    currency: string,
-    products: string,
-    status: string,
+    orderNumber?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -693,11 +657,7 @@ export type GetOrderQuery = {
   getOrder?:  {
     __typename: "Order",
     id: string,
-    number: string,
-    value: number,
-    currency: string,
-    products: string,
-    status: string,
+    orderNumber?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -715,11 +675,7 @@ export type ListOrdersQuery = {
     items:  Array< {
       __typename: "Order",
       id: string,
-      number: string,
-      value: number,
-      currency: string,
-      products: string,
-      status: string,
+      orderNumber?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -851,11 +807,7 @@ export type OnCreateOrderSubscription = {
   onCreateOrder?:  {
     __typename: "Order",
     id: string,
-    number: string,
-    value: number,
-    currency: string,
-    products: string,
-    status: string,
+    orderNumber?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -869,11 +821,7 @@ export type OnUpdateOrderSubscription = {
   onUpdateOrder?:  {
     __typename: "Order",
     id: string,
-    number: string,
-    value: number,
-    currency: string,
-    products: string,
-    status: string,
+    orderNumber?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -887,11 +835,7 @@ export type OnDeleteOrderSubscription = {
   onDeleteOrder?:  {
     __typename: "Order",
     id: string,
-    number: string,
-    value: number,
-    currency: string,
-    products: string,
-    status: string,
+    orderNumber?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,

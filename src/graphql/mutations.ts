@@ -14,11 +14,7 @@ export const createOrder = /* GraphQL */ `mutation CreateOrder(
 ) {
   createOrder(input: $input, condition: $condition) {
     id
-    number
-    value
-    currency
-    products
-    status
+    orderNumber
     createdAt
     updatedAt
     __typename
@@ -34,11 +30,7 @@ export const updateOrder = /* GraphQL */ `mutation UpdateOrder(
 ) {
   updateOrder(input: $input, condition: $condition) {
     id
-    number
-    value
-    currency
-    products
-    status
+    orderNumber
     createdAt
     updatedAt
     __typename
@@ -54,11 +46,7 @@ export const deleteOrder = /* GraphQL */ `mutation DeleteOrder(
 ) {
   deleteOrder(input: $input, condition: $condition) {
     id
-    number
-    value
-    currency
-    products
-    status
+    orderNumber
     createdAt
     updatedAt
     __typename

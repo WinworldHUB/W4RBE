@@ -11,11 +11,7 @@ type GeneratedQuery<InputType, OutputType> = string & {
 export const getOrder = /* GraphQL */ `query GetOrder($id: ID!) {
   getOrder(id: $id) {
     id
-    number
-    value
-    currency
-    products
-    status
+    orderNumber
     createdAt
     updatedAt
     __typename
@@ -30,11 +26,7 @@ export const listOrders = /* GraphQL */ `query ListOrders(
   listOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      number
-      value
-      currency
-      products
-      status
+      orderNumber
       createdAt
       updatedAt
       __typename
