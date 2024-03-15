@@ -12,6 +12,10 @@ export const getOrder = /* GraphQL */ `query GetOrder($id: ID!) {
   getOrder(id: $id) {
     id
     orderNumber
+    orderDate
+    orderValue
+    products
+    deliveryDetails
     createdAt
     updatedAt
     __typename
@@ -27,6 +31,10 @@ export const listOrders = /* GraphQL */ `query ListOrders(
     items {
       id
       orderNumber
+      orderDate
+      orderValue
+      products
+      deliveryDetails
       createdAt
       updatedAt
       __typename

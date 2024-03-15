@@ -12,6 +12,10 @@ export const onCreateOrder = /* GraphQL */ `subscription OnCreateOrder($filter: 
   onCreateOrder(filter: $filter) {
     id
     orderNumber
+    orderDate
+    orderValue
+    products
+    deliveryDetails
     createdAt
     updatedAt
     __typename
@@ -25,6 +29,10 @@ export const onUpdateOrder = /* GraphQL */ `subscription OnUpdateOrder($filter: 
   onUpdateOrder(filter: $filter) {
     id
     orderNumber
+    orderDate
+    orderValue
+    products
+    deliveryDetails
     createdAt
     updatedAt
     __typename
@@ -38,6 +46,10 @@ export const onDeleteOrder = /* GraphQL */ `subscription OnDeleteOrder($filter: 
   onDeleteOrder(filter: $filter) {
     id
     orderNumber
+    orderDate
+    orderValue
+    products
+    deliveryDetails
     createdAt
     updatedAt
     __typename

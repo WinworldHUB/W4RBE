@@ -1,6 +1,10 @@
 type Order @model @auth(rules: [{allow: public}]) {
   id: ID!
-  orderNumber: String
+  orderNumber: String!
+  orderDate: AWSDate!
+  orderValue: Float!
+  products: String!
+  deliveryDetails: String!
 }
 
 type Product @model @auth(rules: [{allow: public}]) {
