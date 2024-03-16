@@ -19,7 +19,10 @@
         "W4RBE": {}
       },
       "function": {
-        "fnDeliveryStatusTracker": {}
+        "fnDeliveryStatusTracker": {
+          "deploymentBucketName": "amplify-w4rbe-dev-102521-deployment",
+          "s3Key": "amplify-builds/fnDeliveryStatusTracker-536d75707045764b6454-build.zip"
+        }
       }
     }
   }

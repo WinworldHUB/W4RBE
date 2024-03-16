@@ -62,5 +62,23 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
+  },
+  "parameters": {
+    "AMPLIFY_function_fnDeliveryStatusTracker_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fnDeliveryStatusTracker"
+        }
+      ]
+    },
+    "AMPLIFY_function_fnDeliveryStatusTracker_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fnDeliveryStatusTracker"
+        }
+      ]
+    }
   }
 }
