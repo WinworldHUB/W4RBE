@@ -1,3 +1,10 @@
+enum OrderStatus {
+  UNPAID
+  PAID
+  PROCESSING
+  DONE
+}
+
 type Order @model @auth(rules: [{allow: public}]) {
   id: ID!
   orderNumber: String!
@@ -5,6 +12,9 @@ type Order @model @auth(rules: [{allow: public}]) {
   orderValue: Float!
   products: String!
   deliveryDetails: String!
+  status: OrderStatus!
+  trackingStatus: String
+  trackingNumber: String
 }
 
 type Product @model @auth(rules: [{allow: public}]) {
