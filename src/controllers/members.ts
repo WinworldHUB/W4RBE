@@ -1,25 +1,26 @@
 import { generateClient } from "aws-amplify/api";
-import { listMembers, getMember } from "../graphql/queries";
-import { Amplify, ResourcesConfig } from "aws-amplify";
+import { listMembers } from "../graphql/queries";
+import { Amplify } from "aws-amplify";
 import { RequestHandler } from "express";
 import { Member } from "../awsApis";
 import { createMember, updateMember } from "../graphql/mutations";
 import formatMemberData from "../utils/format-user";
+import { AWS_API_CONFIG } from "../constants/constants";
 //import config from "../aws-exports.js";
 
-const config: ResourcesConfig = {
-  API: {
-    GraphQL: {
-      endpoint:
-        "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
-      region: "eu-west-2",
-      defaultAuthMode: "apiKey",
-      apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
-    },
-  },
-};
+// const config: ResourcesConfig = {
+//   API: {
+//     GraphQL: {
+//       endpoint:
+//         "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
+//       region: "eu-west-2",
+//       defaultAuthMode: "apiKey",
+//       apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
+//     },
+//   },
+// };
 
-Amplify.configure(config);
+Amplify.configure(AWS_API_CONFIG);
 
 const client = generateClient();
 
@@ -182,14 +183,14 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
         const memberToUpdate = foundMember.data.listMembers.items[0];
 
         const input = {
-          ...requestBody
+          ...requestBody,
         };
-        
+
         const updatedMember = await client.graphql({
           query: updateMember,
           variables: {
             input: input,
-            condition: { email:  { eq: memberToUpdate.email } }
+            condition: { email: { eq: memberToUpdate.email } },
           },
         });
 
@@ -201,7 +202,6 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
       res.status(400).json({ error: "Email parameter missing" });
     }
   } catch (error) {
-    
     return res.status(500).send({
       status: "failed",
       message: "Error updating member",

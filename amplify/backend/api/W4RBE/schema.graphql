@@ -1,8 +1,14 @@
+enum PackagingType {
+  BOX_PACK
+  FLAT_PACK
+}
+
 enum OrderStatus {
   UNPAID
   PAID
   PROCESSING
   DONE
+  CANCELLED
 }
 
 type Order @model @auth(rules: [{allow: public}]) {
@@ -15,6 +21,7 @@ type Order @model @auth(rules: [{allow: public}]) {
   status: OrderStatus!
   trackingStatus: String
   trackingNumber: String
+  packagingType: PackagingType!
 }
 
 type Product @model @auth(rules: [{allow: public}]) {

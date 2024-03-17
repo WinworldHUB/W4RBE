@@ -1,7 +1,5 @@
 import { RequestHandler } from "express";
 import {
-  dbToProduct,
-  dbToProducts,
   formatImportedProducts,
   productToDB,
   productToDBForUpdate,
@@ -11,20 +9,21 @@ import { generateClient } from "aws-amplify/api";
 import { listProducts, getProduct } from "../graphql/queries";
 import { createProduct, updateProduct } from "../graphql/mutations";
 import { Product } from "../awsApis";
-import { Amplify, ResourcesConfig } from "aws-amplify";
-const config: ResourcesConfig = {
-  API: {
-    GraphQL: {
-      endpoint:
-        "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
-      region: "eu-west-2",
-      defaultAuthMode: "apiKey",
-      apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
-    },
-  },
-};
+import { Amplify } from "aws-amplify";
+import { AWS_API_CONFIG } from "../constants/constants";
+// const config: ResourcesConfig = {
+//   API: {
+//     GraphQL: {
+//       endpoint:
+//         "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
+//       region: "eu-west-2",
+//       defaultAuthMode: "apiKey",
+//       apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
+//     },
+//   },
+// };
 
-Amplify.configure(config);
+Amplify.configure(AWS_API_CONFIG);
 
 const client = generateClient();
 

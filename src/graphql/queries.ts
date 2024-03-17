@@ -19,6 +19,7 @@ export const getOrder = /* GraphQL */ `query GetOrder($id: ID!) {
     status
     trackingStatus
     trackingNumber
+    packagingType
     createdAt
     updatedAt
     __typename
@@ -41,6 +42,7 @@ export const listOrders = /* GraphQL */ `query ListOrders(
       status
       trackingStatus
       trackingNumber
+      packagingType
       createdAt
       updatedAt
       __typename
