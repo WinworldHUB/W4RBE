@@ -12,7 +12,8 @@ See the License for the specific language governing permissions and limitations 
 const express = require('express')
 const bodyParser = require('body-parser')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
-
+const tracker = require('delivery-tracker');
+const listOrders = require('../../../../../src/graphql/queries').listOrders;
 // declare a new express app
 const app = express()
 app.use(bodyParser.json())
@@ -25,67 +26,57 @@ app.use(function(req, res, next) {
   next()
 });
 
+export const AWS_API_CONFIG = {
+  API: {
+    GraphQL: {
+      endpoint:
+        "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
+      region: "eu-west-2",
+      defaultAuthMode: "apiKey",
+      apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
+    },
+  },
+};
+Amplify.configure(AWS_API_CONFIG);
 
-/**********************
- * Example get method *
- **********************/
 
-app.get('/item', function(req, res) {
-  // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
+app.get('/track-orders', async (req, res) => {
+  try {
+    const client = generateClient();
+    const orders = await client.graphql({
+      query: listOrders,
+      variables: {
+        filter: {
+          orderNumber: {
+            eq: req.query.orderNumber
+          }
+        }
+      }
+    });
+
+    // Implement your tracking logic here
+    const trackingNumbers = orders.data.listOrders.items.map(order => order.trackingNumber);
+    const results = {};
+
+    trackingNumbers.forEach(trackingNumber => {
+      const courier = tracker.courier(tracker.COURIER.ROYALMAIL.CODE);
+      courier.trace(trackingNumber, (err, result) => {
+        if (err) {
+          console.error(`Error for ${trackingNumber}:`, err);
+          results[trackingNumber] = { error: err.message };
+        } else {
+          console.log(`Tracking Result for ${trackingNumber}:`, result);
+          results[trackingNumber] = result;
+        }
+      });
+    });
+
+    res.json({ success: true, results });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Failed to retrieve orders" });
+  }
 });
-
-app.get('/item/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
-});
-
-/****************************
-* Example post method *
-****************************/
-
-app.post('/item', function(req, res) {
-  // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
-});
-
-app.post('/item/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
-});
-
-/****************************
-* Example put method *
-****************************/
-
-app.put('/item', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
-
-app.put('/item/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
-
-/****************************
-* Example delete method *
-****************************/
-
-app.delete('/item', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
-});
-
-app.delete('/item/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
-});
-
-app.listen(3000, function() {
-    console.log("App started")
-});
-
 // Export the app object. When executing the application local this does nothing. However,
 // to port it to AWS Lambda we will create a wrapper around that will load the app from
 // this file
