@@ -22,7 +22,7 @@ export const getOrderById: RequestHandler = async (req, res, next) => {
     res.json(order.data.getOrder);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve order" });
+    res.status(500).json({ message: "Failed to retrieve order", error: error });
   }
 };
 export const getOrderByOrderNumber: RequestHandler = async (req, res, next) => {
@@ -42,7 +42,7 @@ export const getOrderByOrderNumber: RequestHandler = async (req, res, next) => {
     res.json(orders.data.listOrders.items[0]);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve order" });
+    res.status(500).json({ message: "Failed to retrieve order", error: error });
   }
 };
 
@@ -56,7 +56,9 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
     res.json(orders.data.listOrders.items);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve orders" });
+    res
+      .status(500)
+      .json({ message: "Failed to retrieve orders", error: error });
   }
 };
 
@@ -66,8 +68,9 @@ export const addOrder: RequestHandler = async (req, res, next) => {
 
     if (!order) {
       res.status(500).json({
-        error:
+        message:
           "Invalid order. Order details are not in correct format or empty",
+        error: null,
       });
       return;
     }
@@ -83,7 +86,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     res.json(newOrder.data.createOrder);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to create order" });
+    res.status(500).json({ message: "Failed to create order", error: error });
   }
 };
 
@@ -93,8 +96,9 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
 
     if (!order) {
       res.status(500).json({
-        error:
+        message:
           "Invalid order. Order details are not in correct format or empty",
+        error: null,
       });
       return;
     }
@@ -110,7 +114,7 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
     res.json(updatedOrder.data.updateOrder);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to update order" });
+    res.status(500).json({ message: "Failed to update order", error: error });
   }
 };
 
@@ -125,8 +129,9 @@ export const deleteOrderById: RequestHandler = async (req, res, next) => {
 
     if (!order) {
       res.status(500).json({
-        error:
+        message:
           "Invalid order. Order details are not in correct format or empty",
+        error: null,
       });
       return;
     }
@@ -147,6 +152,6 @@ export const deleteOrderById: RequestHandler = async (req, res, next) => {
     res.json(deletedOrder.data.updateOrder);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to delete order" });
+    res.status(500).json({ message: "Failed to delete order", error: error });
   }
 };
