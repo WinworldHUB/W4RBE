@@ -10,6 +10,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use((req, res, next) => {
   const allowedOrigins = [
     "https://main.dt2z8g98byon5.amplifyapp.com",
+    "https://master.d212wzb60r31lk.amplifyapp.com",
     "http://localhost:3001",
     "http://localhost:3000",
   ];
@@ -18,11 +19,13 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
   res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Access-Control-Allow-Origin, Access-Control-Allow-Headers");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, Content-Type, Access-Control-Allow-Origin, Access-Control-Allow-Headers"
+  );
   res.header("Access-Control-Allow-Credentials", "true");
   return next();
 });
-
 
 app.use("/products", productRoutes);
 app.use("/members", memberRoutes);
