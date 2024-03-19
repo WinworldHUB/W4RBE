@@ -1,24 +1,11 @@
 import { generateClient } from "aws-amplify/api";
-import { listMembers } from "../graphql/queries";
+import { getMember, listMembers } from "../graphql/queries";
 import { Amplify } from "aws-amplify";
 import { RequestHandler } from "express";
 import { Member } from "../awsApis";
 import { createMember, updateMember } from "../graphql/mutations";
 import formatMemberData from "../utils/format-user";
 import { AWS_API_CONFIG } from "../constants/constants";
-//import config from "../aws-exports.js";
-
-// const config: ResourcesConfig = {
-//   API: {
-//     GraphQL: {
-//       endpoint:
-//         "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
-//       region: "eu-west-2",
-//       defaultAuthMode: "apiKey",
-//       apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
-//     },
-//   },
-// };
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -48,6 +35,23 @@ export const getAllMembers: RequestHandler = async (req, res, next) => {
 export const getMemberById: RequestHandler = async (req, res, next) => {
   try {
     const members = await client.graphql({
+      query: getMember,
+      variables: {
+        id: req.params.id,
+      },
+    });
+
+    console.log(members);
+    res.json(members.data.getMember);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve members" });
+  }
+};
+
+export const getMemberByEmail: RequestHandler = async (req, res, next) => {
+  try {
+    const members = await client.graphql({
       query: listMembers,
       variables: {
         filter: {
@@ -57,7 +61,7 @@ export const getMemberById: RequestHandler = async (req, res, next) => {
     });
 
     console.log(members);
-    res.json(members.data.listMembers.items);
+    res.json(members.data.listMembers.items[0]);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve members" });
