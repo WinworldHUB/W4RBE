@@ -5,6 +5,7 @@ import { generateClient } from "aws-amplify/api";
 import { getOrder, listOrders } from "../graphql/queries";
 import { Order, OrderStatus } from "../awsApis";
 import { createOrder, updateOrder } from "../graphql/mutations";
+import jwt from "jsonwebtoken";
 
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
@@ -65,7 +66,13 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
 export const addOrder: RequestHandler = async (req, res, next) => {
   try {
     const order = req.body as Order;
-
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(token);
+    console.log(decodedToken);
+    const memberId = decodedToken.sub;
+    console.log(memberId);
+    order.memberId = memberId;
+    
     if (!order) {
       res.status(500).json({
         message:
