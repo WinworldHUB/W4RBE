@@ -1,24 +1,34 @@
 import { Member } from "../awsApis";
 
-function formatMemberData(data): Member[] {
+function formatMemberData(members): Member[] {
   const formattedMembers = [];
 
-  data.forEach((item) => {
-    const formattedMember = {
-      id: item.ID.toString(),
-      name: item["Customer name"],
-      email: item["Customer email"],
-      phone: item["Customer phone"] !== "" ? item["Customer phone"] : null,
-      active: /^active$/i.test(item.Status),
-      province: item["Delivery province code"] !== "" ? item["Delivery province code"] : null,
-      city: item["Delivery city"] !== "" ? item["Delivery city"] : null,
-      zip: item["Delivery zip"] !== "" ? item["Delivery zip"] : null,
-      country: item["Delivery country code"] !== "" ? item["Delivery country code"] : null,
-      address1: item["Delivery address 1"] !== "" ? item["Delivery address 1"] : null,
-      address2: item["Delivery address 2"] !== "" ? item["Delivery address 2"] : null,
-    };
-    
-    formattedMembers.push(formattedMember);
+ members.forEach((member) => {
+    try {
+
+      const formattedMember = {
+        id: member.ID.toString(),
+        name: member["Customer name"],
+        email: member["Customer email"],
+        phone: member["Customer phone"] !== "" ? member["Customer phone"] : null,
+        active: true,
+        province: member["Delivery province code"] !== "" ? member["Delivery province code"] : null,
+        city: member["Delivery city"] !== "" ? member["Delivery city"] : null,
+        zip: member["Delivery zip"] !== "" ? member["Delivery zip"] : null,
+        country: member["Delivery country code"] !== "" ? member["Delivery country code"] : null,
+        address1: member["Delivery address 1"] !== "" ? member["Delivery address 1"] : null,
+        address2: member["Delivery address 2"] !== "" ? member["Delivery address 2"] : null,
+        deliveryPerson: "",
+        deliveryEmail: "",
+        deliveryAddress1: "",
+        deliveryAddress2: ""
+      } as Member; 
+      
+      formattedMembers.push(formattedMember);
+    }
+    catch (error) {
+      console.error("Error formatting member data: ", error);
+    }
   });
   return formattedMembers;
 }

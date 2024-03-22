@@ -1,4 +1,5 @@
 import { generateClient } from "aws-amplify/api";
+import { SignUpInput, signUp } from "aws-amplify/auth";
 import { getMember, listMembers } from "../graphql/queries";
 import { Amplify } from "aws-amplify";
 import { RequestHandler } from "express";
@@ -99,10 +100,10 @@ export const importMembers: RequestHandler = async (req, res, next) => {
 
     const memberData = req.body;
     if (memberData && Array.isArray(memberData) && memberData.length > 0) {
-      const formattedMember = formatMemberData(memberData);
+      const formattedMembers = formatMemberData(memberData);
 
       await Promise.all(
-        formattedMember.map(async (member: Member) => {
+        formattedMembers.map(async (member: Member) => {
           try {
             if (member && member.email !== "") {
               const foundMember = await client.graphql({
@@ -121,7 +122,6 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                   variables: {
                     input: {
                       id: memberId,
-                      // You need to provide other fields to update here
                     },
                   },
                 });
@@ -140,7 +140,22 @@ export const importMembers: RequestHandler = async (req, res, next) => {
 
                 if (createdMember) {
                   // Register user
-
+                  const signUpDetails: SignUpInput = {
+                    username: createdMember.data.createMember.email,
+                    password: "Password@1",
+                    options: {
+                      autoSignIn: true,
+                      userAttributes: {
+                        email: createdMember.data.createMember.email,
+                        name: createdMember.data.createMember.name,
+                        email_verified: "true",
+                      },
+                    },
+                  };
+                  signUp(signUpDetails)
+                    .then((value) => console.log(value))
+                    .catch((reason) => console.error(reason));
+                  
                   output.successImport.push(createdMember.data.createMember);
                 } else {
                   output.failedImport.push(createdMember.data.createMember);
