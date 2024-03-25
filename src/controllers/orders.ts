@@ -49,29 +49,45 @@ export const getOrderByOrderNumber: RequestHandler = async (req, res, next) => {
 
 export const getAllOrders: RequestHandler = async (req, res, next) => {
   try {
-    const orders = await client.graphql({
-      query: listOrders,
-    });
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(token);
+    const memberId: string = decodedToken.sub;
 
-    console.log(orders);
-    res.json(orders.data.listOrders.items);
+    let orders: Order[] = [];
+    
+    // Check if the user is an admin
+    if (decodedToken['cognito:groups'] && decodedToken['cognito:groups'].includes('admin')) {
+      // If admin, fetch all orders
+      const { data } = await client.graphql({
+        query: listOrders,
+      });
+      orders = data.listOrders.items;
+    } else {
+      // If not admin, fetch orders for the logged in user
+      const { data } = await client.graphql({
+        query: listOrders,
+        variables: {
+          filter: {
+            memberId: {
+              eq: memberId,
+            },
+          },
+        },
+      });
+      orders = data.listOrders.items;
+    }
+
+    res.json(orders);
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: "Failed to retrieve orders", error: error });
+    res.status(500).json({ message: "Failed to retrieve orders", error: error });
   }
 };
 
 export const addOrder: RequestHandler = async (req, res, next) => {
   try {
     const order = req.body as Order;
-    const token = req.headers.authorization.split(" ")[1];
-    const decodedToken = jwt.decode(token);
-    console.log(decodedToken);
-    const memberId = decodedToken.sub;
-    console.log(memberId);
-    order.memberId = memberId;
+
     
     if (!order) {
       res.status(500).json({
