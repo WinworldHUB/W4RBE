@@ -49,12 +49,23 @@ export const getOrderByOrderNumber: RequestHandler = async (req, res, next) => {
 
 export const getAllOrders: RequestHandler = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decodedToken = jwt.decode(token);
-    const memberId: string = decodedToken.sub;
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
 
-    let orders: Order[] = [];
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Authorization token is missing" });
+    }
+
+    const decodedToken: any = jwt.decode(token);
+    if (!decodedToken) {
+      return res.status(401).json({ message: "Invalid authorization token" });
+    }
+
+    const memberId: string = decodedToken.sub;
     
+    let orders: Order[] = [];
     // Check if the user is an admin
     if (decodedToken['cognito:groups'] && decodedToken['cognito:groups'].includes('admin')) {
       // If admin, fetch all orders
@@ -83,7 +94,6 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
     res.status(500).json({ message: "Failed to retrieve orders", error: error });
   }
 };
-
 export const addOrder: RequestHandler = async (req, res, next) => {
   try {
     const order = req.body as Order;
