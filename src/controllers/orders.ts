@@ -87,7 +87,6 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
 export const addOrder: RequestHandler = async (req, res, next) => {
   try {
     const order = req.body as Order;
-
     
     if (!order) {
       res.status(500).json({
