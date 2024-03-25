@@ -66,7 +66,6 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
     const memberId: string = decodedToken.sub;
     
     let orders: Order[] = [];
-    
     // Check if the user is an admin
     if (decodedToken['cognito:groups'] && decodedToken['cognito:groups'].includes('admin')) {
       // If admin, fetch all orders
