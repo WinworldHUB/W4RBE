@@ -14,6 +14,7 @@ export const getInvoice = /* GraphQL */ `query GetInvoice($id: ID!) {
     orderId
     invoiceDate
     paymentDate
+    memberId
     createdAt
     updatedAt
     __typename
@@ -34,6 +35,7 @@ export const listInvoices = /* GraphQL */ `query ListInvoices(
       orderId
       invoiceDate
       paymentDate
+      memberId
       createdAt
       updatedAt
       __typename

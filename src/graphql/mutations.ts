@@ -17,6 +17,7 @@ export const createInvoice = /* GraphQL */ `mutation CreateInvoice(
     orderId
     invoiceDate
     paymentDate
+    memberId
     createdAt
     updatedAt
     __typename
@@ -35,6 +36,7 @@ export const updateInvoice = /* GraphQL */ `mutation UpdateInvoice(
     orderId
     invoiceDate
     paymentDate
+    memberId
     createdAt
     updatedAt
     __typename
@@ -53,6 +55,7 @@ export const deleteInvoice = /* GraphQL */ `mutation DeleteInvoice(
     orderId
     invoiceDate
     paymentDate
+    memberId
     createdAt
     updatedAt
     __typename
