@@ -14,6 +14,7 @@ export const onCreateInvoice = /* GraphQL */ `subscription OnCreateInvoice($filt
     orderId
     invoiceDate
     paymentDate
+    memberId
     createdAt
     updatedAt
     __typename
@@ -29,6 +30,7 @@ export const onUpdateInvoice = /* GraphQL */ `subscription OnUpdateInvoice($filt
     orderId
     invoiceDate
     paymentDate
+    memberId
     createdAt
     updatedAt
     __typename
@@ -44,6 +46,7 @@ export const onDeleteInvoice = /* GraphQL */ `subscription OnDeleteInvoice($filt
     orderId
     invoiceDate
     paymentDate
+    memberId
     createdAt
     updatedAt
     __typename

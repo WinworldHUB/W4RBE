@@ -3,6 +3,7 @@ type Invoice @model @auth(rules: [{allow: public}]) {
   orderId: ID!
   invoiceDate: AWSDate!
   paymentDate: AWSDate
+  memberId: ID
 }
 
 enum PackagingType {
@@ -29,7 +30,7 @@ type Order @model @auth(rules: [{allow: public}]) {
   trackingStatus: String
   trackingNumber: String
   packagingType: PackagingType!
-  memberId: String
+  memberId: ID
 }
 
 type Product @model @auth(rules: [{allow: public}]) {
