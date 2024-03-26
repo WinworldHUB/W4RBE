@@ -116,6 +116,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     const createdOrder = newOrder.data.createOrder;
     const orderNumber = createdOrder.orderNumber;
     const invoiceDate = createdOrder.orderDate;
+    const memberId = createdOrder.memberId;
      await client.graphql({
       query: createInvoice,
       variables: {
@@ -123,6 +124,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
           orderId: orderNumber,
           invoiceDate: invoiceDate,
           paymentDate: invoiceDate,
+          memberId: memberId,
 
         },
       },

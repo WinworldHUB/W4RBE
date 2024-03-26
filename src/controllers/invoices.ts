@@ -29,17 +29,51 @@ export const getInvoiceById: RequestHandler = async (req, res, next) => {
 };
 
 export const getAllInvoices: RequestHandler = async (req, res, next) => {
-    try{
-        const invoices = await client.graphql({
+    try {
+        if (req.method === "OPTIONS") {
+          return res.sendStatus(200);
+        }
+    
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+          return res.status(401).json({ message: "Authorization token is missing" });
+        }
+    
+        const decodedToken: any = jwt.decode(token);
+        if (!decodedToken) {
+          return res.status(401).json({ message: "Invalid authorization token" });
+        }
+    
+        const memberId: string = decodedToken.sub;
+        
+        let invoices: Invoice[] = [];
+        // Check if the user is an admin
+        if (decodedToken['cognito:groups'] && decodedToken['cognito:groups'].includes('admin')) {
+          // If admin, fetch all invoices
+          const { data } = await client.graphql({
             query: listInvoices,
-            variables: {}
-        });
-        res.json(invoices.data.listInvoices.items);
-    }
-    catch(error){
+          });
+          invoices = data.listInvoices.items;
+        } else {
+          // If not admin, fetch invoices for the logged in user
+          const { data } = await client.graphql({
+            query: listInvoices,
+            variables: {
+              filter: {
+                memberId: {
+                  eq: memberId,
+                },
+              },
+            },
+          });
+          invoices = data.listInvoices.items;
+        }
+    
+        res.json(invoices);
+      } catch (error) {
         console.log(error);
-        res.status(500).json({message: "Failed to retrieve invoices", error: error});
-    }
+        res.status(500).json({ message: "Failed to retrieve invoices", error: error });
+      }
 };
 
 
