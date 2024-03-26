@@ -4,7 +4,7 @@ import { AWS_API_CONFIG } from "../constants/constants";
 import { generateClient } from "aws-amplify/api";
 import { getInvoice, listInvoices } from "../graphql/queries";
 
-import { updateInvoice } from "../graphql/mutations";
+import { deleteInvoice, updateInvoice } from "../graphql/mutations";
 import { Invoice } from "../awsApis";
 import jwt from "jsonwebtoken";
 
@@ -68,5 +68,24 @@ export const modifyInvoice: RequestHandler = async (req, res, next) => {
     catch (error) {
         console.log(error);
         res.status(500).json({ message: "Failed to update invoice", error: error });
+    }
+}
+
+export const deleteInvoiceById: RequestHandler = async (req, res, next) => {
+    try {
+        const invoice = req.params.id;
+        const deletedInvoice = await client.graphql({
+            query: deleteInvoice,
+            variables: {
+                input: {
+                    id: invoice
+                }
+            }
+        });
+        res.json(deletedInvoice.data.deleteInvoice);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Failed to delete invoice", error: error });
     }
 }
