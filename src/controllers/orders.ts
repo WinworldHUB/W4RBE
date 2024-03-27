@@ -6,7 +6,7 @@ import { getMember, getOrder, listOrders } from "../graphql/queries";
 import { Order, OrderStatus } from "../awsApis";
 import { createInvoice, createOrder, updateOrder } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
-import { sendEmailTemplate } from "../utils/email";
+import { sendInvoiceEmail } from "../utils/email";
 
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
@@ -137,7 +137,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const memberEmail = member.data.getMember.email;
-    await sendEmailTemplate(createdOrder, memberEmail);
+    await sendInvoiceEmail(createdOrder, memberEmail);
     res.json({createdOrder});
   } catch (error) {
     console.log(error);

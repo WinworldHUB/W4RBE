@@ -1,11 +1,13 @@
 import { SendSmtpEmail, TransactionalEmailsApi, ApiClient } from 'sib-api-v3-sdk';
-import { Order } from "../awsApis";
+import { Order, Product } from "../awsApis";
+import dotenv from 'dotenv';
+dotenv.config();
 
-export const sendEmailTemplate = async (order: Order, email: string): Promise<void> => {
+export const sendInvoiceEmail = async (order: Order, email: string): Promise<void> => {
     try {
         const defaultClient = ApiClient.instance;
         const apiInstance = new TransactionalEmailsApi();
-        const apiKey = 'your-api-key';
+        const apiKey = process.env.API_KEY;
         const apiKeyAuth = defaultClient.authentications['api-key'];
         apiKeyAuth.apiKey = apiKey;
 
@@ -17,7 +19,7 @@ export const sendEmailTemplate = async (order: Order, email: string): Promise<vo
         const templateId: number = 4;
 
         // Split the products string into an array of product names
-        const productsArray = order.products.split(',').map(product => product.trim());
+        const productsArray = JSON.parse(order.products) as Product[]
 
         // Create the email request
         const sendSmtpEmail = new SendSmtpEmail();
@@ -34,11 +36,11 @@ export const sendEmailTemplate = async (order: Order, email: string): Promise<vo
         };
 
         // Add product-specific parameters
-        productsArray.forEach((productName, index) => {
+        productsArray.forEach((product, index) => {
             const itemKeyPrefix = `item${index + 1}`;
-            emailParams[`${itemKeyPrefix}`] = productName;
-            emailParams[`${itemKeyPrefix}Quantity`] = "1"; 
-            emailParams[`${itemKeyPrefix}Amount`] = "10";
+            emailParams[`${itemKeyPrefix}`] = product.title;
+            emailParams[`${itemKeyPrefix}Quantity`] = product.quantity.toString(); 
+            emailParams[`${itemKeyPrefix}Amount`] = product.price.toString();
         });
 
         // Set the email parameters
