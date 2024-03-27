@@ -29,7 +29,7 @@ export const sendInvoiceEmail = async (order: Order, email: string): Promise<voi
 
         // Set the email parameters dynamically based on the order
         const emailParams: { [key: string]: string } = {
-            "billedTo": "Wholesale4Resale",
+            "billedTo": memberEmail,
             "invoiceDate": order.orderDate,
             "packageType": order.packagingType,
             "invoiceValue": order.orderValue.toString()
