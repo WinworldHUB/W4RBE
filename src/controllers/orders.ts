@@ -4,7 +4,7 @@ import { AWS_API_CONFIG } from "../constants/constants";
 import { generateClient } from "aws-amplify/api";
 import { getOrder, listOrders } from "../graphql/queries";
 import { Order, OrderStatus } from "../awsApis";
-import { createOrder, updateOrder } from "../graphql/mutations";
+import { createInvoice, createOrder, updateOrder } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
 
 Amplify.configure(AWS_API_CONFIG);
@@ -113,9 +113,24 @@ export const addOrder: RequestHandler = async (req, res, next) => {
         input: order,
       },
     });
+    const createdOrder = newOrder.data.createOrder;
+    const orderId = createdOrder.id;
+    const invoiceDate = createdOrder.orderDate;
+    const memberId = createdOrder.memberId;
+     await client.graphql({
+      query: createInvoice,
+      variables: {
+        input: {
+          orderId: orderId,
+          invoiceDate: invoiceDate,
+          paymentDate: null,
+          memberId: memberId,
 
-    console.log(newOrder);
-    res.json(newOrder.data.createOrder);
+        },
+      },
+    });
+
+    res.json({createdOrder});
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to create order", error: error });
