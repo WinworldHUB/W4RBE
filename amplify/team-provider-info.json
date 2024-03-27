@@ -21,7 +21,7 @@
       "function": {
         "fnDeliveryStatusTracker": {
           "deploymentBucketName": "amplify-w4rbe-dev-102521-deployment",
-          "s3Key": "amplify-builds/fnDeliveryStatusTracker-536d75707045764b6454-build.zip"
+          "s3Key": "amplify-builds/fnDeliveryStatusTracker-4b544462693935496578-build.zip"
         }
       }
     }

@@ -1,7 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
-const tracker = require('delivery-tracker');
+const express = require("express");
+const bodyParser = require("body-parser");
+const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
+const tracker = require("delivery-tracker");
 
 // Declare a new express app
 const app = express();
@@ -9,25 +9,23 @@ app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
 
 // Enable CORS for all methods
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "*");
   next();
 });
 
-
-app.get('/track', async function(req, res) {
+app.get("/", async function (req, res) {
   const courier = tracker.courier(tracker.COURIER.ROYALMAIL.CODE);
 
-
   const trackingNumbers = [
-    'WG339979238GB',
-    'WG339979153GB',
-    'WG339979048GB',
-    'WG339128200GB',
-    'WG330024689GB',
-    'WG317952370GB',
-    'WG313576660GB'
+    "WG339979238GB",
+    "WG339979153GB",
+    "WG339979048GB",
+    "WG339128200GB",
+    "WG330024689GB",
+    "WG317952370GB",
+    "WG313576660GB",
   ];
 
   const results = [];
