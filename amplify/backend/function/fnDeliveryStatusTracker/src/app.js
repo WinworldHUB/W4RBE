@@ -16,6 +16,26 @@ export const AWS_API_CONFIG = {
 };
 
 
+const getOrderQuery = /* GraphQL */ `
+  query GetOrder($id: ID!) {
+    getOrder(id: $id) {
+      id
+      orderNumber
+      orderDate
+      orderValue
+      products
+      deliveryDetails
+      status
+      trackingStatus
+      trackingNumber
+      packagingType
+      memberId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 
 
 // Declare a new express app
