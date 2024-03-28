@@ -1,12 +1,16 @@
 import { RequestHandler, response } from "express";
 import { Amplify } from "aws-amplify";
-import { AWS_API_CONFIG } from "../constants/constants";
+import {
+  AWS_API_CONFIG,
+  DELIVERY_TRACKER_CONFIG,
+} from "../constants/constants";
 import { generateClient } from "aws-amplify/api";
 import { getMember, getOrder, listOrders } from "../graphql/queries";
 import { Order, OrderStatus } from "../awsApis";
 import { createInvoice, createOrder, updateOrder } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
 import { sendInvoiceEmail } from "../utils/email";
+import { Tracker } from "parcel-tracker-api";
 
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
@@ -185,12 +189,36 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
     if (orders?.length > 0) {
       trackingNumbers.push(...orders.map((order) => order.trackingNumber));
     }
-    res.json({ trackingNumbers });
+
+    if (trackingNumbers.length > 0) {
+      const output = [];
+      const tracker = new Tracker(DELIVERY_TRACKER_CONFIG);
+
+      var promises = trackingNumbers.map((trackingNumber) =>
+        tracker
+          .getTrackingInformations(trackingNumber, "Royal Mail")
+          .then((deliveryStatus) => {
+            output.push(deliveryStatus ?? "Pending");
+          })
+          .catch((error) => {
+            output.push("Pending");
+          })
+      );
+
+      Promise.all(promises).then(function () {
+        res.json(output);
+        //do something with the finalized list of albums here
+      });
+    }
+
+    //res.status(500).json({ message: "Failed to create order", error: "" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to create order", error: error });
   }
 };
+
+const updateOrderDeliveryStatus = () => {};
 
 export const modifyOrder: RequestHandler = async (req, res, next) => {
   try {
