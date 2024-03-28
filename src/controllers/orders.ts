@@ -186,26 +186,29 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
 
     const orders = data.listOrders.items;
 
-    if (orders?.length > 0) {
-      trackingNumbers.push(...orders.map((order) => order.trackingNumber));
-    }
-
-    if (trackingNumbers.length > 0) {
+    if (orders.length > 0) {
       const output = [];
       const tracker = new Tracker(DELIVERY_TRACKER_CONFIG);
 
-      var promises = trackingNumbers.map((trackingNumber) =>
+      var promises = orders.map((order) =>
         tracker
-          .getTrackingInformations(trackingNumber, "Royal Mail")
+          .getTrackingInformations(order.trackingNumber, "Royal Mail")
           .then((deliveryStatus) => {
-            output.push(deliveryStatus ?? "Pending");
+            return updateOrderDeliveryStatus({
+              ...order,
+              trackingStatus: deliveryStatus ?? "PENDING",
+            } as Order);
           })
           .catch((error) => {
             output.push("Pending");
+            return updateOrderDeliveryStatus({
+              ...order,
+              trackingStatus: "PENDING",
+            } as Order);
           })
       );
 
-      Promise.all(promises).then(function () {
+      Promise.all(promises).then(() => {
         res.json(output);
         //do something with the finalized list of albums here
       });
@@ -218,7 +221,9 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
   }
 };
 
-const updateOrderDeliveryStatus = () => {};
+const updateOrderDeliveryStatus = async (order: Order) => {
+  console.log(order);
+};
 
 export const modifyOrder: RequestHandler = async (req, res, next) => {
   try {
