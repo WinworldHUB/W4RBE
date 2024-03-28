@@ -69,7 +69,25 @@ app.get("/", async function (req, res) {
     const data = await response.json();
     const orders = data.data.listOrders.items;
 
-    res.json({ orders });
+    // Store tracking numbers in an array
+    const trackingNumbers = [];
+    orders.forEach(order => {
+      const trackingNumber = order.trackingNumber;
+      if (trackingNumber && trackingNumber.trim() !== '') {
+        trackingNumbers.push(trackingNumber);
+      }
+    });
+    const status = trackingNumbers.forEach(trackingNumber => {
+      courier.trace(trackingNumber, function (err, result) {
+          if (err) {
+              console.error(`Error for ${trackingNumber}:`, err);
+          } else {
+              console.log(`Tracking Result for ${trackingNumber}:`, result.status);
+  
+          }
+      });
+  });
+    res.json({ status });
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).json({ error: "Failed to fetch orders." });
