@@ -77,22 +77,36 @@ app.get("/", async function (req, res) {
         trackingNumbers.push(trackingNumber);
       }
     });
-    const status = trackingNumbers.forEach(trackingNumber => {
-      courier.trace(trackingNumber, function (err, result) {
-          if (err) {
+
+    // Retrieve status for each tracking number
+    const statuses = {};
+    await Promise.all(trackingNumbers.map(async (trackingNumber) => {
+      try {
+        const result = await new Promise((resolve, reject) => {
+          courier.trace(trackingNumber, (err, result) => {
+            if (err) {
               console.error(`Error for ${trackingNumber}:`, err);
-          } else {
+              reject(err);
+            } else {
               console.log(`Tracking Result for ${trackingNumber}:`, result.status);
-  
-          }
-      });
-  });
-    res.json({ status });
+              resolve(result.status);
+            }
+          });
+        });
+        statuses[trackingNumber] = result;
+      } catch (error) {
+        console.error(`Error fetching status for ${trackingNumber}:`, error);
+        statuses[trackingNumber] = "Error";
+      }
+    }));
+
+    res.json({ statuses });
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).json({ error: "Failed to fetch orders." });
   }
 });
+
 
 // Export the app object.
 module.exports = app;
