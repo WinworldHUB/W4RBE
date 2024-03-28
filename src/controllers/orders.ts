@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { RequestHandler, response } from "express";
 import { Amplify } from "aws-amplify";
 import { AWS_API_CONFIG } from "../constants/constants";
 import { generateClient } from "aws-amplify/api";
@@ -56,7 +56,9 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
 
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.status(401).json({ message: "Authorization token is missing" });
+      return res
+        .status(401)
+        .json({ message: "Authorization token is missing" });
     }
 
     const decodedToken: any = jwt.decode(token);
@@ -65,10 +67,13 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
     }
 
     const memberId: string = decodedToken.sub;
-    
+
     let orders: Order[] = [];
     // Check if the user is an admin
-    if (decodedToken['cognito:groups'] && decodedToken['cognito:groups'].includes('admin')) {
+    if (
+      decodedToken["cognito:groups"] &&
+      decodedToken["cognito:groups"].includes("admin")
+    ) {
       // If admin, fetch all orders
       const { data } = await client.graphql({
         query: listOrders,
@@ -92,13 +97,15 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
     res.json(orders);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Failed to retrieve orders", error: error });
+    res
+      .status(500)
+      .json({ message: "Failed to retrieve orders", error: error });
   }
 };
 export const addOrder: RequestHandler = async (req, res, next) => {
   try {
     const order = req.body as Order;
-    
+
     if (!order) {
       res.status(500).json({
         message:
@@ -118,7 +125,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     const orderId = createdOrder.id;
     const invoiceDate = createdOrder.orderDate;
     const memberId = createdOrder.memberId;
-     await client.graphql({
+    await client.graphql({
       query: createInvoice,
       variables: {
         input: {
@@ -126,7 +133,6 @@ export const addOrder: RequestHandler = async (req, res, next) => {
           invoiceDate: invoiceDate,
           paymentDate: null,
           memberId: memberId,
-
         },
       },
     });
@@ -138,7 +144,53 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     });
     const memberEmail = member.data.getMember.email;
     await sendInvoiceEmail(createdOrder, memberEmail);
-    res.json({createdOrder});
+    res.json({ createdOrder });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Failed to create order", error: error });
+  }
+};
+
+export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
+  try {
+    const trackingNumbers = [];
+
+    if ((req.body ?? "") !== "") {
+      trackingNumbers.push(...JSON.parse(req.body));
+    } else {
+      const { data } = await client.graphql({
+        query: listOrders,
+        variables: {
+          filter: {
+            status: {
+              eq: OrderStatus.PROCESSING,
+            },
+            and: [
+              {
+                trackingNumber: {
+                  ne: null,
+                },
+                or: [
+                  {
+                    trackingNumber: {
+                      ne: "",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      });
+
+      const orders = data.listOrders.items;
+
+      if (orders?.length > 0) {
+        res.json(orders.map((order) => order.trackingNumber));
+      }
+    }
+
+    res.json({ trackingNumbers });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to create order", error: error });
