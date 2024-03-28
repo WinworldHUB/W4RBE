@@ -222,7 +222,22 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
 };
 
 const updateOrderDeliveryStatus = async (order: Order) => {
-  console.log(order);
+  try {
+    console.log(order);
+    await client.graphql({
+      query: updateOrder,
+      variables: {
+        input: {
+          id: order.id,
+          memberId: order.memberId,
+        },
+      },
+    });
+
+    Promise.resolve();
+  } catch (error) {
+    Promise.resolve();
+  }
 };
 
 export const modifyOrder: RequestHandler = async (req, res, next) => {
