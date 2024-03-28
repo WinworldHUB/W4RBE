@@ -16,9 +16,10 @@ export const AWS_API_CONFIG = {
   },
 };
 
-const getOrderQuery = /* GraphQL */ `
-  query GetOrder($id: ID!) {
-    getOrder(id: $id) {
+const listOrdersQuery = `
+query ListOrders($filter: ModelOrderFilterInput, $limit: Int, $nextToken: String) {
+  listOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
       id
       orderNumber
       orderDate
@@ -34,8 +35,10 @@ const getOrderQuery = /* GraphQL */ `
       updatedAt
       __typename
     }
+    nextToken
+    __typename
   }
-`;
+}`;
 
 // Declare a new express app
 const app = express();
@@ -50,7 +53,7 @@ app.use(function (req, res, next) {
 });
 
 app.get("/", async function (req, res) {
-  const id = req.query.id; // Assuming the order ID is passed as a query parameter
+  const filter = { status: { eq: "PROCESSING" } }; // Filter for orders with status PROCESSING
 
   const options = {
     method: 'POST',
@@ -58,34 +61,18 @@ app.get("/", async function (req, res) {
       'x-api-key': AWS_API_CONFIG.API.GraphQL.apiKey,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ query: getOrderQuery, variables: { id } })
+    body: JSON.stringify({ query: listOrdersQuery, variables: { filter } })
   };
 
   try {
     const response = await fetch(AWS_API_CONFIG.API.GraphQL.endpoint, options);
     const data = await response.json();
-    
-    // Extract the tracking number from the fetched order
-    const trackingNumber = data.data.getOrder.trackingNumber;
+    const orders = data.data.listOrders.items;
 
-    // Initialize the courier with the tracking number
-    const courier = tracker.courier(tracker.COURIER.ROYALMAIL.CODE);
-
-    // Trace the package with the tracking number
-    const result = await new Promise((resolve, reject) => {
-      courier.trace(trackingNumber, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-
-    res.json({ order: data.data.getOrder, trackingResult: result });
+    res.json({ orders });
   } catch (error) {
-    console.error("Error fetching order:", error);
-    res.status(500).json({ error: "Failed to fetch order or track package." });
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ error: "Failed to fetch orders." });
   }
 });
 
