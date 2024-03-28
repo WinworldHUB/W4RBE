@@ -4,6 +4,10 @@ const awsServerlessExpressMiddleware = require("aws-serverless-express/middlewar
 const fetch = require('node-fetch');
 const tracker = require("delivery-tracker");
 
+
+var courier = tracker.courier(tracker.COURIER.ROYALMAIL.CODE);
+
+
 export const AWS_API_CONFIG = {
   API: {
     GraphQL: {
