@@ -155,41 +155,36 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
   try {
     const trackingNumbers = [];
 
-    if ((req.body ?? "") !== "") {
-      trackingNumbers.push(...JSON.parse(req.body));
-    } else {
-      const { data } = await client.graphql({
-        query: listOrders,
-        variables: {
-          filter: {
-            status: {
-              eq: OrderStatus.PROCESSING,
-            },
-            and: [
-              {
-                trackingNumber: {
-                  ne: null,
-                },
-                or: [
-                  {
-                    trackingNumber: {
-                      ne: "",
-                    },
-                  },
-                ],
-              },
-            ],
+    const { data } = await client.graphql({
+      query: listOrders,
+      variables: {
+        filter: {
+          status: {
+            eq: OrderStatus.PROCESSING,
           },
+          and: [
+            {
+              trackingNumber: {
+                ne: null,
+              },
+              or: [
+                {
+                  trackingNumber: {
+                    ne: "",
+                  },
+                },
+              ],
+            },
+          ],
         },
-      });
+      },
+    });
 
-      const orders = data.listOrders.items;
+    const orders = data.listOrders.items;
 
-      if (orders?.length > 0) {
-        res.json(orders.map((order) => order.trackingNumber));
-      }
+    if (orders?.length > 0) {
+      trackingNumbers.push(...orders.map((order) => order.trackingNumber));
     }
-
     res.json({ trackingNumbers });
   } catch (error) {
     console.log(error);
