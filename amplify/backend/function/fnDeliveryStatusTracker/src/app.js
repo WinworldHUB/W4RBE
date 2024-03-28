@@ -3,6 +3,21 @@ const bodyParser = require("body-parser");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 const tracker = require("delivery-tracker");
 
+export const AWS_API_CONFIG = {
+  API: {
+    GraphQL: {
+      endpoint:
+        "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
+      region: "eu-west-2",
+      defaultAuthMode: "apiKey",
+      apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
+    },
+  },
+};
+
+
+
+
 // Declare a new express app
 const app = express();
 app.use(bodyParser.json());
