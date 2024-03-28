@@ -85,27 +85,27 @@ app.get("/", async function (req, res) {
     console.log(trackingNumbers);
     // Retrieve status for each tracking number
     const statuses = {};
-    await Promise.all(trackingNumbers.map(async (trackingNumber) => {
-      try {
-        const result = await new Promise((resolve, reject) => {
-          courier.trace(trackingNumber, (err, result) => {
-            if (err) {
-              console.error(`Error for ${trackingNumber}:`, err);
-              reject(err);
-            } else {
-              console.log(`Tracking Result for ${trackingNumber}:`, result.status);
-              resolve(result.status);
-            }
-          });
-        });
-        statuses[trackingNumber] = result;
-      } catch (error) {
-        console.error(`Error fetching status for ${trackingNumber}:`, error);
-        statuses[trackingNumber] = "Error";
-      }
-    }));
+    // await Promise.all(trackingNumbers.map(async (trackingNumber) => {
+    //   try {
+    //     const result = await new Promise((resolve, reject) => {
+    //       courier.trace(trackingNumber, (err, result) => {
+    //         if (err) {
+    //           console.error(`Error for ${trackingNumber}:`, err);
+    //           reject(err);
+    //         } else {
+    //           console.log(`Tracking Result for ${trackingNumber}:`, result.status);
+    //           resolve(result.status);
+    //         }
+    //       });
+    //     });
+    //     statuses[trackingNumber] = result;
+    //   } catch (error) {
+    //     console.error(`Error fetching status for ${trackingNumber}:`, error);
+    //     statuses[trackingNumber] = "Error";
+    //   }
+    // }));
 
-    res.json({ statuses });
+    res.json({ trackingNumbers});
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).json({ error: "Failed to fetch orders." });
