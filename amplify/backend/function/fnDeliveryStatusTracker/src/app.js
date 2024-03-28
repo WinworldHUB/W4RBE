@@ -57,7 +57,7 @@ app.use(function (req, res, next) {
 });
 
 app.get("/", async function (req, res) {
-  const filter = { status: { eq: "PROCESSING" } }; // Filter for orders with status PROCESSING
+  const filter = { status: { eq: "PROCESSING" }, and:{ trackingNumber: {ne: null},  or: {trackingNumber: {eq: trackingNumber}}}}; // Filter for orders with status PROCESSING
 
   const options = {
     method: 'POST',
@@ -74,14 +74,15 @@ app.get("/", async function (req, res) {
     const orders = data.data.listOrders.items;
 
     // Store tracking numbers in an array
-    const trackingNumbers = [];
-    orders.forEach(order => {
-      const trackingNumber = order.trackingNumber;
-      if (trackingNumber && trackingNumber.trim() !== '') {
-        trackingNumbers.push(trackingNumber);
-      }
-    });
+    // orders.forEach(order => {
+    //   const trackingNumber = order.trackingNumber;
+    //   if (trackingNumber && trackingNumber.trim() !== '') {
+    //     trackingNumbers.push(trackingNumber);
+    //   }
+    // });
 
+   const trackingNumbers = Array.from(orders.map(order=>order.trackingNumber)) 
+    console.log(trackingNumbers);
     // Retrieve status for each tracking number
     const statuses = {};
     await Promise.all(trackingNumbers.map(async (trackingNumber) => {
