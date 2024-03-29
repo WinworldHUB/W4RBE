@@ -11,7 +11,7 @@ import { createInvoice, createOrder, updateOrder } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
 import { sendInvoiceEmail } from "../utils/email";
 import { Tracker } from "parcel-tracker-api";
-import { trimOrder } from "../utils/order-utils"
+import { trimOrder } from "../utils/order-utils";
 import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
@@ -195,18 +195,15 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
         tracker
           .getTrackingInformations(order.trackingNumber, "Royal Mail")
           .then((deliveryStatus: ParcelInformations) => {
-            if(deliveryStatus.isDelivered) {
+            if (deliveryStatus.isDelivered) {
               order.status = OrderStatus.DONE;
+              order.trackingStatus = deliveryStatus.status ?? "DONE";
               output.push("Delivered");
-              return updateOrderDeliveryStatus({
-                ...order,
-                trackingStatus: deliveryStatus.status ?? "DONE",
-              } as Order);
+            }else{
+              order.trackingStatus = deliveryStatus.status ?? "PENDING";
             }
-            return updateOrderDeliveryStatus({
-              ...order,
-              trackingStatus: deliveryStatus.status ?? "PENDING",
-            } as Order);
+            return updateOrderDeliveryStatus(order);
+            
           })
           .catch((error) => {
             output.push("Pending");
