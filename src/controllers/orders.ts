@@ -194,9 +194,17 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
         tracker
           .getTrackingInformations(order.trackingNumber, "Royal Mail")
           .then((deliveryStatus) => {
+            if(deliveryStatus.status.toLowerCase() === "delivered") {
+              order.status = OrderStatus.DONE;
+              output.push("Delivered");
+              return updateOrderDeliveryStatus({
+                ...order,
+                trackingStatus: deliveryStatus.status ?? "DONE",
+              } as Order);
+            }
             return updateOrderDeliveryStatus({
               ...order,
-              trackingStatus: deliveryStatus ?? "PENDING",
+              trackingStatus: deliveryStatus.status ?? "PENDING",
             } as Order);
           })
           .catch((error) => {
