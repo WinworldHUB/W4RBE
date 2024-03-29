@@ -243,6 +243,7 @@ const updateOrderDeliveryStatus = async (order: Order) => {
   }
 };
 
+
 export const modifyOrder: RequestHandler = async (req, res, next) => {
   try {
     const order = req.body as Order;
@@ -255,7 +256,6 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       });
       return;
     }
-    console.log(order.id);
     
     const getStoredOrder = await client.graphql({
       query: getOrder,
@@ -277,36 +277,45 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       storedOrder.status === OrderStatus.UNPAID &&
       updatedOrder.status === OrderStatus.PAID
     ) {
-      const getStoredInvoice = await client.graphql({
-        query: listInvoices,
-        variables: {
-          filter: {
-            orderId: {
-              eq: storedOrder.id,
-            },
-          },
-        },
-      });
-
-      const storedInvoice = getStoredInvoice.data.listInvoices.items[0];
-      
-      if (storedInvoice) {
-        await client.graphql({
-          query: updateInvoice,
-          variables: {
-            input: {
-              id: storedInvoice.id,
-              paymentDate: new Date().toISOString().slice(0, 10),
-            },
-          },
-        });
-      }
+      await updateInvoicePaymentDate(storedOrder.id);
     }
 
     res.json(updatedOrder);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to update order", error: error });
+  }
+};
+
+const updateInvoicePaymentDate = async (orderId: string) => {
+  try {
+    const getStoredInvoice = await client.graphql({
+      query: listInvoices,
+      variables: {
+        filter: {
+          orderId: {
+            eq: orderId,
+          },
+        },
+      },
+    });
+
+    const storedInvoice = getStoredInvoice.data.listInvoices.items[0];
+
+    if (storedInvoice) {
+      await client.graphql({
+        query: updateInvoice,
+        variables: {
+          input: {
+            id: storedInvoice.id,
+            paymentDate: new Date().toISOString().slice(0, 10),
+          },
+        },
+      });
+    }
+  } catch (error) {
+    console.log("Failed to update invoice payment date:", error);
+    throw error;
   }
 };
 
