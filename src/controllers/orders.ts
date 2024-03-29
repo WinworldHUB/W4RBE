@@ -12,6 +12,7 @@ import jwt from "jsonwebtoken";
 import { sendInvoiceEmail } from "../utils/email";
 import { Tracker } from "parcel-tracker-api";
 import { trimOrder } from "../utils/order-utils"
+import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
 
@@ -193,8 +194,8 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
       var promises = orders.map((order) =>
         tracker
           .getTrackingInformations(order.trackingNumber, "Royal Mail")
-          .then((deliveryStatus) => {
-            if(deliveryStatus.status.toLowerCase() === "delivered") {
+          .then((deliveryStatus: ParcelInformations) => {
+            if(deliveryStatus.isDelivered) {
               order.status = OrderStatus.DONE;
               output.push("Delivered");
               return updateOrderDeliveryStatus({
