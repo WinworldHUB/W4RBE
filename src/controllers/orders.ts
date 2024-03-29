@@ -11,7 +11,7 @@ import { createInvoice, createOrder, updateOrder } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
 import { sendInvoiceEmail } from "../utils/email";
 import { Tracker } from "parcel-tracker-api";
-
+import { trimOrder } from "../utils/order-utils"
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
 
@@ -222,15 +222,13 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
 };
 
 const updateOrderDeliveryStatus = async (order: Order) => {
+  const trimmedOrder = trimOrder(order, false) as Order;
   try {
     console.log(order);
     await client.graphql({
       query: updateOrder,
       variables: {
-        input: {
-          id: order.id,
-          memberId: order.memberId,
-        },
+        input: trimmedOrder,
       },
     });
 
