@@ -5,9 +5,19 @@ import {
   DELIVERY_TRACKER_CONFIG,
 } from "../constants/constants";
 import { generateClient } from "aws-amplify/api";
-import { getMember, getOrder, listInvoices, listOrders } from "../graphql/queries";
+import {
+  getMember,
+  getOrder,
+  listInvoices,
+  listOrders,
+} from "../graphql/queries";
 import { Order, OrderStatus } from "../awsApis";
-import { createInvoice, createOrder, updateInvoice, updateOrder } from "../graphql/mutations";
+import {
+  createInvoice,
+  createOrder,
+  updateInvoice,
+  updateOrder,
+} from "../graphql/mutations";
 import jwt from "jsonwebtoken";
 import { sendInvoiceEmail } from "../utils/email";
 import { Tracker } from "parcel-tracker-api";
@@ -199,11 +209,10 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
               order.status = OrderStatus.DONE;
               order.trackingStatus = deliveryStatus.status ?? "DONE";
               output.push("Delivered");
-            }else{
+            } else {
               order.trackingStatus = deliveryStatus.status ?? "PENDING";
             }
             return updateOrderDeliveryStatus(order);
-            
           })
           .catch((error) => {
             output.push("Pending");
@@ -243,7 +252,6 @@ const updateOrderDeliveryStatus = async (order: Order) => {
   }
 };
 
-
 export const modifyOrder: RequestHandler = async (req, res, next) => {
   try {
     const order = req.body as Order;
@@ -256,7 +264,7 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       });
       return;
     }
-    
+
     const getStoredOrder = await client.graphql({
       query: getOrder,
       variables: {
@@ -264,23 +272,25 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const storedOrder = getStoredOrder.data.getOrder;
-    const toBeUpdatedOrder = await client.graphql({
-      query: updateOrder,
-      variables: {
-        input: order,
-      },
-    });
-    const updatedOrder = toBeUpdatedOrder.data.updateOrder;
 
+    if (storedOrder) {
+      const toBeUpdatedOrder = await client.graphql({
+        query: updateOrder,
+        variables: {
+          input: order,
+        },
+      });
+      const updatedOrder = toBeUpdatedOrder.data.updateOrder;
 
-    if (
-      storedOrder.status === OrderStatus.UNPAID &&
-      updatedOrder.status === OrderStatus.PAID
-    ) {
-      await updateInvoicePaymentDate(storedOrder.id);
+      if (
+        storedOrder.status === OrderStatus.UNPAID &&
+        updatedOrder.status === OrderStatus.PAID
+      ) {
+        await updateInvoicePaymentDate(storedOrder.id);
+      }
+
+      res.json(updatedOrder);
     }
-
-    res.json(updatedOrder);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to update order", error: error });
@@ -300,7 +310,10 @@ const updateInvoicePaymentDate = async (orderId: string) => {
       },
     });
 
-    const storedInvoice = getStoredInvoice.data.listInvoices.items[0];
+    const storedInvoice =
+      (getStoredInvoice.data.listInvoices.items ?? []).length > 0
+        ? getStoredInvoice.data.listInvoices.items[0]
+        : null;
 
     if (storedInvoice) {
       await client.graphql({
