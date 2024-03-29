@@ -5,9 +5,9 @@ import {
   DELIVERY_TRACKER_CONFIG,
 } from "../constants/constants";
 import { generateClient } from "aws-amplify/api";
-import { getMember, getOrder, listOrders } from "../graphql/queries";
+import { getMember, getOrder, listInvoices, listOrders } from "../graphql/queries";
 import { Order, OrderStatus } from "../awsApis";
-import { createInvoice, createOrder, updateOrder } from "../graphql/mutations";
+import { createInvoice, createOrder, updateInvoice, updateOrder } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
 import { sendInvoiceEmail } from "../utils/email";
 import { Tracker } from "parcel-tracker-api";
@@ -256,15 +256,54 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const updatedOrder = await client.graphql({
+    const toBeUpdatedOrder = await client.graphql({
       query: updateOrder,
       variables: {
         input: order,
       },
     });
+    const updatedOrder = toBeUpdatedOrder.data.updateOrder;
+    const getStoredOrder = await client.graphql({
+      query: getOrder,
+      variables: {
+        id: order.id,
+      },
+    });
+    const storedOrder = getStoredOrder.data.getOrder;
+
+    if (
+      storedOrder.status === OrderStatus.UNPAID &&
+      updatedOrder.status === OrderStatus.PAID
+    ) {
+      const getStoredInvoice = await client.graphql({
+        query: listInvoices,
+        variables: {
+          filter: {
+            orderId: {
+              eq: storedOrder.id,
+            },
+          },
+        },
+      });
+
+      const storedInvoice = getStoredInvoice.data.listInvoices.items[0];
+
+      if (storedInvoice) {
+        await client.graphql({
+          query: updateInvoice,
+          variables: {
+            input: {
+              id: storedInvoice.id,
+              paymentDate: new Date().toISOString(),
+            },
+          },
+        });
+      }
+    }
 
     console.log(updatedOrder);
-    res.json(updatedOrder.data.updateOrder);
+
+    res.json(updatedOrder);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to update order", error: error });
