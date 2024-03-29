@@ -1,13 +1,18 @@
 import { RequestHandler, response } from "express";
 import { Amplify } from "aws-amplify";
-import { AWS_API_CONFIG } from "../constants/constants";
+import {
+  AWS_API_CONFIG,
+  DELIVERY_TRACKER_CONFIG,
+} from "../constants/constants";
 import { generateClient } from "aws-amplify/api";
 import { getMember, getOrder, listOrders } from "../graphql/queries";
 import { Order, OrderStatus } from "../awsApis";
 import { createInvoice, createOrder, updateOrder } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
 import { sendInvoiceEmail } from "../utils/email";
-
+import { Tracker } from "parcel-tracker-api";
+import { trimOrder } from "../utils/order-utils";
+import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
 
@@ -182,13 +187,59 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
 
     const orders = data.listOrders.items;
 
-    if (orders?.length > 0) {
-      trackingNumbers.push(...orders.map((order) => order.trackingNumber));
+    if (orders.length > 0) {
+      const output = [];
+      const tracker = new Tracker(DELIVERY_TRACKER_CONFIG);
+
+      var promises = orders.map((order) =>
+        tracker
+          .getTrackingInformations(order.trackingNumber, "Royal Mail")
+          .then((deliveryStatus: ParcelInformations) => {
+            if (deliveryStatus.isDelivered) {
+              order.status = OrderStatus.DONE;
+              order.trackingStatus = deliveryStatus.status ?? "DONE";
+              output.push("Delivered");
+            }else{
+              order.trackingStatus = deliveryStatus.status ?? "PENDING";
+            }
+            return updateOrderDeliveryStatus(order);
+            
+          })
+          .catch((error) => {
+            output.push("Pending");
+            return updateOrderDeliveryStatus({
+              ...order,
+              trackingStatus: "PENDING",
+            } as Order);
+          })
+      );
+
+      Promise.all(promises).then(() => {
+        res.json(output);
+      });
     }
-    res.json({ trackingNumbers });
+
+    // res.status(500).json({ message: "Failed to create order", error: "" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to create order", error: error });
+  }
+};
+
+const updateOrderDeliveryStatus = async (order: Order) => {
+  const trimmedOrder = trimOrder(order, false) as Order;
+  try {
+    console.log(order);
+    await client.graphql({
+      query: updateOrder,
+      variables: {
+        input: trimmedOrder,
+      },
+    });
+
+    Promise.resolve();
+  } catch (error) {
+    Promise.resolve();
   }
 };
 
