@@ -219,11 +219,10 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
 
       Promise.all(promises).then(() => {
         res.json(output);
-        //do something with the finalized list of albums here
       });
     }
 
-    //res.status(500).json({ message: "Failed to create order", error: "" });
+    // res.status(500).json({ message: "Failed to create order", error: "" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to create order", error: error });
