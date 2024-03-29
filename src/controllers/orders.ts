@@ -255,14 +255,8 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       });
       return;
     }
-
-    const toBeUpdatedOrder = await client.graphql({
-      query: updateOrder,
-      variables: {
-        input: order,
-      },
-    });
-    const updatedOrder = toBeUpdatedOrder.data.updateOrder;
+    console.log(order.id);
+    
     const getStoredOrder = await client.graphql({
       query: getOrder,
       variables: {
@@ -270,6 +264,14 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const storedOrder = getStoredOrder.data.getOrder;
+    const toBeUpdatedOrder = await client.graphql({
+      query: updateOrder,
+      variables: {
+        input: order,
+      },
+    });
+    const updatedOrder = toBeUpdatedOrder.data.updateOrder;
+
 
     if (
       storedOrder.status === OrderStatus.UNPAID &&
@@ -287,21 +289,19 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       });
 
       const storedInvoice = getStoredInvoice.data.listInvoices.items[0];
-
+      
       if (storedInvoice) {
         await client.graphql({
           query: updateInvoice,
           variables: {
             input: {
               id: storedInvoice.id,
-              paymentDate: new Date().toISOString(),
+              paymentDate: new Date().toISOString().slice(0, 10),
             },
           },
         });
       }
     }
-
-    console.log(updatedOrder);
 
     res.json(updatedOrder);
   } catch (error) {
