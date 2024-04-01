@@ -19,7 +19,7 @@ import {
   updateOrder,
 } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
-import { sendInvoiceEmail } from "../utils/email";
+import { sendInvoiceEmail } from "../utils/invoice-email";
 import { Tracker } from "parcel-tracker-api";
 import { trimOrder } from "../utils/order-utils";
 import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
