@@ -296,12 +296,23 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
         },
       });
       const updatedOrder = toBeUpdatedOrder.data.updateOrder;
+      const member = await client.graphql({
+        query: getMember,
+        variables: {
+          id: updatedOrder.memberId,
+        },
+      });
+      const memberEmail = member.data.getMember.email;
 
       if (
         storedOrder.status === OrderStatus.UNPAID &&
         updatedOrder.status === OrderStatus.PAID
       ) {
         await updateInvoicePaymentDate(storedOrder.id);
+      }
+
+      if (storedOrder.status !== updatedOrder.status) {
+        await sendStatusEmail(updatedOrder.orderNumber,memberEmail, updatedOrder.status)
       }
 
       res.json(updatedOrder);
