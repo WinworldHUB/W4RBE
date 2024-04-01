@@ -23,6 +23,7 @@ import { sendInvoiceEmail } from "../utils/invoice-email";
 import { Tracker } from "parcel-tracker-api";
 import { trimOrder } from "../utils/order-utils";
 import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
+import { sendStatusEmail } from "../utils/status-email";
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
 
@@ -168,8 +169,6 @@ export const addOrder: RequestHandler = async (req, res, next) => {
 
 export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
   try {
-    const trackingNumbers = [];
-
     const { data } = await client.graphql({
       query: listOrders,
       variables: {
@@ -196,6 +195,15 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
     });
 
     const orders = data.listOrders.items;
+    const ordermemberId = orders[0].memberId;
+
+    const member = await client.graphql({
+      query: getMember,
+      variables: {
+        id: ordermemberId,
+      },
+    });
+    const memberEmail = member.data.getMember.email;
 
     if (orders.length > 0) {
       const output = [];
@@ -209,6 +217,13 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
               order.status = OrderStatus.DONE;
               order.trackingStatus = deliveryStatus.status ?? "DONE";
               output.push("Delivered");
+            }
+            if (order.status.toLowerCase() !== deliveryStatus.status.toLowerCase()) {
+              sendStatusEmail(
+                order.orderNumber,
+                memberEmail,
+                deliveryStatus.status ?? "PENDING"
+              );
             } else {
               order.trackingStatus = deliveryStatus.status ?? "PENDING";
             }
