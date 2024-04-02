@@ -7,6 +7,7 @@ import { Member } from "../awsApis";
 import { createMember, updateMember } from "../graphql/mutations";
 import formatMemberData from "../utils/format-user";
 import { AWS_API_CONFIG } from "../constants/constants";
+import { sendWelcomeEmail } from "../utils/welcome-email";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -81,7 +82,9 @@ export const addMember: RequestHandler = async (req, res, next) => {
         },
       });
 
-      res.json(newMember.data.createMember);
+      const createdMember = newMember.data.createMember;
+      await sendWelcomeEmail(createdMember.email);
+      res.json(createdMember);
     }
   } catch (error) {
     return res.status(500).send({
@@ -155,7 +158,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                   signUp(signUpDetails)
                     .then((value) => console.log(value))
                     .catch((reason) => console.error(reason));
-                  
+
                   output.successImport.push(createdMember.data.createMember);
                 } else {
                   output.failedImport.push(createdMember.data.createMember);
