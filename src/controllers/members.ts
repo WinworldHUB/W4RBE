@@ -1,5 +1,5 @@
 import { generateClient } from "aws-amplify/api";
-import { SignUpInput, signUp } from "aws-amplify/auth";
+import { SignUpInput, confirmSignUp, signUp, updateUserAttributes } from "aws-amplify/auth";
 import { getMember, listMembers } from "../graphql/queries";
 import { Amplify } from "aws-amplify";
 import { RequestHandler } from "express";
@@ -53,11 +53,16 @@ export const getMemberById: RequestHandler = async (req, res, next) => {
 
 export const getMemberByEmail: RequestHandler = async (req, res, next) => {
   try {
+    const email = req.params.email.toLowerCase();
+    if (!email) {
+      res.status(400).json({ error: "Email parameter missing" });
+      return;
+    }
     const members = await client.graphql({
       query: listMembers,
       variables: {
         filter: {
-          email: { eq: req.params.email },
+          email: { eq: email },
         },
       },
     });
@@ -73,7 +78,7 @@ export const getMemberByEmail: RequestHandler = async (req, res, next) => {
 export const addMember: RequestHandler = async (req, res, next) => {
   try {
     const member = req.body as Member;
-
+    member.email = member.email.toLowerCase();
     if (member) {
       const newMember = await client.graphql({
         query: createMember,
@@ -134,34 +139,41 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                   output.failedImport.push(updatedMember.data.updateMember);
                 }
               } else {
+                const signUpDetails: SignUpInput = {
+                  username: member.email,
+                  password: "Password@1",
+                  options: {
+                    autoSignIn: true,
+                    userAttributes: {
+                      email: member.email,
+                      name: member.name,
+                    },
+                  },
+                };
+                member.email = member.email.toLowerCase();
                 const createdMember = await client.graphql({
                   query: createMember,
                   variables: {
                     input: member,
                   },
                 });
-
                 if (createdMember) {
-                  // Register user
-                  const signUpDetails: SignUpInput = {
-                    username: createdMember.data.createMember.email,
-                    password: "Password@1",
-                    options: {
-                      autoSignIn: true,
-                      userAttributes: {
-                        email: createdMember.data.createMember.email,
-                        name: createdMember.data.createMember.name,
-                        email_verified: "true",
-                      },
-                    },
-                  };
-                  signUp(signUpDetails)
-                    .then((value) => console.log(value))
-                    .catch((reason) => console.error(reason));
-
+                  await sendWelcomeEmail(createdMember.data.createMember.email);
                   output.successImport.push(createdMember.data.createMember);
                 } else {
                   output.failedImport.push(createdMember.data.createMember);
+                }
+                // call the signUp method instead of passing true
+                const memberSignUpDetails = true
+                if (memberSignUpDetails) {
+                  // console.log(memberSignUpDetails);
+                  // const newMember = {
+                  //   ...member,
+                  //   id: memberSignUpDetails.userId,
+                  // };
+                 
+                } else {
+                  output.failedImport.push(member);
                 }
               }
             }
