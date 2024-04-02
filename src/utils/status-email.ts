@@ -4,6 +4,7 @@ import {
   ApiClient,
 } from "sib-api-v3-sdk";
 import dotenv from "dotenv";
+import { BREVO_CONFIG } from "../constants/constants";
 dotenv.config();
 
 export const sendStatusEmail = async (
@@ -14,7 +15,10 @@ export const sendStatusEmail = async (
   try {
     const defaultClient = ApiClient.instance;
     const apiInstance = new TransactionalEmailsApi();
-    const apiKey = process.env.API_KEY;
+    const apiKey =
+      BREVO_CONFIG.API_KEY_PREFIX +
+      BREVO_CONFIG.API_KEY_MAJOR +
+      BREVO_CONFIG.API_KEY_MINOR;
     const apiKeyAuth = defaultClient.authentications["api-key"];
     apiKeyAuth.apiKey = apiKey;
     const templateId = 5;
