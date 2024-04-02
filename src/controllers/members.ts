@@ -74,7 +74,7 @@ export const getMemberByEmail: RequestHandler = async (req, res, next) => {
 export const addMember: RequestHandler = async (req, res, next) => {
   try {
     const member = req.body as Member;
-
+    member.email = member.email.toLowerCase();
     if (member) {
       const newMember = await client.graphql({
         query: createMember,
