@@ -1,6 +1,13 @@
 import { ResourcesConfig } from "aws-amplify";
 
 export const AWS_API_CONFIG: ResourcesConfig = {
+  Auth:{
+    Cognito:{
+      userPoolId: "eu-west-2_Fib3gXgUH",
+      userPoolClientId: "15lqu9c3b2kucjkkrtlap6l9k3",
+      identityPoolId: "eu-west-2:1b7c6b7d-7c5a-4c9b-8f6b-0e7c9b9c7b7d",
+    }
+  },
   API: {
     GraphQL: {
       endpoint:

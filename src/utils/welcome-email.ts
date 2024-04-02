@@ -20,15 +20,11 @@ export const sendWelcomeEmail = async (email: string): Promise<void> => {
     const templateId = 1;
     const sendSmtpEmail = new SendSmtpEmail();
     sendSmtpEmail.templateId = templateId;
-    const randomGeneratedPassword = [...Array(16)]
-      .map(() => Math.floor(Math.random() * 16).toString(16))
-      .join("");
-
     // Set the recipient
     sendSmtpEmail.to = [{ email: email }];
 
     // Set the email parameters using the placeholder format
-    sendSmtpEmail.params = { email: email, tempPassword: randomGeneratedPassword};
+    sendSmtpEmail.params = { email: email, tempPassword: "Password@1"};
     apiInstance.sendTransacEmail(sendSmtpEmail).then(
       function (data:any) {
         console.log(
