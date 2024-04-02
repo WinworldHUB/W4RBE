@@ -54,6 +54,10 @@ export const getMemberById: RequestHandler = async (req, res, next) => {
 export const getMemberByEmail: RequestHandler = async (req, res, next) => {
   try {
     const email = req.params.email.toLowerCase();
+    if (!email) {
+      res.status(400).json({ error: "Email parameter missing" });
+      return;
+    }
     const members = await client.graphql({
       query: listMembers,
       variables: {
