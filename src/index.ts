@@ -14,6 +14,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     "https://master.d212wzb60r31lk.amplifyapp.com",
     "https://bulk.wholesale4resale.com",
     "https://bulkadmin.wholesale4resale.com",
+    "http://localhost:3002",
     "http://localhost:3001",
     "http://localhost:3000",
   ];

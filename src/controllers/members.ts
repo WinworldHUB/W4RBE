@@ -13,6 +13,7 @@ import { createMember, updateMember } from "../graphql/mutations";
 import formatMemberData from "../utils/format-user";
 import { AWS_API_CONFIG } from "../constants/constants";
 import { sendWelcomeEmail } from "../utils/welcome-email";
+import { sendSignUpEmail } from "../utils/signup-email";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -166,11 +167,12 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                   const createdMember = await client.graphql({
                     query: createMember,
                     variables: {
-                      input: member,
+                      input: newMember,
                     },
                   });
                   if (createdMember) {
-                    await sendWelcomeEmail(createdMember.data.createMember.email);
+                    await sendSignUpEmail(createdMember.data.createMember.email);
+                    // await sendWelcomeEmail(createdMember.data.createMember.email);
                     output.successImport.push(createdMember.data.createMember);
                   } else {
                     output.failedImport.push(createdMember.data.createMember);
