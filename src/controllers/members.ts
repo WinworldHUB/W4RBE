@@ -304,7 +304,6 @@ export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
 export const confirmMember: RequestHandler = async (req, res, next) => {
   try {
     const credentials = req.body as ConfirmSignUpInput;
-
     if (!credentials.username || !credentials.confirmationCode) {
       res.status(400).json({ err: "Username and code are required" });
       return;
