@@ -9,6 +9,7 @@ import {
   
   export const sendSignUpEmail = async (
     email: string,
+    UserId: string
   ): Promise<void> => {
     try {
       const defaultClient = ApiClient.instance;
@@ -23,6 +24,7 @@ import {
       const sendSmtpEmail = new SendSmtpEmail();
       sendSmtpEmail.templateId = templateId;
       sendSmtpEmail.to = [{ email: email }];
+      sendSmtpEmail.params = { userId: UserId };
       apiInstance.sendTransacEmail(sendSmtpEmail).then(
         function (data: any) {
           console.log(

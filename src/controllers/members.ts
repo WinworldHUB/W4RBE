@@ -14,7 +14,7 @@ import { createMember, updateMember } from "../graphql/mutations";
 import formatMemberData from "../utils/format-user";
 import { AWS_API_CONFIG } from "../constants/constants";
 import { sendWelcomeEmail } from "../utils/welcome-email";
-import { sendSignUpEmail } from "../utils/signup-email";
+import { sendSignUpEmail } from "../utils/confirmation-email";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -172,7 +172,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                     },
                   });
                   if (createdMember) {
-                    await sendSignUpEmail(createdMember.data.createMember.email, );
+                    await sendSignUpEmail(createdMember.data.createMember.email, memberSignUpDetails.userId);
                     // await sendWelcomeEmail(createdMember.data.createMember.email);
                     output.successImport.push(createdMember.data.createMember);
                   } else {
@@ -299,7 +299,6 @@ export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
 export const confirmMember: RequestHandler = async (req, res, next) => {
   try {
     const credentials = req.body as ConfirmSignUpInput;
-    console.log(credentials);
     
     if (!credentials.username || !credentials.confirmationCode) {
       res.status(400).json({ err: "Username and code are required" });
