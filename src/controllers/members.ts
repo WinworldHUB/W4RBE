@@ -178,7 +178,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                       createdMember.data.createMember.email,
                       memberSignUpDetails.userId
                     );
-                    // await sendWelcomeEmail(createdMember.data.createMember.email);
+                    await sendWelcomeEmail(createdMember.data.createMember.email);
                     output.successImport.push(createdMember.data.createMember);
                   } else {
                     output.failedImport.push(createdMember.data.createMember);
