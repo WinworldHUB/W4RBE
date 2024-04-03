@@ -7,6 +7,7 @@ import {
   getMemberByEmail,
   importMembers,
   modifyMember,
+  resendCode,
 } from "../controllers/members";
 
 const memberRoutes = Router();
@@ -15,6 +16,7 @@ memberRoutes.get("/:email", getMemberByEmail);
 memberRoutes.post("/", addMember);
 memberRoutes.post("/imports", importMembers);
 memberRoutes.post("/confirm", confirmMember);
+memberRoutes.post("/resend-code", resendCode);
 memberRoutes.put("/:email", modifyMember);
 memberRoutes.delete("/:email", deleteMemberByEmail);
 
