@@ -1,5 +1,11 @@
 import { generateClient } from "aws-amplify/api";
-import { SignUpInput, confirmSignUp, signUp, updateUserAttributes } from "aws-amplify/auth";
+import {
+  ConfirmSignUpInput,
+  SignUpInput,
+  confirmSignUp,
+  signUp,
+  updateUserAttributes,
+} from "aws-amplify/auth";
 import { getMember, listMembers } from "../graphql/queries";
 import { Amplify } from "aws-amplify";
 import { RequestHandler } from "express";
@@ -8,6 +14,7 @@ import { createMember, updateMember } from "../graphql/mutations";
 import formatMemberData from "../utils/format-user";
 import { AWS_API_CONFIG } from "../constants/constants";
 import { sendWelcomeEmail } from "../utils/welcome-email";
+import { sendSignUpEmail } from "../utils/confirmation-email";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -151,27 +158,26 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                   },
                 };
                 member.email = member.email.toLowerCase();
-                const createdMember = await client.graphql({
-                  query: createMember,
-                  variables: {
-                    input: member,
-                  },
-                });
-                if (createdMember) {
-                  await sendWelcomeEmail(createdMember.data.createMember.email);
-                  output.successImport.push(createdMember.data.createMember);
-                } else {
-                  output.failedImport.push(createdMember.data.createMember);
-                }
-                // call the signUp method instead of passing true
-                const memberSignUpDetails = true
+                const memberSignUpDetails = await signUp(signUpDetails);
                 if (memberSignUpDetails) {
-                  // console.log(memberSignUpDetails);
-                  // const newMember = {
-                  //   ...member,
-                  //   id: memberSignUpDetails.userId,
-                  // };
-                 
+                  console.log(memberSignUpDetails);
+                  const newMember = {
+                    ...member,
+                    id: memberSignUpDetails.userId,
+                  };
+                  const createdMember = await client.graphql({
+                    query: createMember,
+                    variables: {
+                      input: newMember,
+                    },
+                  });
+                  if (createdMember) {
+                    await sendSignUpEmail(createdMember.data.createMember.email, memberSignUpDetails.userId);
+                    // await sendWelcomeEmail(createdMember.data.createMember.email);
+                    output.successImport.push(createdMember.data.createMember);
+                  } else {
+                    output.failedImport.push(createdMember.data.createMember);
+                  }
                 } else {
                   output.failedImport.push(member);
                 }
@@ -287,5 +293,21 @@ export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
       message: "Error deleting member",
       internalError: error,
     });
+  }
+};
+
+export const confirmMember: RequestHandler = async (req, res, next) => {
+  try {
+    const credentials = req.body as ConfirmSignUpInput;
+    
+    if (!credentials.username || !credentials.confirmationCode) {
+      res.status(400).json({ err: "Username and code are required" });
+      return;
+    }
+    const memberConfirmed = await confirmSignUp(credentials);
+
+    res.json(memberConfirmed);
+  } catch (error) {
+    res.status(500).json({ err: "Failed to confirm member", error });
   }
 };
