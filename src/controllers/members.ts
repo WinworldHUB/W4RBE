@@ -1,5 +1,6 @@
 import { generateClient } from "aws-amplify/api";
 import {
+  ConfirmSignUpInput,
   SignUpInput,
   confirmSignUp,
   signUp,
@@ -171,7 +172,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                     },
                   });
                   if (createdMember) {
-                    await sendSignUpEmail(createdMember.data.createMember.email);
+                    await sendSignUpEmail(createdMember.data.createMember.email, );
                     // await sendWelcomeEmail(createdMember.data.createMember.email);
                     output.successImport.push(createdMember.data.createMember);
                   } else {
@@ -297,9 +298,11 @@ export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
 
 export const confirmMember: RequestHandler = async (req, res, next) => {
   try {
-    const credentials = req.body;
-    if (!credentials.email || !credentials.code) {
-      res.status(400).json({ err: "Email and code are required" });
+    const credentials = req.body as ConfirmSignUpInput;
+    console.log(credentials);
+    
+    if (!credentials.username || !credentials.confirmationCode) {
+      res.status(400).json({ err: "Username and code are required" });
       return;
     }
     const memberConfirmed = await confirmSignUp(credentials);
