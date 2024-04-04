@@ -1,8 +1,10 @@
 import { generateClient } from "aws-amplify/api";
 import {
   ConfirmSignUpInput,
+  ResendSignUpCodeInput,
   SignUpInput,
   confirmSignUp,
+  resendSignUpCode,
   signUp,
   updateUserAttributes,
 } from "aws-amplify/auth";
@@ -172,8 +174,11 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                     },
                   });
                   if (createdMember) {
-                    await sendSignUpEmail(createdMember.data.createMember.email, memberSignUpDetails.userId);
-                    // await sendWelcomeEmail(createdMember.data.createMember.email);
+                    await sendSignUpEmail(
+                      createdMember.data.createMember.email,
+                      memberSignUpDetails.userId
+                    );
+                    await sendWelcomeEmail(createdMember.data.createMember.email);
                     output.successImport.push(createdMember.data.createMember);
                   } else {
                     output.failedImport.push(createdMember.data.createMember);
@@ -299,7 +304,6 @@ export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
 export const confirmMember: RequestHandler = async (req, res, next) => {
   try {
     const credentials = req.body as ConfirmSignUpInput;
-    
     if (!credentials.username || !credentials.confirmationCode) {
       res.status(400).json({ err: "Username and code are required" });
       return;
@@ -309,5 +313,26 @@ export const confirmMember: RequestHandler = async (req, res, next) => {
     res.json(memberConfirmed);
   } catch (error) {
     res.status(500).json({ err: "Failed to confirm member", error });
+  }
+};
+
+export const resendCode: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const { username } = req.body as ResendSignUpCodeInput;
+    if (!username) {
+      res.status(400).json({ err: "username is required" });
+      return;
+    }
+    const  code = await resendSignUpCode({ username: username });
+    console.log(code);
+    
+    res.json({ message: "Code resent" });
+    
+  } catch (error) {
+    res.status(500).json({ err: "Failed to resend confirmation code", error });
   }
 };
