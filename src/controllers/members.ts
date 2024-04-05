@@ -16,12 +16,12 @@ import { createMember, updateMember } from "../graphql/mutations";
 import formatMemberData from "../utils/format-user";
 import { AWS_API_CONFIG } from "../constants/constants";
 import { sendWelcomeEmail } from "../utils/welcome-email";
-import { sendSignUpEmail } from "../utils/confirmation-email";
+import { TransactionalEmailService } from "../utils/email-utils";
 
 Amplify.configure(AWS_API_CONFIG);
 
 const client = generateClient();
-
+const transactionalEmailService = new TransactionalEmailService();
 export const getAllMembers: RequestHandler = async (req, res, next) => {
   try {
     const members = await client.graphql({
@@ -174,11 +174,19 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                     },
                   });
                   if (createdMember) {
-                    await sendSignUpEmail(
-                      createdMember.data.createMember.email,
-                      memberSignUpDetails.userId
-                    );
-                    await sendWelcomeEmail(createdMember.data.createMember.email);
+                    await transactionalEmailService.sendEmail({
+                      templateId: 7,
+                      toEmail: createdMember.data.createMember.email,
+                      params: { userId: memberSignUpDetails.userId },
+                    });
+                    await transactionalEmailService.sendEmail({
+                      templateId: 1,
+                      toEmail: createdMember.data.createMember.email,
+                      params: {
+                        email: createdMember.data.createMember.email,
+                        tempPassword: "Password@1",
+                      },
+                    });
                     output.successImport.push(createdMember.data.createMember);
                   } else {
                     output.failedImport.push(createdMember.data.createMember);
@@ -316,22 +324,17 @@ export const confirmMember: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const resendCode: RequestHandler = async (
-  req,
-  res,
-  next
-) => {
+export const resendCode: RequestHandler = async (req, res, next) => {
   try {
     const { username } = req.body as ResendSignUpCodeInput;
     if (!username) {
       res.status(400).json({ err: "username is required" });
       return;
     }
-    const  code = await resendSignUpCode({ username: username });
+    const code = await resendSignUpCode({ username: username });
     console.log(code);
-    
+
     res.json({ message: "Code resent" });
-    
   } catch (error) {
     res.status(500).json({ err: "Failed to resend confirmation code", error });
   }
