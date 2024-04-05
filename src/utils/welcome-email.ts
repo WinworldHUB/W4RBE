@@ -3,9 +3,7 @@ import {
   TransactionalEmailsApi,
   ApiClient,
 } from "sib-api-v3-sdk";
-import dotenv from "dotenv";
 import { BREVO_CONFIG } from "../constants/constants";
-dotenv.config();
 
 export const sendWelcomeEmail = async (email: string): Promise<void> => {
   try {
