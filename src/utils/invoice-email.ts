@@ -10,7 +10,8 @@ dotenv.config();
 
 export const sendInvoiceEmail = async (
   order: Order,
-  email: string
+  email: string,
+  invoiceId: string
 ): Promise<void> => {
   try {
     const defaultClient = ApiClient.instance;
@@ -39,7 +40,7 @@ export const sendInvoiceEmail = async (
     sendSmtpEmail.templateId = templateId;
 
     sendSmtpEmail.to = [{ email: memberEmail }];
-
+    sendSmtpEmail.subject = {invoiceNumber:invoiceId};
     // Set the email parameters dynamically based on the order
     const emailParams: { [key: string]: string } = {
       billedTo: memberEmail,
