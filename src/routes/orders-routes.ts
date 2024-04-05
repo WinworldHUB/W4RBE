@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   addOrder,
   deleteOrderById,
+  generateOrderNumber,
   getAllOrders,
   getOrderById,
   getOrderByOrderNumber,
@@ -12,6 +13,7 @@ import {
 const orderRoutes = Router();
 orderRoutes.get("/deliveryStatus", updateDeliveryStatus);
 orderRoutes.get("/", getAllOrders);
+orderRoutes.get("/ordernumber/generate", generateOrderNumber);
 orderRoutes.get("/:id", getOrderById);
 orderRoutes.get("/ordernumber/:orderNumber", getOrderByOrderNumber);
 
