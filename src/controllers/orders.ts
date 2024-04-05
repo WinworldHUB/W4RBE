@@ -11,7 +11,7 @@ import {
   listInvoices,
   listOrders,
 } from "../graphql/queries";
-import { Order, OrderStatus, Product } from "../awsApis";
+import { Order, OrderStatus } from "../awsApis";
 import {
   createInvoice,
   createOrder,
@@ -19,13 +19,14 @@ import {
   updateOrder,
 } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
+import { sendInvoiceEmail } from "../utils/invoice-email";
 import { Tracker } from "parcel-tracker-api";
 import { trimOrder } from "../utils/order-utils";
 import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
-import { TransactionalEmailService } from "../utils/email-utils";
+import { sendStatusEmail } from "../utils/status-email";
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
-const transactionalEmailService = new TransactionalEmailService();
+
 export const getOrderById: RequestHandler = async (req, res, next) => {
   try {
     const order = await client.graphql({
@@ -140,7 +141,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     const orderId = createdOrder.id;
     const invoiceDate = createdOrder.orderDate;
     const memberId = createdOrder.memberId;
-    const createdInvoice = await client.graphql({
+    await client.graphql({
       query: createInvoice,
       variables: {
         input: {
@@ -157,35 +158,8 @@ export const addOrder: RequestHandler = async (req, res, next) => {
         id: memberId,
       },
     });
-    const invoiceId = createdInvoice.data.createInvoice.id;
     const memberEmail = member.data.getMember.email;
-
-
-
-    const products: Product[] = JSON.parse(order.products);
-
-    // Construct params for invoice email
-    const emailParams: { [key: string]: string } = {
-      billedTo: memberEmail,
-      invoiceDate: invoiceDate,
-      invoiceNumber: invoiceId,
-      packageType: order.packagingType,
-    };
-
-    products.forEach((product, index) => {
-      const itemKeyPrefix = `item${index + 1}`;
-      emailParams[`${itemKeyPrefix}`] = product.title;
-      emailParams[`${itemKeyPrefix}Quantity`] = product.quantity.toString();
-      emailParams[`${itemKeyPrefix}Amount`] = product.price.toString();
-    });
-
-    await transactionalEmailService.sendEmail({
-      templateId: 4,
-      subject: invoiceId,
-      toEmail: memberEmail,
-      params: emailParams,
-    });
-
+    await sendInvoiceEmail(createdOrder, memberEmail, order.orderNumber);
     res.json({ createdOrder });
   } catch (error) {
     console.log(error);
@@ -238,24 +212,18 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
       var promises = orders.map((order) =>
         tracker
           .getTrackingInformations(order.trackingNumber, "Royal Mail")
-          .then(async (deliveryStatus: ParcelInformations) => {
+          .then((deliveryStatus: ParcelInformations) => {
             if (deliveryStatus.isDelivered) {
               order.status = OrderStatus.DONE;
               order.trackingStatus = deliveryStatus.status ?? "DONE";
               output.push("Delivered");
             }
-            if (
-              order.status.toLowerCase() !== deliveryStatus.status.toLowerCase()
-            ) {
-              const emailParams: { [key: string]: string } = {
-                orderNumber: order.orderNumber,
-                deliveryStatus: order.status,
-              };
-              await transactionalEmailService.sendEmail({
-                templateId: 4,
-                toEmail: memberEmail,
-                params: emailParams,
-              });
+            if (order.status.toLowerCase() !== deliveryStatus.status.toLowerCase()) {
+              sendStatusEmail(
+                order.orderNumber,
+                memberEmail,
+                deliveryStatus.status ?? "PENDING"
+              );
             } else {
               order.trackingStatus = deliveryStatus.status ?? "PENDING";
             }
@@ -344,17 +312,7 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       }
 
       if (storedOrder.status !== updatedOrder.status) {
-
-        // Send status email
-        const emailParams: { [key: string]: string } = {
-          orderNumber: updatedOrder.orderNumber,
-          deliveryStatus: updatedOrder.status,
-        };
-        await transactionalEmailService.sendEmail({
-          templateId: 4,
-          toEmail: memberEmail,
-          params: emailParams,
-        });
+        await sendStatusEmail(updatedOrder.orderNumber,memberEmail, updatedOrder.status)
       }
 
       res.json(updatedOrder);
