@@ -138,7 +138,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const createdOrder = newOrder.data.createOrder;
-    const orderId = createdOrder.id;
+    const orderId = createdOrder.orderNumber;
     const invoiceDate = createdOrder.orderDate;
     const memberId = createdOrder.memberId;
     await client.graphql({
