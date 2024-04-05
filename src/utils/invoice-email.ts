@@ -4,13 +4,11 @@ import {
   ApiClient,
 } from "sib-api-v3-sdk";
 import { Order, Product } from "../awsApis";
-import dotenv from "dotenv";
 import { BREVO_CONFIG } from "../constants/constants";
-dotenv.config();
-
 export const sendInvoiceEmail = async (
   order: Order,
-  email: string
+  email: string,
+  invoiceId: string
 ): Promise<void> => {
   try {
     const defaultClient = ApiClient.instance;
@@ -39,9 +37,9 @@ export const sendInvoiceEmail = async (
     sendSmtpEmail.templateId = templateId;
 
     sendSmtpEmail.to = [{ email: memberEmail }];
-
     // Set the email parameters dynamically based on the order
     const emailParams: { [key: string]: string } = {
+      invoiceNumber:invoiceId,
       billedTo: memberEmail,
       invoiceDate: order.orderDate,
       packageType: order.packagingType,
