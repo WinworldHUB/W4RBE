@@ -168,7 +168,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const memberEmail = member.data.getMember.email;
-    await sendInvoiceEmail(createdOrder, memberEmail, order.orderNumber);
+    await sendInvoiceEmail(createdOrder, memberEmail, orderNumber);
     res.json({ createdOrder });
   } catch (error) {
     console.log(error);
