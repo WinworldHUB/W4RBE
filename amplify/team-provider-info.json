@@ -10,14 +10,6 @@
       "StackName": "amplify-w4rbe-dev-102521",
       "StackId": "arn:aws:cloudformation:eu-west-2:471112510024:stack/amplify-w4rbe-dev-102521/56101e80-ddff-11ee-b1de-0a17986ef55b",
       "AmplifyAppId": "d20i40zf49k8k8"
-    },
-    "categories": {
-      "auth": {
-        "w4rbe124298cd": {}
-      },
-      "api": {
-        "W4RBE": {}
-      }
     }
   }
 }

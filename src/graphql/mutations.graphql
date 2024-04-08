@@ -132,6 +132,8 @@ mutation CreateProduct(
     otherImages
     size
     available
+    tag
+    brand
     createdAt
     updatedAt
     __typename
@@ -156,6 +158,8 @@ mutation UpdateProduct(
     otherImages
     size
     available
+    tag
+    brand
     createdAt
     updatedAt
     __typename
@@ -180,6 +184,8 @@ mutation DeleteProduct(
     otherImages
     size
     available
+    tag
+    brand
     createdAt
     updatedAt
     __typename
