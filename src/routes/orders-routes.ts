@@ -2,10 +2,10 @@ import { Router } from "express";
 import {
   addOrder,
   deleteOrderById,
-  generateOrderNumber,
   getAllOrders,
   getOrderById,
   getOrderByOrderNumber,
+  getOrderNumber,
   modifyOrder,
   updateDeliveryStatus,
 } from "../controllers/orders";
@@ -13,7 +13,7 @@ import {
 const orderRoutes = Router();
 orderRoutes.get("/deliveryStatus", updateDeliveryStatus);
 orderRoutes.get("/", getAllOrders);
-orderRoutes.get("/ordernumber/generate", generateOrderNumber);
+orderRoutes.get("/ordernumber/generate", getOrderNumber);
 orderRoutes.get("/:id", getOrderById);
 orderRoutes.get("/ordernumber/:orderNumber", getOrderByOrderNumber);
 
