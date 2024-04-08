@@ -5,6 +5,7 @@ import {
   SignUpInput,
   confirmSignUp,
   resendSignUpCode,
+  signOut,
   signUp,
   updateUserAttributes,
 } from "aws-amplify/auth";
@@ -123,6 +124,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
         formattedMembers.map(async (member: Member) => {
           try {
             if (member && member.email !== "") {
+
               const foundMember = await client.graphql({
                 query: listMembers,
                 variables: {

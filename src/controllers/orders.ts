@@ -19,6 +19,7 @@ import {
   updateOrder,
 } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
+import { DateTime } from "luxon";
 import { sendInvoiceEmail } from "../utils/invoice-email";
 import { Tracker } from "parcel-tracker-api";
 import { trimOrder } from "../utils/order-utils";
@@ -125,16 +126,24 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     if (!order) {
       res.status(500).json({
         message:
-          "Invalid order. Order details are not in correct format or empty",
+        "Invalid order. Order details are not in correct format or empty",
         error: null,
       });
       return;
     }
 
+    if(!order.memberId){
+      return res.status(500).json({"message": "Invalid order. Member ID is missing."});
+    }
+
+    const orderNumber = await generateOrderNumber(order.memberId);
+  
     const newOrder = await client.graphql({
       query: createOrder,
       variables: {
-        input: order,
+        input: {
+          ... order, orderNumber: orderNumber,
+        },
       },
     });
     const createdOrder = newOrder.data.createOrder;
@@ -159,7 +168,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const memberEmail = member.data.getMember.email;
-    await sendInvoiceEmail(createdOrder, memberEmail, order.orderNumber);
+    await sendInvoiceEmail(createdOrder, memberEmail, orderNumber);
     res.json({ createdOrder });
   } catch (error) {
     console.log(error);
@@ -218,7 +227,9 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
               order.trackingStatus = deliveryStatus.status ?? "DONE";
               output.push("Delivered");
             }
-            if (order.status.toLowerCase() !== deliveryStatus.status.toLowerCase()) {
+            if (
+              order.status.toLowerCase() !== deliveryStatus.status.toLowerCase()
+            ) {
               sendStatusEmail(
                 order.orderNumber,
                 memberEmail,
@@ -312,7 +323,11 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       }
 
       if (storedOrder.status !== updatedOrder.status) {
-        await sendStatusEmail(updatedOrder.orderNumber,memberEmail, updatedOrder.status)
+        await sendStatusEmail(
+          updatedOrder.orderNumber,
+          memberEmail,
+          updatedOrder.status
+        );
       }
 
       res.json(updatedOrder);
@@ -393,5 +408,46 @@ export const deleteOrderById: RequestHandler = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to delete order", error: error });
+  }
+};
+
+const generateOrderNumber = async (memberId: string) => {
+  const { data } = await client.graphql({
+    query: listOrders,
+    variables: {
+      filter: {
+        memberId: {
+          eq: memberId,
+        },
+      },
+    },
+  });
+  if (!data) {
+    return null;
+  }
+  const orderSequence = data.listOrders.items.length + 1;
+  const orderNumber =
+    DateTime.now().toISODate() + "-" + orderSequence.toString();
+  return orderNumber;
+};
+
+export const getOrderNumber: RequestHandler = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    const decodedToken: any = jwt.decode(token);
+    if (!decodedToken) {
+      return res
+        .status(401)
+        .json({ message: "please sign in to use this service" });
+    }
+
+    const memberId: string = decodedToken.sub;
+    
+    res.json({ orderNumber: await generateOrderNumber(memberId)});
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Failed to generate order number", error: error });
   }
 };

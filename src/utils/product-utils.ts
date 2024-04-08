@@ -17,6 +17,8 @@ export const dbToProduct = (dbProduct: unknown): Product => {
     otherImages: dbProduct["otherImages"],
     size: dbProduct["size"],
     quantity: dbProduct["quantity"],
+    brand: dbProduct["brand"],
+    tag: dbProduct["tag"],
   } as Product;
 };
 
@@ -43,6 +45,8 @@ export const productToDB = (product: Product): CreateProductInput => {
     otherImages: product.otherImages,
     size: product.size,
     quantity: product.quantity,
+    brand: product.brand,
+    tag: product.tag,
   };
 };
 
@@ -60,6 +64,8 @@ export const productToDBForUpdate = (product: Product): UpdateProductInput => {
     otherImages: product.otherImages,
     size: product.size,
     quantity: product.quantity,
+    tag: product.tag,
+    brand: product.brand,
   };
 };
 
@@ -94,6 +100,8 @@ export const formatImportedProducts = (productsData: Product[]) => {
     const variantPrice = product["Variant Price"];
     const variantQuantity = product["Variant Inventory Qty"];
     const bodyText = stripHtml(bodyHtml);
+    const brand = product["Vendor"]
+    const tag = product["Tags"]
 
     if (formattedProducts[id]) {
       formattedProducts[id].variants.push({
@@ -122,6 +130,8 @@ export const formatImportedProducts = (productsData: Product[]) => {
         taxable: taxable,
         featuredImage: featuredImage,
         otherImages: otherImages,
+        brand: brand,
+        tag: tag,
       };
     }
   });

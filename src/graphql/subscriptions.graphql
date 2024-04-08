@@ -1,0 +1,235 @@
+# this is an auto generated file. This will be overwritten
+
+subscription OnCreateInvoice($filter: ModelSubscriptionInvoiceFilterInput) {
+  onCreateInvoice(filter: $filter) {
+    id
+    orderId
+    invoiceDate
+    paymentDate
+    memberId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateInvoice($filter: ModelSubscriptionInvoiceFilterInput) {
+  onUpdateInvoice(filter: $filter) {
+    id
+    orderId
+    invoiceDate
+    paymentDate
+    memberId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteInvoice($filter: ModelSubscriptionInvoiceFilterInput) {
+  onDeleteInvoice(filter: $filter) {
+    id
+    orderId
+    invoiceDate
+    paymentDate
+    memberId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnCreateOrder($filter: ModelSubscriptionOrderFilterInput) {
+  onCreateOrder(filter: $filter) {
+    id
+    orderNumber
+    orderDate
+    orderValue
+    products
+    deliveryDetails
+    status
+    trackingStatus
+    trackingNumber
+    packagingType
+    memberId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateOrder($filter: ModelSubscriptionOrderFilterInput) {
+  onUpdateOrder(filter: $filter) {
+    id
+    orderNumber
+    orderDate
+    orderValue
+    products
+    deliveryDetails
+    status
+    trackingStatus
+    trackingNumber
+    packagingType
+    memberId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteOrder($filter: ModelSubscriptionOrderFilterInput) {
+  onDeleteOrder(filter: $filter) {
+    id
+    orderNumber
+    orderDate
+    orderValue
+    products
+    deliveryDetails
+    status
+    trackingStatus
+    trackingNumber
+    packagingType
+    memberId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnCreateProduct($filter: ModelSubscriptionProductFilterInput) {
+  onCreateProduct(filter: $filter) {
+    id
+    title
+    body
+    variants
+    quantity
+    category
+    price
+    taxable
+    published
+    featuredImage
+    otherImages
+    size
+    available
+    tag
+    brand
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateProduct($filter: ModelSubscriptionProductFilterInput) {
+  onUpdateProduct(filter: $filter) {
+    id
+    title
+    body
+    variants
+    quantity
+    category
+    price
+    taxable
+    published
+    featuredImage
+    otherImages
+    size
+    available
+    tag
+    brand
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteProduct($filter: ModelSubscriptionProductFilterInput) {
+  onDeleteProduct(filter: $filter) {
+    id
+    title
+    body
+    variants
+    quantity
+    category
+    price
+    taxable
+    published
+    featuredImage
+    otherImages
+    size
+    available
+    tag
+    brand
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnCreateMember($filter: ModelSubscriptionMemberFilterInput) {
+  onCreateMember(filter: $filter) {
+    id
+    name
+    email
+    phone
+    active
+    province
+    city
+    zip
+    country
+    address1
+    address2
+    deliveryPerson
+    deliveryEmail
+    deliveryAddress1
+    deliveryAddress2
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateMember($filter: ModelSubscriptionMemberFilterInput) {
+  onUpdateMember(filter: $filter) {
+    id
+    name
+    email
+    phone
+    active
+    province
+    city
+    zip
+    country
+    address1
+    address2
+    deliveryPerson
+    deliveryEmail
+    deliveryAddress1
+    deliveryAddress2
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteMember($filter: ModelSubscriptionMemberFilterInput) {
+  onDeleteMember(filter: $filter) {
+    id
+    name
+    email
+    phone
+    active
+    province
+    city
+    zip
+    country
+    address1
+    address2
+    deliveryPerson
+    deliveryEmail
+    deliveryAddress1
+    deliveryAddress2
+    createdAt
+    updatedAt
+    __typename
+  }
+}
