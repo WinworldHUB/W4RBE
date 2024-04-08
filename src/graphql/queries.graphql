@@ -95,6 +95,8 @@ query GetProduct($id: ID!) {
     otherImages
     size
     available
+    tag
+    brand
     createdAt
     updatedAt
     __typename
@@ -121,6 +123,8 @@ query ListProducts(
       otherImages
       size
       available
+      tag
+      brand
       createdAt
       updatedAt
       __typename
