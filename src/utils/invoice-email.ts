@@ -3,8 +3,14 @@ import {
   TransactionalEmailsApi,
   ApiClient,
 } from "sib-api-v3-sdk";
-import { Order, Product } from "../awsApis";
+import { Order, PackagingType, Product } from "../awsApis";
 import { BREVO_CONFIG } from "../constants/constants";
+import { Packaging } from "../types/packagings";
+
+const packaging: Packaging[] = [
+  { id: PackagingType.BOX_PACK, cost: 20 },
+  { id: PackagingType.FLAT_PACK, cost: 14 },
+];
 export const sendInvoiceEmail = async (
   order: Order,
   email: string,
@@ -28,9 +34,20 @@ export const sendInvoiceEmail = async (
 
     const memberEmail = email;
     const templateId: number = 4;
+    let totalAmount = 0;
 
     // Split the products string into an array of product names
     const productsArray = JSON.parse(order.products) as Product[];
+    productsArray.forEach((product) => {
+      product.quantity = parseInt(product.quantity.toString());
+      if (order.packagingType === PackagingType.BOX_PACK) {
+        const shippingCost = packaging[0].cost * product.quantity;
+        totalAmount += order.orderValue + shippingCost; // Accumulate total amount
+      } else {
+        const shippingCost = packaging[1].cost * product.quantity;
+        totalAmount += order.orderValue + shippingCost; // Accumulate total amount
+      }
+    });
 
     // Create the email request
     const sendSmtpEmail = new SendSmtpEmail();
@@ -39,11 +56,11 @@ export const sendInvoiceEmail = async (
     sendSmtpEmail.to = [{ email: memberEmail }];
     // Set the email parameters dynamically based on the order
     const emailParams: { [key: string]: string } = {
-      invoiceNumber:invoiceId,
+      invoiceNumber: invoiceId,
       billedTo: memberEmail,
       invoiceDate: order.orderDate,
       packageType: order.packagingType,
-      invoiceValue: order.orderValue.toString(),
+      invoiceValue: totalAmount.toString(),
     };
 
     // Add product-specific parameters
