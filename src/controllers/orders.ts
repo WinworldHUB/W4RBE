@@ -126,23 +126,26 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     if (!order) {
       res.status(500).json({
         message:
-        "Invalid order. Order details are not in correct format or empty",
+          "Invalid order. Order details are not in correct format or empty",
         error: null,
       });
       return;
     }
 
-    if(!order.memberId){
-      return res.status(500).json({"message": "Invalid order. Member ID is missing."});
+    if (!order.memberId) {
+      return res
+        .status(500)
+        .json({ message: "Invalid order. Member ID is missing." });
     }
 
     const orderNumber = await generateOrderNumber(order.memberId);
-  
+
     const newOrder = await client.graphql({
       query: createOrder,
       variables: {
         input: {
-          ... order, orderNumber: orderNumber,
+          ...order,
+          orderNumber: orderNumber,
         },
       },
     });
@@ -168,6 +171,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const memberEmail = member.data.getMember.email;
+    const memberName = member.data.getMember.name;
     await sendInvoiceEmail(createdOrder, memberEmail, orderNumber);
     res.json({ createdOrder });
   } catch (error) {
@@ -425,9 +429,23 @@ const generateOrderNumber = async (memberId: string) => {
   if (!data) {
     return null;
   }
+  const fetchMember = await client.graphql({
+    query: getMember,
+    variables: {
+      id: memberId,
+    },
+  });
+  if (!fetchMember) {
+    return null;
+  }
+  const memberName = fetchMember.data.getMember.name;
   const orderSequence = data.listOrders.items.length + 1;
   const orderNumber =
-    DateTime.now().toISODate() + "-" + orderSequence.toString();
+    memberName +
+    "-" +
+    DateTime.now().toISODate() +
+    "-" +
+    orderSequence.toString();
   return orderNumber;
 };
 
@@ -442,8 +460,8 @@ export const getOrderNumber: RequestHandler = async (req, res, next) => {
     }
 
     const memberId: string = decodedToken.sub;
-    
-    res.json({ orderNumber: await generateOrderNumber(memberId)});
+
+    res.json({ orderNumber: await generateOrderNumber(memberId) });
   } catch (error) {
     console.log(error);
     res
