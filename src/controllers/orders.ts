@@ -439,9 +439,10 @@ const generateOrderNumber = async (memberId: string) => {
     return null;
   }
   const memberName = fetchMember.data.getMember.name;
+  const formattedMemberName = memberName.replace(/\s/g, "-");
   const orderSequence = data.listOrders.items.length + 1;
   const orderNumber =
-    memberName +
+    formattedMemberName +
     "-" +
     DateTime.now().toISODate() +
     "-" +
