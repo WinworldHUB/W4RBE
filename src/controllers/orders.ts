@@ -240,7 +240,7 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
                 deliveryStatus.status ?? "PENDING"
               );
             } else {
-              order.trackingStatus = deliveryStatus.status ?? "PENDING";
+              order.trackingStatus = deliveryStatus.status ?? "IN TRANSIT";
             }
             return updateOrderDeliveryStatus(order);
           })
@@ -248,7 +248,7 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
             output.push("Pending");
             return updateOrderDeliveryStatus({
               ...order,
-              trackingStatus: "PENDING",
+              trackingStatus: "IN TRANSIT",
             } as Order);
           })
       );
