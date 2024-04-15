@@ -36,25 +36,32 @@ export const sendInvoiceEmail = async (
     const templateId: number = 4;
     let shippingCharges = 0;
     let productQuantity = 0
-    let orderPackage = {}
-    let orderSubTotal = 0
+    const orderPackage = (order.packagingType === PackagingType.BOX_PACK ? packaging[0] : packaging[1]);
+    
     // Split the products string into an array of product names
     const productsArray = JSON.parse(order.products) as Product[];
-    productsArray.forEach((product) => {
-      product.quantity = parseInt(product.quantity.toString());
-      productQuantity += product.quantity
-      if (order.packagingType === PackagingType.BOX_PACK) {
-        orderPackage = packaging[0]
-        const shippingCost = packaging[0].cost * product.quantity;
-        orderSubTotal += order.orderValue - shippingCost
-        shippingCharges += shippingCost;
-      } else {
-        orderPackage = packaging[1]
-        const shippingCost = packaging[1].cost * product.quantity;
-        shippingCharges += shippingCost;
-      }
-      orderSubTotal += order.orderValue - shippingCharges
-    });
+
+    const totalProductQuantity = (productsArray ?? []).reduce((total, product) => total + product.quantity ?? 0, 0);
+
+    const orderSubTotal = (productsArray ?? []).reduce((total, product) => total + (product.price ?? 0) * (product.quantity ?? 0), 0);
+
+    const shippingCost = totalProductQuantity * (order.packagingType === PackagingType.BOX_PACK ? packaging[0].cost : packaging[1].cost);
+    
+    // productsArray.forEach((product) => {
+    //   product.quantity = parseInt(product.quantity.toString());
+    //   productQuantity += product.quantity
+    //   if (order.packagingType === PackagingType.BOX_PACK) {
+    //     orderPackage = packaging[0]
+    //     const shippingCost = packaging[0].cost * product.quantity;
+    //     orderSubTotal += order.orderValue - shippingCost
+    //     shippingCharges += shippingCost;
+    //   } else {
+    //     orderPackage = packaging[1]
+    //     const shippingCost = packaging[1].cost * product.quantity;
+    //     shippingCharges += shippingCost;
+    //   }
+    //   orderSubTotal += order.orderValue - shippingCharges
+    // });
 
     // Create the email request
     const sendSmtpEmail = new SendSmtpEmail();
@@ -68,7 +75,7 @@ export const sendInvoiceEmail = async (
       invoiceDate: order.orderDate,
       packageType: order.packagingType,
       subTotal: `£${orderSubTotal.toFixed(2).toString()}`,
-      shippingCost: `(${orderPackage["cost"]} * ${productQuantity}) = £${shippingCharges.toFixed(2)}`,
+      shippingCost: `(${orderPackage.cost} * ${totalProductQuantity}) = £${shippingCost.toFixed(2)}`,
       invoiceValue: `£${order.orderValue.toFixed(2).toString()}`,
     };
 

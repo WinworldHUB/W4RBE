@@ -153,10 +153,12 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     const orderId = createdOrder.orderNumber;
     const invoiceDate = createdOrder.orderDate;
     const memberId = createdOrder.memberId;
+    const invoiceNumber = "INV-" + orderNumber;
     await client.graphql({
       query: createInvoice,
       variables: {
         input: {
+          id: invoiceNumber,
           orderId: orderId,
           invoiceDate: invoiceDate,
           paymentDate: null,
@@ -171,8 +173,8 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const memberEmail = member.data.getMember.email;
-    const memberName = member.data.getMember.name;
-    await sendInvoiceEmail(createdOrder, memberEmail, orderNumber);
+    
+    await sendInvoiceEmail(createdOrder, memberEmail, invoiceNumber);
     res.json({ createdOrder });
   } catch (error) {
     console.log(error);
