@@ -34,10 +34,10 @@ export const sendInvoiceEmail = async (
 
     const memberEmail = email;
     const templateId: number = 4;
-    let totalAmount = 0;
     let shippingCharges = 0;
     let productQuantity = 0
     let orderPackage = {}
+    let orderSubTotal = 0
     // Split the products string into an array of product names
     const productsArray = JSON.parse(order.products) as Product[];
     productsArray.forEach((product) => {
@@ -46,13 +46,13 @@ export const sendInvoiceEmail = async (
       if (order.packagingType === PackagingType.BOX_PACK) {
         orderPackage = packaging[0]
         const shippingCost = packaging[0].cost * product.quantity;
+        orderSubTotal += order.orderValue - shippingCost
         shippingCharges += shippingCost;
-        totalAmount += order.orderValue + shippingCost; // Accumulate total amount
       } else {
         orderPackage = packaging[1]
         const shippingCost = packaging[1].cost * product.quantity;
+        orderSubTotal += order.orderValue - shippingCost
         shippingCharges += shippingCost;
-        totalAmount += order.orderValue + shippingCost; // Accumulate total amount
       }
     });
 
@@ -67,9 +67,9 @@ export const sendInvoiceEmail = async (
       billedTo: memberEmail,
       invoiceDate: order.orderDate,
       packageType: order.packagingType,
-      subTotal: order.orderValue.toString(),
-      shippingCost: `(${orderPackage["cost"]} * ${productQuantity}) = ${shippingCharges}`,
-      invoiceValue: totalAmount.toString(),
+      subTotal: `£${orderSubTotal.toFixed(2).toString()}`,
+      shippingCost: `(${orderPackage["cost"]} * ${productQuantity}) = £${shippingCharges.toFixed(2)}`,
+      invoiceValue: `£${order.orderValue.toFixed(2).toString()}`,
     };
 
     // Add product-specific parameters
