@@ -36,7 +36,6 @@ export const getAllMembers: RequestHandler = async (req, res, next) => {
       },
     });
 
-    console.log(members);
     res.json(members.data.listMembers.items);
   } catch (error) {
     console.log(error);
@@ -53,7 +52,6 @@ export const getMemberById: RequestHandler = async (req, res, next) => {
       },
     });
 
-    console.log(members);
     res.json(members.data.getMember);
   } catch (error) {
     console.log(error);
@@ -77,7 +75,6 @@ export const getMemberByEmail: RequestHandler = async (req, res, next) => {
       },
     });
 
-    console.log(members);
     res.json(members.data.listMembers.items[0]);
   } catch (error) {
     console.log(error);
@@ -164,7 +161,6 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                 member.email = member.email.toLowerCase();
                 const memberSignUpDetails = await signUp(signUpDetails);
                 if (memberSignUpDetails) {
-                  console.log(memberSignUpDetails);
                   const newMember = {
                     ...member,
                     id: memberSignUpDetails.userId,
@@ -330,7 +326,6 @@ export const resendCode: RequestHandler = async (
       return;
     }
     const  code = await resendSignUpCode({ username: username });
-    console.log(code);
     
     res.json({ message: "Code resent" });
     

@@ -36,8 +36,6 @@ export const getOrderById: RequestHandler = async (req, res, next) => {
         id: req.params.id,
       },
     });
-
-    console.log(order);
     res.json(order.data.getOrder);
   } catch (error) {
     console.log(error);
@@ -57,7 +55,6 @@ export const getOrderByOrderNumber: RequestHandler = async (req, res, next) => {
       },
     });
 
-    console.log(orders);
     res.json(orders.data.listOrders.items[0]);
   } catch (error) {
     console.log(error);
@@ -173,7 +170,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
     const memberEmail = member.data.getMember.email;
-    
+
     await sendInvoiceEmail(createdOrder, memberEmail, invoiceNumber);
     res.json({ createdOrder });
   } catch (error) {
@@ -270,7 +267,6 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
 const updateOrderDeliveryStatus = async (order: Order) => {
   const trimmedOrder = trimOrder(order, false) as Order;
   try {
-    console.log(order);
     await client.graphql({
       query: updateOrder,
       variables: {
@@ -325,7 +321,7 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
         storedOrder.status === OrderStatus.UNPAID &&
         updatedOrder.status === OrderStatus.PAID
       ) {
-        await updateInvoicePaymentDate(storedOrder.id);
+        await updateInvoicePaymentDate(storedOrder.orderNumber);
       }
 
       if (storedOrder.status !== updatedOrder.status) {
@@ -346,6 +342,10 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
 
 const updateInvoicePaymentDate = async (orderId: string) => {
   try {
+    if (!orderId) {
+      console.log("Invalid or Empty order ID");
+      return;
+    }
     const getStoredInvoice = await client.graphql({
       query: listInvoices,
       variables: {
@@ -361,14 +361,13 @@ const updateInvoicePaymentDate = async (orderId: string) => {
       (getStoredInvoice.data.listInvoices.items ?? []).length > 0
         ? getStoredInvoice.data.listInvoices.items[0]
         : null;
-
     if (storedInvoice) {
       await client.graphql({
         query: updateInvoice,
         variables: {
           input: {
             id: storedInvoice.id,
-            paymentDate: new Date().toISOString().slice(0, 10),
+            paymentDate: DateTime.now().toISODate(),
           },
         },
       });
@@ -408,8 +407,6 @@ export const deleteOrderById: RequestHandler = async (req, res, next) => {
         input: updatedOrder,
       },
     });
-
-    console.log(deletedOrder);
     res.json(deletedOrder.data.updateOrder);
   } catch (error) {
     console.log(error);
