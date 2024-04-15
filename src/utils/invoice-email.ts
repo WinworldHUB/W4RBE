@@ -51,9 +51,9 @@ export const sendInvoiceEmail = async (
       } else {
         orderPackage = packaging[1]
         const shippingCost = packaging[1].cost * product.quantity;
-        orderSubTotal += order.orderValue - shippingCost
         shippingCharges += shippingCost;
       }
+      orderSubTotal += order.orderValue - shippingCharges
     });
 
     // Create the email request
