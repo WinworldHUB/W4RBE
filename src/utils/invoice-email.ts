@@ -35,16 +35,23 @@ export const sendInvoiceEmail = async (
     const memberEmail = email;
     const templateId: number = 4;
     let totalAmount = 0;
-
+    let shippingCharges = 0;
+    let productQuantity = 0
+    let orderPackage = {}
     // Split the products string into an array of product names
     const productsArray = JSON.parse(order.products) as Product[];
     productsArray.forEach((product) => {
       product.quantity = parseInt(product.quantity.toString());
+      productQuantity += product.quantity
       if (order.packagingType === PackagingType.BOX_PACK) {
+        orderPackage = packaging[0]
         const shippingCost = packaging[0].cost * product.quantity;
+        shippingCharges += shippingCost;
         totalAmount += order.orderValue + shippingCost; // Accumulate total amount
       } else {
+        orderPackage = packaging[1]
         const shippingCost = packaging[1].cost * product.quantity;
+        shippingCharges += shippingCost;
         totalAmount += order.orderValue + shippingCost; // Accumulate total amount
       }
     });
@@ -60,6 +67,8 @@ export const sendInvoiceEmail = async (
       billedTo: memberEmail,
       invoiceDate: order.orderDate,
       packageType: order.packagingType,
+      subTotal: order.orderValue.toString(),
+      shippingCost: `(${orderPackage["cost"]} * ${productQuantity}) = ${shippingCharges}`,
       invoiceValue: totalAmount.toString(),
     };
 
