@@ -46,23 +46,6 @@ export const sendInvoiceEmail = async (
     const orderSubTotal = (productsArray ?? []).reduce((total, product) => total + (product.price ?? 0) * (product.quantity ?? 0), 0);
 
     const shippingCost = totalProductQuantity * (order.packagingType === PackagingType.BOX_PACK ? packaging[0].cost : packaging[1].cost);
-    
-   
-    productsArray.forEach((product) => {
-      product.quantity = parseInt(product.quantity.toString());
-      productQuantity += product.quantity
-      if (order.packagingType === PackagingType.BOX_PACK) {
-        orderPackage = packaging[0]
-        const shippingCost = packaging[0].cost * product.quantity;
-        orderSubTotal += order.orderValue - shippingCost
-        shippingCharges += shippingCost;
-      } else {
-        orderPackage = packaging[1]
-        const shippingCost = packaging[1].cost * product.quantity;
-        shippingCharges += shippingCost;
-      }
-      orderSubTotal += order.orderValue - shippingCharges
-    });
 
     // Create the email request
     const sendSmtpEmail = new SendSmtpEmail();
