@@ -333,3 +333,26 @@ export const resendCode: RequestHandler = async (
     res.status(500).json({ err: "Failed to resend confirmation code", error });
   }
 };
+export const noMailAddMember: RequestHandler = async (req, res, next) => {
+  try {
+    const member = req.body as Member;
+    member.email = member.email.toLowerCase();
+    if (member) {
+      const newMember = await client.graphql({
+        query: createMember,
+        variables: {
+          input: member,
+        },
+      });
+
+      const createdMember = newMember.data.createMember;
+      res.json(createdMember);
+    }
+  } catch (error) {
+    return res.status(500).send({
+      status: "failed",
+      message: "Error saving member",
+      internalError: error,
+    });
+  }
+};
