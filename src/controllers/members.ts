@@ -9,6 +9,7 @@ import {
   signUp,
   updateUserAttributes,
 } from "aws-amplify/auth";
+import { CognitoIdentityProviderClient, ChangePasswordCommand, ChangePasswordCommandInput } from "@aws-sdk/client-cognito-identity-provider"; 
 import { getMember, listMembers } from "../graphql/queries";
 import { Amplify } from "aws-amplify";
 import { RequestHandler } from "express";
@@ -18,6 +19,7 @@ import formatMemberData from "../utils/format-user";
 import { AWS_API_CONFIG } from "../constants/constants";
 import { sendWelcomeEmail } from "../utils/welcome-email";
 import { sendSignUpEmail } from "../utils/confirmation-email";
+import { ChangePasswordRequest } from "../types";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -332,4 +334,32 @@ export const resendCode: RequestHandler = async (
   } catch (error) {
     res.status(500).json({ err: "Failed to resend confirmation code", error });
   }
+};
+
+
+export const changePasswordHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    const { previousPassword, proposedPassword } = req.body as ChangePasswordRequest;
+    if (!previousPassword || !proposedPassword) {
+      res.status(400).json({ err: "Invalid Previous Password or Proposed Password" });
+      return;
+    }
+    const cognitoClient = new CognitoIdentityProviderClient(AWS_API_CONFIG);
+
+    const input = {
+      AccessToken: token,
+      PreviousPassword: previousPassword,
+      ProposedPassword: proposedPassword,
+    } as ChangePasswordCommandInput;
+    const command = new ChangePasswordCommand(input);
+    const response = await cognitoClient.send(command);
+    if (response.$metadata.httpStatusCode === 200) {
+      res.json({ message: "Password changed successfully" });
+    }
+  } catch (error) {
+    res.status(500).json({ err: "Failed to change password", error });
+  }
+
+
 };

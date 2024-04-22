@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   addMember,
+  changePasswordHandler,
   confirmMember,
   deleteMemberByEmail,
   getAllMembers,
@@ -17,6 +18,7 @@ memberRoutes.post("/", addMember);
 memberRoutes.post("/imports", importMembers);
 memberRoutes.post("/confirm", confirmMember);
 memberRoutes.post("/resend-code", resendCode);
+memberRoutes.post("/change-password", changePasswordHandler);
 memberRoutes.put("/:email", modifyMember);
 memberRoutes.delete("/:email", deleteMemberByEmail);
 
