@@ -73,6 +73,7 @@ export const getMemberByEmail: RequestHandler = async (req, res, next) => {
         filter: {
           email: { eq: email },
         },
+        limit: RECORDS_LIMIT,
       },
     });
 
@@ -128,6 +129,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                   filter: {
                     email: { eq: member.email },
                   },
+                  limit: RECORDS_LIMIT,
                 },
               });
 
@@ -221,6 +223,7 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
           filter: {
             email: { eq: email },
           },
+          limit: RECORDS_LIMIT,
         },
       });
 
@@ -265,6 +268,7 @@ export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
           filter: {
             email: { eq: email },
           },
+          limit: RECORDS_LIMIT,
         },
       });
 
