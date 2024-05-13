@@ -23,7 +23,7 @@ import jwt from "jsonwebtoken";
 import { DateTime } from "luxon";
 import { sendInvoiceEmail } from "../utils/invoice-email";
 import { Tracker } from "parcel-tracker-api";
-import { trimOrder } from "../utils/order-utils";
+import { getOrderStatus, trimOrder } from "../utils/order-utils";
 import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
 import { sendStatusEmail } from "../utils/status-email";
 Amplify.configure(AWS_API_CONFIG);
@@ -330,7 +330,7 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
         await sendStatusEmail(
           updatedOrder.orderNumber,
           memberEmail,
-          updatedOrder.status
+          getOrderStatus(updatedOrder.status)
         );
       }
 

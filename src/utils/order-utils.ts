@@ -1,4 +1,4 @@
-import { Order } from "../awsApis";
+import { Order, OrderStatus } from "../awsApis";
 
 export const trimOrder = (order: Order, isTrimId: boolean = false): unknown => {
   if (!isTrimId) {
@@ -29,4 +29,11 @@ export const trimOrder = (order: Order, isTrimId: boolean = false): unknown => {
     trackingStatus: order.trackingStatus,
     memberId: order.memberId,
   };
+};
+
+export const getOrderStatus = (status: OrderStatus): string => {
+  if (status === OrderStatus.PROCESSING) return "ORDER SHIPPED";
+  if (status === OrderStatus.DONE) return "DELIVERED";
+
+  return status.toString();
 };
