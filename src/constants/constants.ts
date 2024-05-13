@@ -1,12 +1,12 @@
 import { ResourcesConfig } from "aws-amplify";
 
 export const AWS_API_CONFIG: ResourcesConfig = {
-  Auth:{
-    Cognito:{
+  Auth: {
+    Cognito: {
       userPoolId: "eu-west-2_Fib3gXgUH",
       userPoolClientId: "15lqu9c3b2kucjkkrtlap6l9k3",
       identityPoolId: "eu-west-2:1b7c6b7d-7c5a-4c9b-8f6b-0e7c9b9c7b7d",
-    }
+    },
   },
   API: {
     GraphQL: {
@@ -32,3 +32,5 @@ export const BREVO_CONFIG = {
     "-5deb00a8414aad12909eef9ff1842fb3b38096274baf74d457a4848a061c3372-",
   API_KEY_MINOR: "KBhdySGd7IzrN9jL",
 };
+
+export const RECORDS_LIMIT = 10000;

@@ -3,6 +3,7 @@ import { Amplify } from "aws-amplify";
 import {
   AWS_API_CONFIG,
   DELIVERY_TRACKER_CONFIG,
+  RECORDS_LIMIT,
 } from "../constants/constants";
 import { generateClient } from "aws-amplify/api";
 import {
@@ -103,6 +104,7 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
               eq: memberId,
             },
           },
+          limit: RECORDS_LIMIT,
         },
       });
       orders = data.listOrders.items;
@@ -135,7 +137,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
         .json({ message: "Invalid order. Member ID is missing." });
     }
 
-    const orderNumber = await generateOrderNumber(order.memberId);
+    const orderNumber = await generateOrderNumber();
 
     const newOrder = await client.graphql({
       query: createOrder,
@@ -414,39 +416,19 @@ export const deleteOrderById: RequestHandler = async (req, res, next) => {
   }
 };
 
-const generateOrderNumber = async (memberId: string) => {
+const generateOrderNumber = async () => {
   const { data } = await client.graphql({
     query: listOrders,
     variables: {
-      filter: {
-        memberId: {
-          eq: memberId,
-        },
-      },
+      limit: RECORDS_LIMIT,
     },
   });
   if (!data) {
     return null;
   }
-  const fetchMember = await client.graphql({
-    query: getMember,
-    variables: {
-      id: memberId,
-    },
-  });
-  if (!fetchMember) {
-    return null;
-  }
-  const memberName = fetchMember.data.getMember.name;
-  const formattedMemberName = memberName.replace(/\s/g, "-");
+
   const orderSequence = data.listOrders.items.length + 1;
-  const orderNumber =
-    formattedMemberName +
-    "-" +
-    DateTime.now().toISODate() +
-    "-" +
-    orderSequence.toString();
-  return orderNumber;
+  return orderSequence.toString();
 };
 
 export const getOrderNumber: RequestHandler = async (req, res, next) => {
@@ -461,7 +443,7 @@ export const getOrderNumber: RequestHandler = async (req, res, next) => {
 
     const memberId: string = decodedToken.sub;
 
-    res.json({ orderNumber: await generateOrderNumber(memberId) });
+    res.json({ orderNumber: await generateOrderNumber() });
   } catch (error) {
     console.log(error);
     res

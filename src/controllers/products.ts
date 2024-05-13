@@ -10,18 +10,7 @@ import { listProducts, getProduct } from "../graphql/queries";
 import { createProduct, updateProduct } from "../graphql/mutations";
 import { Product } from "../awsApis";
 import { Amplify } from "aws-amplify";
-import { AWS_API_CONFIG } from "../constants/constants";
-// const config: ResourcesConfig = {
-//   API: {
-//     GraphQL: {
-//       endpoint:
-//         "https://srcgirnqdvfpvpaktygytjn2pe.appsync-api.eu-west-2.amazonaws.com/graphql",
-//       region: "eu-west-2",
-//       defaultAuthMode: "apiKey",
-//       apiKey: "da2-tsfh46xxpzgcbfldx6qkees5we",
-//     },
-//   },
-// };
+import { AWS_API_CONFIG, RECORDS_LIMIT } from "../constants/constants";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -51,6 +40,7 @@ export const getAllProducts: RequestHandler = async (req, res, next) => {
             eq: true,
           },
         },
+        limit: RECORDS_LIMIT,
       },
     });
 

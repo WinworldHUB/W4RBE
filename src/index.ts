@@ -40,7 +40,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/products", productRoutes);
 app.use("/members", memberRoutes);
 app.use("/orders", orderRoutes);
-app.use("/invoices", invoiceRoutes)
+app.use("/invoices", invoiceRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

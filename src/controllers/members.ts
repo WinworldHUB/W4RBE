@@ -15,7 +15,7 @@ import { RequestHandler } from "express";
 import { Member } from "../awsApis";
 import { createMember, updateMember } from "../graphql/mutations";
 import formatMemberData from "../utils/format-user";
-import { AWS_API_CONFIG } from "../constants/constants";
+import { AWS_API_CONFIG, RECORDS_LIMIT } from "../constants/constants";
 import { sendWelcomeEmail } from "../utils/welcome-email";
 import { sendSignUpEmail } from "../utils/confirmation-email";
 
@@ -33,6 +33,7 @@ export const getAllMembers: RequestHandler = async (req, res, next) => {
             eq: true,
           },
         },
+        limit: RECORDS_LIMIT,
       },
     });
 
@@ -121,7 +122,6 @@ export const importMembers: RequestHandler = async (req, res, next) => {
         formattedMembers.map(async (member: Member) => {
           try {
             if (member && member.email !== "") {
-
               const foundMember = await client.graphql({
                 query: listMembers,
                 variables: {
@@ -176,7 +176,9 @@ export const importMembers: RequestHandler = async (req, res, next) => {
                       createdMember.data.createMember.email,
                       memberSignUpDetails.userId
                     );
-                    await sendWelcomeEmail(createdMember.data.createMember.email);
+                    await sendWelcomeEmail(
+                      createdMember.data.createMember.email
+                    );
                     output.successImport.push(createdMember.data.createMember);
                   } else {
                     output.failedImport.push(createdMember.data.createMember);
@@ -314,21 +316,16 @@ export const confirmMember: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const resendCode: RequestHandler = async (
-  req,
-  res,
-  next
-) => {
+export const resendCode: RequestHandler = async (req, res, next) => {
   try {
     const { username } = req.body as ResendSignUpCodeInput;
     if (!username) {
       res.status(400).json({ err: "username is required" });
       return;
     }
-    const  code = await resendSignUpCode({ username: username });
-    
+    const code = await resendSignUpCode({ username: username });
+
     res.json({ message: "Code resent" });
-    
   } catch (error) {
     res.status(500).json({ err: "Failed to resend confirmation code", error });
   }
