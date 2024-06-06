@@ -92,6 +92,9 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
       // If admin, fetch all orders
       const { data } = await client.graphql({
         query: listOrders,
+        variables: {
+          limit: RECORDS_LIMIT,
+        },
       });
       orders = data.listOrders.items;
     } else {
