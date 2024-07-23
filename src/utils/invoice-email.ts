@@ -15,7 +15,7 @@ export const sendInvoiceEmail = async (
   order: Order,
   email: string,
   invoiceId: string
-): Promise<void> => {
+): Promise<boolean> => {
   try {
     const defaultClient = ApiClient.instance;
     const apiInstance = new TransactionalEmailsApi();
@@ -35,17 +35,31 @@ export const sendInvoiceEmail = async (
     const memberEmail = email;
     const templateId: number = 4;
     let shippingCharges = 0;
-    let productQuantity = 0
-    const orderPackage = (order.packagingType === PackagingType.BOX_PACK ? packaging[0] : packaging[1]);
-    
+    let productQuantity = 0;
+    const orderPackage =
+      order.packagingType === PackagingType.BOX_PACK
+        ? packaging[0]
+        : packaging[1];
+
     // Split the products string into an array of product names
     const productsArray = JSON.parse(order.products) as Product[];
 
-    const totalProductQuantity = (productsArray ?? []).reduce((total, product) => total + product.quantity ?? 0, 0);
+    const totalProductQuantity = (productsArray ?? []).reduce(
+      (total, product) => total + product.quantity ?? 0,
+      0
+    );
 
-    const orderSubTotal = (productsArray ?? []).reduce((total, product) => total + (product.price ?? 0) * (product.quantity ?? 0), 0);
+    const orderSubTotal = (productsArray ?? []).reduce(
+      (total, product) =>
+        total + (product.price ?? 0) * (product.quantity ?? 0),
+      0
+    );
 
-    const shippingCost = totalProductQuantity * (order.packagingType === PackagingType.BOX_PACK ? packaging[0].cost : packaging[1].cost);
+    const shippingCost =
+      totalProductQuantity *
+      (order.packagingType === PackagingType.BOX_PACK
+        ? packaging[0].cost
+        : packaging[1].cost);
 
     // Create the email request
     const sendSmtpEmail = new SendSmtpEmail();
@@ -59,7 +73,9 @@ export const sendInvoiceEmail = async (
       invoiceDate: order.orderDate,
       packageType: order.packagingType,
       subTotal: `£${orderSubTotal.toFixed(2).toString()}`,
-      shippingCost: `(${orderPackage.cost} * ${totalProductQuantity}) = £${shippingCost.toFixed(2)}`,
+      shippingCost: `(${
+        orderPackage.cost
+      } * ${totalProductQuantity}) = £${shippingCost.toFixed(2)}`,
       invoiceValue: `£${order.orderValue.toFixed(2).toString()}`,
     };
 
@@ -82,8 +98,10 @@ export const sendInvoiceEmail = async (
         ". Returned data: " +
         JSON.stringify(data)
     );
+    return Promise.resolve(true);
   } catch (error) {
     console.error("Error sending email:", error);
-    throw error;
+    return Promise.resolve(false);
+    //throw error;
   }
 };

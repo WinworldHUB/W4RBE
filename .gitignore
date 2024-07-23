@@ -153,3 +153,12 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+# Sentry Config File
+.sentryclirc
+
+# Sentry Config File
+.sentryclirc
+
+# Sentry Config File
+.sentryclirc

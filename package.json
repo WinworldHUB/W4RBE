@@ -5,14 +5,18 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "build": "tsc",
+    "build": "tsc && npm run sentry:sourcemaps && npm run sentry:sourcemaps && npm run sentry:sourcemaps",
     "serve": "node dist/index.js",
-    "postbuild": "chmod +x bin/postbuild.sh && ./bin/postbuild.sh"
+    "postbuild": "chmod +x bin/postbuild.sh && ./bin/postbuild.sh",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org winworld-innovative-solutions --project w4r ./dist && sentry-cli sourcemaps upload --org winworld-innovative-solutions --project w4r ./dist"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sentry/cli": "^2.32.2",
+    "@sentry/node": "^8.19.0",
+    "@sentry/profiling-node": "^8.19.0",
     "@types/lodash": "^4.14.202",
     "aws-amplify": "^6.0.19",
     "aws-lambda": "^1.0.7",

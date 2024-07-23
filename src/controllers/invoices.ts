@@ -5,8 +5,9 @@ import { generateClient } from "aws-amplify/api";
 import { getInvoice, listInvoices } from "../graphql/queries";
 
 import { deleteInvoice, updateInvoice } from "../graphql/mutations";
-import { Invoice } from "../awsApis";
+import { Invoice, ModelInvoiceFilterInput } from "../awsApis";
 import jwt from "jsonwebtoken";
+import { DateTime } from "luxon";
 
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
@@ -25,6 +26,59 @@ export const getInvoiceById: RequestHandler = async (req, res, next) => {
     res
       .status(500)
       .json({ message: "Failed to retrieve invoice", error: error });
+  }
+};
+
+export const getInvoiceByOrderId: RequestHandler = async (req, res, next) => {
+  try {
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Authorization token is missing" });
+    }
+
+    const decodedToken: any = jwt.decode(token);
+    if (!decodedToken) {
+      return res.status(401).json({ message: "Invalid authorization token" });
+    }
+
+    const memberId: string = decodedToken.sub;
+
+    let invoice: Invoice = null;
+
+    const filter2Apply: ModelInvoiceFilterInput = {
+      orderId: {
+        eq: req.params.id,
+      },
+    };
+
+    if (
+      decodedToken["cognito:groups"] &&
+      !decodedToken["cognito:groups"].includes("admin")
+    ) {
+      filter2Apply.memberId.eq = memberId;
+    }
+
+    const { data } = await client.graphql({
+      query: listInvoices,
+      variables: {
+        filter: filter2Apply,
+        limit: RECORDS_LIMIT,
+      },
+    });
+    invoice = data.listInvoices.items?.[0];
+
+    res.json(invoice ?? null);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Failed to retrieve invoices", error: error });
   }
 };
 
@@ -75,6 +129,11 @@ export const getAllInvoices: RequestHandler = async (req, res, next) => {
       invoices = data.listInvoices.items;
     }
 
+    (invoices ?? []).sort(
+      (a, b) =>
+        DateTime.fromISO(b.invoiceDate).diff(DateTime.fromISO(a.invoiceDate))
+          .milliseconds
+    );
     res.json(invoices);
   } catch (error) {
     console.log(error);

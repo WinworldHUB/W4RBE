@@ -18,6 +18,7 @@ import formatMemberData from "../utils/format-user";
 import { AWS_API_CONFIG, RECORDS_LIMIT } from "../constants/constants";
 import { sendWelcomeEmail } from "../utils/welcome-email";
 import { sendSignUpEmail } from "../utils/confirmation-email";
+import { DateTime } from "luxon";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -37,7 +38,15 @@ export const getAllMembers: RequestHandler = async (req, res, next) => {
       },
     });
 
-    res.json(members.data.listMembers.items);
+    const allMembers = members.data.listMembers.items;
+
+    (allMembers ?? []).sort(
+      (a, b) =>
+        DateTime.fromISO(b.updatedAt).diff(DateTime.fromISO(a.updatedAt))
+          .milliseconds
+    );
+
+    res.json(allMembers);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve members" });

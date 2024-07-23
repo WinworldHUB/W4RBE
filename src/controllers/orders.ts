@@ -1,4 +1,4 @@
-import { RequestHandler, response } from "express";
+import { RequestHandler } from "express";
 import { Amplify } from "aws-amplify";
 import {
   AWS_API_CONFIG,
@@ -84,6 +84,7 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
     const memberId: string = decodedToken.sub;
 
     let orders: Order[] = [];
+
     // Check if the user is an admin
     if (
       decodedToken["cognito:groups"] &&
@@ -113,6 +114,11 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
       orders = data.listOrders.items;
     }
 
+    (orders ?? []).sort(
+      (a, b) =>
+        DateTime.fromISO(b.orderDate).diff(DateTime.fromISO(a.orderDate))
+          .milliseconds
+    );
     res.json(orders);
   } catch (error) {
     console.log(error);
@@ -141,6 +147,8 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     }
 
     const orderNumber = await generateOrderNumber();
+
+    // TO DO: check for duplicate order before creating new order
 
     const newOrder = await client.graphql({
       query: createOrder,
@@ -176,7 +184,11 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     });
     const memberEmail = member.data.getMember.email;
 
-    await sendInvoiceEmail(createdOrder, memberEmail, invoiceNumber);
+    const isEmailSent = await sendInvoiceEmail(
+      createdOrder,
+      memberEmail,
+      invoiceNumber
+    );
     res.json({ createdOrder });
   } catch (error) {
     console.log(error);
