@@ -37,7 +37,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   const origin = req.headers.origin;
   logInfo("Requester Origin", origin ?? "Postman or local origin");
 
-  console.log(origin ?? "Postman or local origin");
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }

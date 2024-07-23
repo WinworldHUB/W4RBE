@@ -19,6 +19,7 @@ import { AWS_API_CONFIG, RECORDS_LIMIT } from "../constants/constants";
 import { sendWelcomeEmail } from "../utils/welcome-email";
 import { sendSignUpEmail } from "../utils/confirmation-email";
 import { DateTime } from "luxon";
+import { logException } from "../utils/sentry.utils";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -48,6 +49,7 @@ export const getAllMembers: RequestHandler = async (req, res, next) => {
 
     res.json(allMembers);
   } catch (error) {
+    logException(error);
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve members" });
   }
@@ -64,6 +66,7 @@ export const getMemberById: RequestHandler = async (req, res, next) => {
 
     res.json(members.data.getMember);
   } catch (error) {
+    logException(error);
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve members" });
   }
@@ -88,6 +91,7 @@ export const getMemberByEmail: RequestHandler = async (req, res, next) => {
 
     res.json(members.data.listMembers.items[0]);
   } catch (error) {
+    logException(error);
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve members" });
   }
@@ -110,6 +114,7 @@ export const addMember: RequestHandler = async (req, res, next) => {
       res.json(createdMember);
     }
   } catch (error) {
+    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error saving member",
@@ -200,6 +205,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
               }
             }
           } catch (error) {
+            logException(error);
             console.log(error);
             output.failedImport.push(member);
           }
@@ -211,6 +217,7 @@ export const importMembers: RequestHandler = async (req, res, next) => {
       res.status(500).json({ error: "Invalid or empty Members data provided" });
     }
   } catch (error) {
+    logException(error);
     console.log(error);
 
     return res.status(500).send({
@@ -259,6 +266,7 @@ export const modifyMember: RequestHandler = async (req, res, next) => {
       res.status(400).json({ error: "Email parameter missing" });
     }
   } catch (error) {
+    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error updating member",
@@ -306,6 +314,7 @@ export const deleteMemberByEmail: RequestHandler = async (req, res, next) => {
       res.status(400).json({ error: "Email parameter missing" });
     }
   } catch (error) {
+    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error deleting member",
@@ -325,6 +334,7 @@ export const confirmMember: RequestHandler = async (req, res, next) => {
 
     res.json(memberConfirmed);
   } catch (error) {
+    logException(error);
     res.status(500).json({ err: "Failed to confirm member", error });
   }
 };
@@ -340,6 +350,7 @@ export const resendCode: RequestHandler = async (req, res, next) => {
 
     res.json({ message: "Code resent" });
   } catch (error) {
+    logException(error);
     res.status(500).json({ err: "Failed to resend confirmation code", error });
   }
 };
@@ -359,6 +370,7 @@ export const noMailAddMember: RequestHandler = async (req, res, next) => {
       res.json(createdMember);
     }
   } catch (error) {
+    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error saving member",
