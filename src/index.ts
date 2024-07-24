@@ -35,7 +35,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     "http://localhost:3000",
   ];
   const origin = req.headers.origin;
-  logInfo("Requester Origin", origin ?? "Postman or local origin");
+  //logInfo("Requester Origin", origin ?? "Postman or local origin");
 
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
