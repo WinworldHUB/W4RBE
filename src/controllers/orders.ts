@@ -26,7 +26,6 @@ import { Tracker } from "parcel-tracker-api";
 import { getOrderStatus, trimOrder } from "../utils/order-utils";
 import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
 import { sendStatusEmail } from "../utils/status-email";
-import { logException, logInfo } from "../utils/sentry.utils";
 import {
   INVALID_ORDER_DETAILS,
   INVALID_ORDER_ID,
@@ -53,7 +52,6 @@ export const getOrderById: RequestHandler = async (req, res, next) => {
     });
     res.json(order.data.getOrder);
   } catch (error) {
-    logException(error);
     console.log(error);
     res.status(500).json({ message: "Failed to retrieve order", error: error });
   }
@@ -73,7 +71,6 @@ export const getOrderByOrderNumber: RequestHandler = async (req, res, next) => {
 
     res.json(orders.data.listOrders.items[0]);
   } catch (error) {
-    logException(error);
     console.log(error);
     res.status(500).json({ message: "Failed to retrieve order", error: error });
   }
@@ -83,7 +80,6 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      logInfo(TOKEN_NOT_FOUND, req.headers);
       return res
         .status(401)
         .json({ message: "Authorization token is missing" });
@@ -91,7 +87,6 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
 
     const decodedToken: any = jwt.decode(token);
     if (!decodedToken) {
-      logInfo(UNABLE_TO_DECODE_TOKEN, token);
       return res.status(401).json({ message: "Invalid authorization token" });
     }
 
@@ -135,7 +130,6 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
     );
     res.json(orders);
   } catch (error) {
-    logException(error);
     console.log(error);
     res
       .status(500)
@@ -147,7 +141,6 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     const order = req.body as Order;
 
     if (!order) {
-      logInfo(ORDER_CREATION_FAILED, order);
       res.status(500).json({
         message:
           "Invalid order. Order details are not in correct format or empty",
@@ -157,7 +150,6 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     }
 
     if (!order.memberId) {
-      logInfo(INVALID_ORDER_DETAILS, order);
       return res
         .status(500)
         .json({ message: "Invalid order. Member ID is missing." });
@@ -177,7 +169,6 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
 
-    logInfo(ORDER_CREATED, newOrder);
     const createdOrder = newOrder.data.createOrder;
     const orderId = createdOrder.orderNumber;
     const invoiceDate = createdOrder.orderDate;
@@ -196,8 +187,6 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
 
-    logInfo(INVOICE_CREATED, createdInvoice);
-
     const member = await client.graphql({
       query: getMember,
       variables: {
@@ -212,10 +201,8 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       invoiceNumber
     );
 
-    logInfo(INVOICE_EMAIL_SENT, isEmailSent);
     res.json({ createdOrder });
   } catch (error) {
-    logException(error);
     console.log(error);
     res.status(500).json({ message: "Failed to create order", error: error });
   }
@@ -301,7 +288,6 @@ export const updateDeliveryStatus: RequestHandler = async (req, res, next) => {
 
     // res.status(500).json({ message: "Failed to create order", error: "" });
   } catch (error) {
-    logException(error);
     console.log(error);
     res.status(500).json({ message: "Failed to create order", error: error });
   }
@@ -319,7 +305,6 @@ const updateOrderDeliveryStatus = async (order: Order) => {
 
     Promise.resolve();
   } catch (error) {
-    logException(error);
     Promise.resolve();
   }
 };
@@ -329,7 +314,6 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
     const order = req.body as Order;
 
     if (!order) {
-      logInfo(INVALID_ORDER_DETAILS, order);
       res.status(500).json({
         message:
           "Invalid order. Order details are not in correct format or empty",
@@ -379,7 +363,6 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
 
       res.json(updatedOrder);
     } else {
-      logInfo(ORDER_NOT_FOUND, storedOrder);
       res.status(500).json({
         message:
           "Invalid order. Order details are not in correct format or empty",
@@ -387,7 +370,6 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
       });
     }
   } catch (error) {
-    logException(error);
     console.log(error);
     res.status(500).json({ message: "Failed to update order", error: error });
   }
@@ -396,7 +378,6 @@ export const modifyOrder: RequestHandler = async (req, res, next) => {
 const updateInvoicePaymentDate = async (orderId: string) => {
   try {
     if (!orderId) {
-      logInfo(INVALID_ORDER_ID, orderId);
       console.log("Invalid or Empty order ID");
       return;
     }
@@ -426,11 +407,8 @@ const updateInvoicePaymentDate = async (orderId: string) => {
           },
         },
       });
-    } else {
-      logInfo(INVOICE_NOT_FOUND, storedInvoice);
     }
   } catch (error) {
-    logException(error);
     console.log("Failed to update invoice payment date:", error);
     throw error;
   }
@@ -446,7 +424,6 @@ export const deleteOrderById: RequestHandler = async (req, res, next) => {
     });
 
     if (!order) {
-      logInfo(INVALID_ORDER_DETAILS, order);
       res.status(500).json({
         message:
           "Invalid order. Order details are not in correct format or empty",
@@ -468,7 +445,6 @@ export const deleteOrderById: RequestHandler = async (req, res, next) => {
     });
     res.json(deletedOrder.data.updateOrder);
   } catch (error) {
-    logException(error);
     console.log(error);
     res.status(500).json({ message: "Failed to delete order", error: error });
   }
@@ -486,7 +462,6 @@ const generateOrderNumber = async () => {
   }
 
   const orderSequence = data.listOrders.items.length + 1;
-  logInfo(ORDER_NUMBER_GENERATED, orderSequence);
   return orderSequence.toString();
 };
 
@@ -494,7 +469,6 @@ export const getOrderNumber: RequestHandler = async (req, res, next) => {
   try {
     res.json({ orderNumber: await generateOrderNumber() });
   } catch (error) {
-    logException(error);
     console.log(error);
     res
       .status(500)

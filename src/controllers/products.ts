@@ -11,7 +11,6 @@ import { createProduct, updateProduct } from "../graphql/mutations";
 import { Product } from "../awsApis";
 import { Amplify } from "aws-amplify";
 import { AWS_API_CONFIG, RECORDS_LIMIT } from "../constants/constants";
-import { logException } from "../utils/sentry.utils";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -25,7 +24,6 @@ export const getProductById: RequestHandler = async (req, res, next) => {
     });
     res.json(product.data.getProduct);
   } catch (error) {
-    logException(error);
     console.error("Error fetching product:", error);
     res.status(500).json({ error: "Failed to fetch product" });
   }
@@ -48,7 +46,6 @@ export const getAllProducts: RequestHandler = async (req, res, next) => {
 
     return res.json(allProducts.data.listProducts.items);
   } catch (error) {
-    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error retrieving products",
@@ -72,7 +69,6 @@ export const addProduct: RequestHandler = async (req, res, next) => {
       res.json(newProduct.data.createProduct);
     }
   } catch (error) {
-    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error saving product",
@@ -125,7 +121,6 @@ export const importProducts: RequestHandler = async (req, res, next) => {
               }
             }
           } catch (error) {
-            logException(error);
             console.log(error);
 
             output.failedImport.push(product);
@@ -139,7 +134,6 @@ export const importProducts: RequestHandler = async (req, res, next) => {
       res.status(500).json({ error: "No products data provided" });
     }
   } catch (error) {
-    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error importing products. Please try again later...",
@@ -163,7 +157,6 @@ export const modifyProduct: RequestHandler = async (req, res, next) => {
       res.json(newProduct.data.updateProduct);
     }
   } catch (error) {
-    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error updating product",
@@ -202,7 +195,6 @@ export const deleteProductById: RequestHandler = async (req, res, next) => {
       }
     }
   } catch (error) {
-    logException(error);
     return res.status(500).send({
       status: "failed",
       message: "Error deleting product",

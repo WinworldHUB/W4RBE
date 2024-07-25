@@ -8,7 +8,6 @@ import { deleteInvoice, updateInvoice } from "../graphql/mutations";
 import { Invoice, ModelInvoiceFilterInput } from "../awsApis";
 import jwt from "jsonwebtoken";
 import { DateTime } from "luxon";
-import { logException } from "../utils/sentry.utils";
 
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
@@ -23,7 +22,6 @@ export const getInvoiceById: RequestHandler = async (req, res, next) => {
     });
     res.json(invoice.data.getInvoice);
   } catch (error) {
-    logException(error);
     console.log(error);
     res
       .status(500)
@@ -77,7 +75,6 @@ export const getInvoiceByOrderId: RequestHandler = async (req, res, next) => {
 
     res.json(invoice ?? null);
   } catch (error) {
-    logException(error);
     console.log(error);
     res
       .status(500)
@@ -139,7 +136,6 @@ export const getAllInvoices: RequestHandler = async (req, res, next) => {
     );
     res.json(invoices);
   } catch (error) {
-    logException(error);
     console.log(error);
     res
       .status(500)
@@ -169,7 +165,6 @@ export const modifyInvoice: RequestHandler = async (req, res, next) => {
     });
     res.json(updatedInvoice.data.updateInvoice);
   } catch (error) {
-    logException(error);
     console.log(error);
     res.status(500).json({ message: "Failed to update invoice", error: error });
   }
@@ -188,7 +183,6 @@ export const deleteInvoiceById: RequestHandler = async (req, res, next) => {
     });
     res.json(deletedInvoice.data.deleteInvoice);
   } catch (error) {
-    logException(error);
     console.log(error);
     res.status(500).json({ message: "Failed to delete invoice", error: error });
   }
