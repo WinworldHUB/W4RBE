@@ -1,7 +1,8 @@
-import { RequestHandler } from "express";
+import { query, RequestHandler } from "express";
 import { Amplify } from "aws-amplify";
 import {
   AWS_API_CONFIG,
+  DEFAULT_ORDER_COUNTER_ID,
   DELIVERY_TRACKER_CONFIG,
   RECORDS_LIMIT,
 } from "../constants/constants";
@@ -9,6 +10,7 @@ import { generateClient } from "aws-amplify/api";
 import {
   getMember,
   getOrder,
+  getOrderCounter,
   listInvoices,
   listOrders,
 } from "../graphql/queries";
@@ -18,6 +20,7 @@ import {
   createOrder,
   updateInvoice,
   updateOrder,
+  updateOrderCounter,
 } from "../graphql/mutations";
 import jwt from "jsonwebtoken";
 import { DateTime } from "luxon";
@@ -26,19 +29,6 @@ import { Tracker } from "parcel-tracker-api";
 import { getOrderStatus, trimOrder } from "../utils/order-utils";
 import { ParcelInformations } from "parcel-tracker-api/dist/lib/apis/parcel-informations";
 import { sendStatusEmail } from "../utils/status-email";
-import {
-  INVALID_ORDER_DETAILS,
-  INVALID_ORDER_ID,
-  INVOICE_CREATED,
-  INVOICE_EMAIL_SENT,
-  INVOICE_NOT_FOUND,
-  ORDER_CREATED,
-  ORDER_CREATION_FAILED,
-  ORDER_NOT_FOUND,
-  ORDER_NUMBER_GENERATED,
-  TOKEN_NOT_FOUND,
-  UNABLE_TO_DECODE_TOKEN,
-} from "../constants/logging.constants";
 Amplify.configure(AWS_API_CONFIG);
 const client = generateClient();
 
@@ -156,8 +146,6 @@ export const addOrder: RequestHandler = async (req, res, next) => {
     }
 
     const orderNumber = await generateOrderNumber();
-
-    // TO DO: check for duplicate order before creating new order
 
     const newOrder = await client.graphql({
       query: createOrder,
@@ -452,17 +440,37 @@ export const deleteOrderById: RequestHandler = async (req, res, next) => {
 
 const generateOrderNumber = async () => {
   const { data } = await client.graphql({
-    query: listOrders,
+    query: getOrderCounter,
     variables: {
-      limit: RECORDS_LIMIT,
+      id: DEFAULT_ORDER_COUNTER_ID,
     },
   });
+
   if (!data) {
     return null;
   }
 
-  const orderSequence = data.listOrders.items.length + 1;
-  return orderSequence.toString();
+  if (data.getOrderCounter.orders) {
+    const orderNumber = data.getOrderCounter.orders + 1;
+
+    const updatedOrderCounter = await client.graphql({
+      query: updateOrderCounter,
+      variables: {
+        input: {
+          id: DEFAULT_ORDER_COUNTER_ID,
+          orders: orderNumber,
+        },
+      },
+    });
+
+    if (!updatedOrderCounter) {
+      return null;
+    }
+
+    return orderNumber.toString();
+  }
+
+  return null;
 };
 
 export const getOrderNumber: RequestHandler = async (req, res, next) => {

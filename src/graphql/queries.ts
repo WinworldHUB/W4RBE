@@ -8,6 +8,40 @@ type GeneratedQuery<InputType, OutputType> = string & {
   __generatedQueryOutput: OutputType;
 };
 
+export const getOrderCounter = /* GraphQL */ `query GetOrderCounter($id: ID!) {
+  getOrderCounter(id: $id) {
+    id
+    orders
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetOrderCounterQueryVariables,
+  APITypes.GetOrderCounterQuery
+>;
+export const listOrderCounters = /* GraphQL */ `query ListOrderCounters(
+  $filter: ModelOrderCounterFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listOrderCounters(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      orders
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListOrderCountersQueryVariables,
+  APITypes.ListOrderCountersQuery
+>;
 export const getInvoice = /* GraphQL */ `query GetInvoice($id: ID!) {
   getInvoice(id: $id) {
     id

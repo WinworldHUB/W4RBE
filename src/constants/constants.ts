@@ -34,3 +34,4 @@ export const BREVO_CONFIG = {
 };
 
 export const RECORDS_LIMIT = 10000;
+export const DEFAULT_ORDER_COUNTER_ID = "6a72d77d-bb92-482d-8cc5-d7c12c0c52c0";

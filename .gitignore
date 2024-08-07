@@ -132,6 +132,16 @@ dist
 .amplify-hosting
 dist
 
+
+# Sentry Config File
+.sentryclirc
+
+# Sentry Config File
+.sentryclirc
+
+# Sentry Config File
+.sentryclirc
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -153,12 +163,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-
-# Sentry Config File
-.sentryclirc
-
-# Sentry Config File
-.sentryclirc
-
-# Sentry Config File
-.sentryclirc

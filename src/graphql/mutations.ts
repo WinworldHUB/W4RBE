@@ -8,6 +8,54 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const createOrderCounter = /* GraphQL */ `mutation CreateOrderCounter(
+  $input: CreateOrderCounterInput!
+  $condition: ModelOrderCounterConditionInput
+) {
+  createOrderCounter(input: $input, condition: $condition) {
+    id
+    orders
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateOrderCounterMutationVariables,
+  APITypes.CreateOrderCounterMutation
+>;
+export const updateOrderCounter = /* GraphQL */ `mutation UpdateOrderCounter(
+  $input: UpdateOrderCounterInput!
+  $condition: ModelOrderCounterConditionInput
+) {
+  updateOrderCounter(input: $input, condition: $condition) {
+    id
+    orders
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateOrderCounterMutationVariables,
+  APITypes.UpdateOrderCounterMutation
+>;
+export const deleteOrderCounter = /* GraphQL */ `mutation DeleteOrderCounter(
+  $input: DeleteOrderCounterInput!
+  $condition: ModelOrderCounterConditionInput
+) {
+  deleteOrderCounter(input: $input, condition: $condition) {
+    id
+    orders
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteOrderCounterMutationVariables,
+  APITypes.DeleteOrderCounterMutation
+>;
 export const createInvoice = /* GraphQL */ `mutation CreateInvoice(
   $input: CreateInvoiceInput!
   $condition: ModelInvoiceConditionInput

@@ -2,6 +2,89 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
+export type CreateOrderCounterInput = {
+  id?: string | null,
+  orders: number,
+};
+
+export type ModelOrderCounterConditionInput = {
+  orders?: ModelIntInput | null,
+  and?: Array< ModelOrderCounterConditionInput | null > | null,
+  or?: Array< ModelOrderCounterConditionInput | null > | null,
+  not?: ModelOrderCounterConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export enum ModelAttributeTypes {
+  binary = "binary",
+  binarySet = "binarySet",
+  bool = "bool",
+  list = "list",
+  map = "map",
+  number = "number",
+  numberSet = "numberSet",
+  string = "string",
+  stringSet = "stringSet",
+  _null = "_null",
+}
+
+
+export type ModelStringInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
+export type ModelSizeInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+};
+
+export type OrderCounter = {
+  __typename: "OrderCounter",
+  id: string,
+  orders: number,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateOrderCounterInput = {
+  id: string,
+  orders?: number | null,
+};
+
+export type DeleteOrderCounterInput = {
+  id: string,
+};
+
 export type CreateInvoiceInput = {
   id?: string | null,
   orderId: string,
@@ -23,46 +106,6 @@ export type ModelInvoiceConditionInput = {
 };
 
 export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
-};
-
-export enum ModelAttributeTypes {
-  binary = "binary",
-  binarySet = "binarySet",
-  bool = "bool",
-  list = "list",
-  map = "map",
-  number = "number",
-  numberSet = "numberSet",
-  string = "string",
-  stringSet = "stringSet",
-  _null = "_null",
-}
-
-
-export type ModelSizeInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-};
-
-export type ModelStringInput = {
   ne?: string | null,
   eq?: string | null,
   le?: string | null,
@@ -245,18 +288,6 @@ export type ModelProductConditionInput = {
   updatedAt?: ModelStringInput | null,
 };
 
-export type ModelIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type ModelBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
@@ -390,6 +421,22 @@ export type DeleteMemberInput = {
   id: string,
 };
 
+export type ModelOrderCounterFilterInput = {
+  id?: ModelIDInput | null,
+  orders?: ModelIntInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelOrderCounterFilterInput | null > | null,
+  or?: Array< ModelOrderCounterFilterInput | null > | null,
+  not?: ModelOrderCounterFilterInput | null,
+};
+
+export type ModelOrderCounterConnection = {
+  __typename: "ModelOrderCounterConnection",
+  items:  Array<OrderCounter | null >,
+  nextToken?: string | null,
+};
+
 export type ModelInvoiceFilterInput = {
   id?: ModelIDInput | null,
   orderId?: ModelIDInput | null,
@@ -492,16 +539,13 @@ export type ModelMemberConnection = {
   nextToken?: string | null,
 };
 
-export type ModelSubscriptionInvoiceFilterInput = {
+export type ModelSubscriptionOrderCounterFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  orderId?: ModelSubscriptionIDInput | null,
-  invoiceDate?: ModelSubscriptionStringInput | null,
-  paymentDate?: ModelSubscriptionStringInput | null,
-  memberId?: ModelSubscriptionIDInput | null,
+  orders?: ModelSubscriptionIntInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionInvoiceFilterInput | null > | null,
-  or?: Array< ModelSubscriptionInvoiceFilterInput | null > | null,
+  and?: Array< ModelSubscriptionOrderCounterFilterInput | null > | null,
+  or?: Array< ModelSubscriptionOrderCounterFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -519,6 +563,18 @@ export type ModelSubscriptionIDInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
+};
+
 export type ModelSubscriptionStringInput = {
   ne?: string | null,
   eq?: string | null,
@@ -532,6 +588,18 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionInvoiceFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  orderId?: ModelSubscriptionIDInput | null,
+  invoiceDate?: ModelSubscriptionStringInput | null,
+  paymentDate?: ModelSubscriptionStringInput | null,
+  memberId?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionInvoiceFilterInput | null > | null,
+  or?: Array< ModelSubscriptionInvoiceFilterInput | null > | null,
 };
 
 export type ModelSubscriptionOrderFilterInput = {
@@ -586,18 +654,6 @@ export type ModelSubscriptionProductFilterInput = {
   or?: Array< ModelSubscriptionProductFilterInput | null > | null,
 };
 
-export type ModelSubscriptionIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  in?: Array< number | null > | null,
-  notIn?: Array< number | null > | null,
-};
-
 export type ModelSubscriptionBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
@@ -623,6 +679,51 @@ export type ModelSubscriptionMemberFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionMemberFilterInput | null > | null,
   or?: Array< ModelSubscriptionMemberFilterInput | null > | null,
+};
+
+export type CreateOrderCounterMutationVariables = {
+  input: CreateOrderCounterInput,
+  condition?: ModelOrderCounterConditionInput | null,
+};
+
+export type CreateOrderCounterMutation = {
+  createOrderCounter?:  {
+    __typename: "OrderCounter",
+    id: string,
+    orders: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateOrderCounterMutationVariables = {
+  input: UpdateOrderCounterInput,
+  condition?: ModelOrderCounterConditionInput | null,
+};
+
+export type UpdateOrderCounterMutation = {
+  updateOrderCounter?:  {
+    __typename: "OrderCounter",
+    id: string,
+    orders: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteOrderCounterMutationVariables = {
+  input: DeleteOrderCounterInput,
+  condition?: ModelOrderCounterConditionInput | null,
+};
+
+export type DeleteOrderCounterMutation = {
+  deleteOrderCounter?:  {
+    __typename: "OrderCounter",
+    id: string,
+    orders: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateInvoiceMutationVariables = {
@@ -919,6 +1020,40 @@ export type DeleteMemberMutation = {
   } | null,
 };
 
+export type GetOrderCounterQueryVariables = {
+  id: string,
+};
+
+export type GetOrderCounterQuery = {
+  getOrderCounter?:  {
+    __typename: "OrderCounter",
+    id: string,
+    orders: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListOrderCountersQueryVariables = {
+  filter?: ModelOrderCounterFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListOrderCountersQuery = {
+  listOrderCounters?:  {
+    __typename: "ModelOrderCounterConnection",
+    items:  Array< {
+      __typename: "OrderCounter",
+      id: string,
+      orders: number,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetInvoiceQueryVariables = {
   id: string,
 };
@@ -1128,6 +1263,48 @@ export type ListMembersQuery = {
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
+  } | null,
+};
+
+export type OnCreateOrderCounterSubscriptionVariables = {
+  filter?: ModelSubscriptionOrderCounterFilterInput | null,
+};
+
+export type OnCreateOrderCounterSubscription = {
+  onCreateOrderCounter?:  {
+    __typename: "OrderCounter",
+    id: string,
+    orders: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateOrderCounterSubscriptionVariables = {
+  filter?: ModelSubscriptionOrderCounterFilterInput | null,
+};
+
+export type OnUpdateOrderCounterSubscription = {
+  onUpdateOrderCounter?:  {
+    __typename: "OrderCounter",
+    id: string,
+    orders: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteOrderCounterSubscriptionVariables = {
+  filter?: ModelSubscriptionOrderCounterFilterInput | null,
+};
+
+export type OnDeleteOrderCounterSubscription = {
+  onDeleteOrderCounter?:  {
+    __typename: "OrderCounter",
+    id: string,
+    orders: number,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
