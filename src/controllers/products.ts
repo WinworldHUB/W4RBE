@@ -11,6 +11,7 @@ import { createProduct, updateProduct } from "../graphql/mutations";
 import { Product } from "../awsApis";
 import { Amplify } from "aws-amplify";
 import { AWS_API_CONFIG, RECORDS_LIMIT } from "../constants/constants";
+import { DateTime } from "luxon";
 
 Amplify.configure(AWS_API_CONFIG);
 
@@ -31,20 +32,7 @@ export const getProductById: RequestHandler = async (req, res, next) => {
 
 export const getAllProducts: RequestHandler = async (req, res, next) => {
   try {
-    // List all items
-    const allProducts = await client.graphql({
-      query: listProducts,
-      variables: {
-        filter: {
-          published: {
-            eq: true,
-          },
-        },
-        limit: RECORDS_LIMIT,
-      },
-    });
-
-    return res.json(allProducts.data.listProducts.items);
+    return res.json(await fetchAllProducts());
   } catch (error) {
     return res.status(500).send({
       status: "failed",
@@ -52,6 +40,42 @@ export const getAllProducts: RequestHandler = async (req, res, next) => {
       internalError: error,
     });
   }
+};
+
+const fetchAllProducts = async (): Promise<Product[]> => {
+  const variables = {
+    limit: RECORDS_LIMIT,
+    nextToken: null,
+  };
+
+  var isDone = false;
+  const products: Product[] = [];
+  var nextToken = null;
+
+  do {
+    variables.nextToken = nextToken;
+    const { data, errors } = await client.graphql({
+      query: listProducts,
+      variables: variables,
+    });
+
+    if (errors) return null;
+
+    products.push(...data.listProducts.items);
+    nextToken = data.listProducts.nextToken;
+
+    isDone = !data.listProducts.nextToken;
+  } while (!isDone);
+
+  if (products) {
+    (products ?? []).sort(
+      (a, b) =>
+        DateTime.fromISO(b.updatedAt).diff(DateTime.fromISO(a.updatedAt))
+          .milliseconds
+    );
+  }
+
+  return products;
 };
 
 export const addProduct: RequestHandler = async (req, res, next) => {

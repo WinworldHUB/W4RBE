@@ -102,45 +102,63 @@ export const getAllInvoices: RequestHandler = async (req, res, next) => {
 
     const memberId: string = decodedToken.sub;
 
-    let invoices: Invoice[] = [];
-    // Check if the user is an admin
-    if (
+    const isAdmin =
       decodedToken["cognito:groups"] &&
-      decodedToken["cognito:groups"].includes("admin")
-    ) {
-      // If admin, fetch all invoices
-      const { data } = await client.graphql({
-        query: listInvoices,
-      });
-      invoices = data.listInvoices.items;
-    } else {
-      // If not admin, fetch invoices for the logged in user
-      const { data } = await client.graphql({
-        query: listInvoices,
-        variables: {
-          filter: {
-            memberId: {
-              eq: memberId,
-            },
-          },
-          limit: RECORDS_LIMIT,
-        },
-      });
-      invoices = data.listInvoices.items;
-    }
+      decodedToken["cognito:groups"].includes("admin");
 
-    (invoices ?? []).sort(
-      (a, b) =>
-        DateTime.fromISO(b.invoiceDate).diff(DateTime.fromISO(a.invoiceDate))
-          .milliseconds
-    );
-    res.json(invoices);
+    res.json(await fetchAllInvoices(!isAdmin && memberId));
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .json({ message: "Failed to retrieve invoices", error: error });
   }
+};
+
+const fetchAllInvoices = async (memberId?: string): Promise<Invoice[]> => {
+  const variables = memberId
+    ? {
+        filter: {
+          memberId: {
+            eq: memberId,
+          },
+        },
+        limit: RECORDS_LIMIT,
+        nextToken: null,
+      }
+    : {
+        limit: RECORDS_LIMIT,
+        nextToken: null,
+      };
+
+  var isDone = false;
+  const invoices: Invoice[] = [];
+  var nextToken = null;
+
+  do {
+    variables.nextToken = nextToken;
+    const { data, errors } = await client.graphql({
+      query: listInvoices,
+      variables: variables,
+    });
+
+    if (errors) return null;
+
+    invoices.push(...data.listInvoices.items);
+    nextToken = data.listInvoices.nextToken;
+
+    isDone = !data.listInvoices.nextToken;
+  } while (!isDone);
+
+  if (invoices) {
+    (invoices ?? []).sort(
+      (a, b) =>
+        DateTime.fromISO(b.updatedAt).diff(DateTime.fromISO(a.updatedAt))
+          .milliseconds
+    );
+  }
+
+  return invoices;
 };
 
 export const modifyInvoice: RequestHandler = async (req, res, next) => {

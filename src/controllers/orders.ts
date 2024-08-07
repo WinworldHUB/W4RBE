@@ -1,4 +1,4 @@
-import { query, RequestHandler } from "express";
+import { RequestHandler } from "express";
 import { Amplify } from "aws-amplify";
 import {
   AWS_API_CONFIG,
@@ -18,6 +18,7 @@ import { Order, OrderStatus } from "../awsApis";
 import {
   createInvoice,
   createOrder,
+  deleteOrder,
   updateInvoice,
   updateOrder,
   updateOrderCounter,
@@ -82,43 +83,11 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
 
     const memberId: string = decodedToken.sub;
 
-    let orders: Order[] = [];
-
-    // Check if the user is an admin
-    if (
+    const isAdmin =
       decodedToken["cognito:groups"] &&
-      decodedToken["cognito:groups"].includes("admin")
-    ) {
-      // If admin, fetch all orders
-      const { data } = await client.graphql({
-        query: listOrders,
-        variables: {
-          limit: RECORDS_LIMIT,
-        },
-      });
-      orders = data.listOrders.items;
-    } else {
-      // If not admin, fetch orders for the logged in user
-      const { data } = await client.graphql({
-        query: listOrders,
-        variables: {
-          filter: {
-            memberId: {
-              eq: memberId,
-            },
-          },
-          limit: RECORDS_LIMIT,
-        },
-      });
-      orders = data.listOrders.items;
-    }
+      decodedToken["cognito:groups"].includes("admin");
 
-    (orders ?? []).sort(
-      (a, b) =>
-        DateTime.fromISO(b.orderDate).diff(DateTime.fromISO(a.orderDate))
-          .milliseconds
-    );
-    res.json(orders);
+    res.json(await fetchAllOrders(!isAdmin && memberId));
   } catch (error) {
     console.log(error);
     res
@@ -126,6 +95,53 @@ export const getAllOrders: RequestHandler = async (req, res, next) => {
       .json({ message: "Failed to retrieve orders", error: error });
   }
 };
+
+const fetchAllOrders = async (memberId?: string): Promise<Order[]> => {
+  const variables = memberId
+    ? {
+        filter: {
+          memberId: {
+            eq: memberId,
+          },
+        },
+        limit: RECORDS_LIMIT,
+        nextToken: null,
+      }
+    : {
+        limit: RECORDS_LIMIT,
+        nextToken: null,
+      };
+
+  var isDone = false;
+  const orders: Order[] = [];
+  var nextToken = null;
+
+  do {
+    variables.nextToken = nextToken;
+    const { data, errors } = await client.graphql({
+      query: listOrders,
+      variables: variables,
+    });
+
+    if (errors) return null;
+
+    orders.push(...data.listOrders.items);
+    nextToken = data.listOrders.nextToken;
+
+    isDone = !data.listOrders.nextToken;
+  } while (!isDone);
+
+  if (orders) {
+    (orders ?? []).sort(
+      (a, b) =>
+        DateTime.fromISO(b.updatedAt).diff(DateTime.fromISO(a.updatedAt))
+          .milliseconds
+    );
+  }
+
+  return orders;
+};
+
 export const addOrder: RequestHandler = async (req, res, next) => {
   try {
     const order = req.body as Order;
@@ -147,6 +163,7 @@ export const addOrder: RequestHandler = async (req, res, next) => {
 
     const orderNumber = await generateOrderNumber();
 
+    console.log(`Creating order ${orderNumber}`);
     const newOrder = await client.graphql({
       query: createOrder,
       variables: {
@@ -157,39 +174,72 @@ export const addOrder: RequestHandler = async (req, res, next) => {
       },
     });
 
-    const createdOrder = newOrder.data.createOrder;
-    const orderId = createdOrder.orderNumber;
-    const invoiceDate = createdOrder.orderDate;
-    const memberId = createdOrder.memberId;
-    const invoiceNumber = "INV-" + orderNumber;
-    const createdInvoice = await client.graphql({
-      query: createInvoice,
-      variables: {
-        input: {
-          id: invoiceNumber,
-          orderId: orderId,
-          invoiceDate: invoiceDate,
-          paymentDate: null,
-          memberId: memberId,
+    if (newOrder.data) {
+      const createdOrder = newOrder.data.createOrder;
+      const orderId = createdOrder.orderNumber;
+      const invoiceDate = createdOrder.orderDate;
+      const memberId = createdOrder.memberId;
+      const invoiceNumber = "INV-" + orderNumber;
+
+      console.log(`Creating invoice ${newOrder.data.createOrder.orderNumber}`);
+      const createdInvoice = await client.graphql({
+        query: createInvoice,
+        variables: {
+          input: {
+            id: invoiceNumber,
+            orderId: orderId,
+            invoiceDate: invoiceDate,
+            paymentDate: null,
+            memberId: memberId,
+          },
         },
-      },
-    });
+      });
 
-    const member = await client.graphql({
-      query: getMember,
-      variables: {
-        id: memberId,
-      },
-    });
-    const memberEmail = member.data.getMember.email;
+      if (createdInvoice.data) {
+        console.log(`Invoice created ${createdInvoice.data.createInvoice.id}`);
+        const member = await client.graphql({
+          query: getMember,
+          variables: {
+            id: memberId,
+          },
+        });
+        const memberEmail = member.data.getMember.email;
 
-    const isEmailSent = await sendInvoiceEmail(
-      createdOrder,
-      memberEmail,
-      invoiceNumber
-    );
+        const isEmailSent = await sendInvoiceEmail(
+          createdOrder,
+          memberEmail,
+          invoiceNumber
+        );
 
-    res.json({ createdOrder });
+        res.json({ createdOrder });
+      } else {
+        // delete created order
+
+        console.log(`Deleting order ${newOrder.data.createOrder.orderNumber}`);
+
+        const deletedOrder = await client.graphql({
+          query: deleteOrder,
+          variables: {
+            input: {
+              id: newOrder.data.createOrder.id,
+            },
+          },
+        });
+
+        if (!deletedOrder.data) {
+          res.status(500).json({
+            message: `Failed to create order. Please clear residual data for order ${newOrder.data.createOrder.orderNumber}`,
+            error: null,
+          });
+        }
+
+        res
+          .status(500)
+          .json({ message: "Failed to create order", error: null });
+      }
+    } else {
+      res.status(500).json({ message: "Failed to create order", error: null });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to create order", error: error });

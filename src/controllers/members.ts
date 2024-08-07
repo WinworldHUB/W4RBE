@@ -5,9 +5,7 @@ import {
   SignUpInput,
   confirmSignUp,
   resendSignUpCode,
-  signOut,
   signUp,
-  updateUserAttributes,
 } from "aws-amplify/auth";
 import { getMember, listMembers } from "../graphql/queries";
 import { Amplify } from "aws-amplify";
@@ -26,31 +24,47 @@ const client = generateClient();
 
 export const getAllMembers: RequestHandler = async (req, res, next) => {
   try {
-    const members = await client.graphql({
-      query: listMembers,
-      variables: {
-        filter: {
-          active: {
-            eq: true,
-          },
-        },
-        limit: RECORDS_LIMIT,
-      },
-    });
-
-    const allMembers = members.data.listMembers.items;
-
-    (allMembers ?? []).sort(
-      (a, b) =>
-        DateTime.fromISO(b.updatedAt).diff(DateTime.fromISO(a.updatedAt))
-          .milliseconds
-    );
-
-    res.json(allMembers);
+    res.json(await fetchAllMembers());
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve members" });
   }
+};
+
+const fetchAllMembers = async (): Promise<Member[]> => {
+  const variables = {
+    limit: RECORDS_LIMIT,
+    nextToken: null,
+  };
+
+  var isDone = false;
+  const members: Member[] = [];
+  var nextToken = null;
+
+  do {
+    variables.nextToken = nextToken;
+    const { data, errors } = await client.graphql({
+      query: listMembers,
+      variables: variables,
+    });
+
+    if (errors) return null;
+
+    members.push(...data.listMembers.items);
+    nextToken = data.listMembers.nextToken;
+
+    isDone = !data.listMembers.nextToken;
+  } while (!isDone);
+
+  if (members) {
+    (members ?? []).sort(
+      (a, b) =>
+        DateTime.fromISO(b.createdAt).diff(DateTime.fromISO(a.createdAt))
+          .milliseconds
+    );
+  }
+
+  return members;
 };
 
 export const getMemberById: RequestHandler = async (req, res, next) => {
